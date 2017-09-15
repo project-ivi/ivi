@@ -1,4 +1,5 @@
 # IVI - Interactive Visual Interpreter
-Ivy Development Team
+## Ivy Development Team
+### let your mind grow 
 
-project-ivi.github.io
+https://project-ivi.github.io/ivi
