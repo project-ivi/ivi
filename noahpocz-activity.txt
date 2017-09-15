@@ -1,0 +1,5 @@
+Here is a text file to fulfill the requirements for class activity 3.
+
+
+
+It has five lines.
