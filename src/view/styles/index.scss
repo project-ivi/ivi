@@ -1,0 +1,11 @@
+html,
+body {
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+}
+
+#app,
+[data-reactroot] {
+  height: 100% !important;
+}
