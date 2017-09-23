@@ -1,4 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-ReactDOM.render(<h1>IVI</h1>, document.getElementById('app'))
+import Interpreter from './view';
+
+ReactDOM.render(<Interpreter />, document.getElementById('app'))
