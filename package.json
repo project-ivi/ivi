@@ -14,5 +14,25 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/project-ivi/ivi.git"
+  },
+  "keywords": [
+    "code",
+    "visualization",
+    "computer",
+    "science",
+    "education"
+  ],
+  "author": "Ivy Dev Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/project-ivi/ivi/issues"
+  },
+  "homepage": "https://github.com/project-ivi/ivi#readme"
 }
