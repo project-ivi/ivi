@@ -6,7 +6,7 @@ const Console = () => (
 	<h2>Console</h2>
 
 	<Form>
-		<TextArea placeholder='Console output' />
+		<TextArea placeholder='Console output' readOnly/>
 	</Form>
 
   </div>
