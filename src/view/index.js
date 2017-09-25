@@ -5,6 +5,8 @@ import Editor from './editor'
 import Navbar from './navbar'
 import Visualizer from './visualizer'
 
+import '../semantic/out/semantic.min.css';
+
 export default class Interpreter extends React.Component {
   render() {
     return (
