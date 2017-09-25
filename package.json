@@ -1,31 +1,38 @@
 {
   "name": "ivi",
-  "version": "1.0.0",
-  "description": "An interactive visual interpreter for JavaScript that helps students become more familiar with introductory computer science concepts.",
-  "main": "index.js",
-  "repository": "git@github.com:project-ivi/ivi.git",
-  "author": "Ivy Development <anguslam@buffalo.edu>",
-  "license": "MIT",
-  "scripts": {
-    "start": "webpack --watch",
-    "build": "webpack"
-  },
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
     "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "react-dom": "^15.6.1",
+    "react-scripts": "1.0.13",
+    "semantic-ui": "^2.2.13",
+    "semantic-ui-react": "^0.74.1"
   },
-  "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-react": "^6.24.1",
-    "css-loader": "^0.28.7",
-    "file-loader": "^0.11.2",
-    "html-webpack-plugin": "^2.30.1",
-    "node-sass": "^4.5.3",
-    "sass-loader": "^6.0.6",
-    "style-loader": "^0.18.2",
-    "url-loader": "^0.5.9",
-    "webpack": "^3.6.0"
-  }
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/project-ivi/ivi.git"
+  },
+  "keywords": [
+    "code",
+    "visualization",
+    "computer",
+    "science",
+    "education"
+  ],
+  "author": "Ivy Dev Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/project-ivi/ivi/issues"
+  },
+  "homepage": "https://github.com/project-ivi/ivi#readme"
 }
