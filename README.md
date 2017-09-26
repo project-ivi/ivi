@@ -19,14 +19,4 @@ IVI is now built.
 
 ### Run  
 
-To run IVI, first install a server. I like [http-server](https://github.com/indexzero/http-server)
-```
-npm install http-server -g
-```
-Once you have a server, change into the `build/` directory and start your server.
-```
-cd build
-http-server
-```
-Now open your broswer to `localhost:8080` (this port number might be different for your local server) and viola! You're seeing our IVI mock-up
-
+`npm start` will run the dev server and open your browser. 
