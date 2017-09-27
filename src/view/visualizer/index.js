@@ -1,19 +1,13 @@
 import React from 'react'
+import {Card} from 'semantic-ui-react'
 
 const Visualizer = () => (
-  <div className="component__visualizer">
-    <h2>Visualizer</h2>    
-
-    <canvas style={{backgroundColor: '#e6e6e6', width: '100%'}}>
-    	<script>
-
-    	</script>
-
-
-    </canvas>
-
-
-  	</div>
+  <div style={{height: '100%'}}>
+    <Card raised={true} style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center'}}>
+      <canvas style={{width: '100%', height: '100%'}}>
+      </canvas>
+    </Card>
+  </div>
 )
 
 export default Visualizer

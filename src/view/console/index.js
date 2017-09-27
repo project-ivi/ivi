@@ -1,15 +1,12 @@
 import React from 'react'
-import { Form, TextArea } from 'semantic-ui-react'
+import { Form, TextArea, Card } from 'semantic-ui-react'
 
 const Console = () => (
-  <div className="component__console">
-	<h2>Console</h2>
-
-	<Form>
-		<TextArea placeholder='Console output' readOnly/>
-	</Form>
-
-  </div>
+  <Card raised={true} style={{height: '100%', width: '100%'}}>
+		<Form style={{height: '100%'}}>
+			<TextArea autoHeight placeholder='Console output' readOnly style={{minHeight: '100%', borderColor: 'transparent'}}/>
+		</Form>
+  </Card>
 )
 
 

@@ -1,13 +1,12 @@
 import React from 'react'
-import { Form, TextArea } from 'semantic-ui-react'
+import { Form, TextArea, Card } from 'semantic-ui-react'
 
 const Editor = () => (
-  <div className="component__editor">
-    <h2>Editor</h2>    
-		<Form>
-    	<TextArea placeholder="Code here..." style={{width: '100%', minHeight: '700'}}/>
+  <Card style={{width: '100%', height: '100%'}} raised={true}>  
+		<Form style={{height: '100%', borderColor: 'transparent'}}>
+    	<TextArea autoHeight placeholder="Code here..." style={{width: '100%', minHeight: '100%', borderColor: 'transparent'}}/>
 		</Form>
-  </div>
+  </Card>
 )
 
 export default Editor

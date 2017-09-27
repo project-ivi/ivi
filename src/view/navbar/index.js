@@ -1,14 +1,14 @@
 import React from 'react'
-import { Button } from 'semantic-ui-react'
+import { Button, Card } from 'semantic-ui-react'
+
+import '../styles/index.scss'
 
 const Navbar = () => (
-  <div className="component__navbar">
-    <h2>Navbar</h2>    
-
-    <Button>
-    Step
-    </Button>
-  </div>
+    <Card raised={true} style={{width: '100%', height: '100%'}}>
+      <div style={{height: '100%', display: 'flex', alignItems: 'center', padding: '15px'}}>
+        <Button> Step </Button>
+      </div>
+    </Card>
 )
 
 export default Navbar

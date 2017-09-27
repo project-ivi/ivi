@@ -5,5 +5,7 @@ body {
 }
 
 .main-view {
-  height: 90vh;
+  height: 100vh;
+  padding: 20px;
+  background-color: #e6e6e6;
 }
