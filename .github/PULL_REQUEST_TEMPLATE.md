@@ -1,4 +1,4 @@
-\# <ISSUE NUMBER>
+\#<ISSUE NUMBER>
 
 # Description
 
