@@ -10,4 +10,6 @@ Describe all changes made
 -`<FILE CHANGED>` : <Change> 
 
 # Manual Test Steps
-Describe how a reviewer should test the changes. Include relevant screenshots, API calls, etc..
+Describe how a reviewer should test the changes. Include relevant workflows, API calls, etc...
+**NOTE: All visual changes PR should include a screenshot**
+
