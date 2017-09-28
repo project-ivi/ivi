@@ -7,7 +7,7 @@ Please include a summary of the change and which issue is fixed. Please also inc
 # Change Log
 Describe all changes made 
 
-- <FILE CHANGED>: <Change made> 
+-`<FILE CHANGED>` : <Change> 
 
 # Manual Test Steps
 Describe how a reviewer should test the changes. Include relevant screenshots, API calls, etc..
