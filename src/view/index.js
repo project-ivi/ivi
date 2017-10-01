@@ -7,8 +7,6 @@ import Editor from './editor'
 import Navbar from './navbar'
 import Visualizer from './visualizer'
 
-import './styles/index.scss'
-
 export default class Interpreter extends React.Component {
   render() {
     return (
