@@ -6,5 +6,5 @@ import registerServiceWorker from './registerServiceWorker';
 
 import './semantic/out/semantic.min.css';
 
-ReactDOM.render(<Interpreter/>, document.getElementById('root'));
+ReactDOM.render(<Interpreter />, document.getElementById('root'));
 registerServiceWorker();

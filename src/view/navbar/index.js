@@ -1,14 +1,23 @@
-import React from 'react'
-import { Button } from 'semantic-ui-react'
+import React from 'react';
+import { Button, Card, Menu } from 'semantic-ui-react';
+
+import Logo from '../assets/ivy-bg.png'
+import WhiteButton from '../components/WhiteButton';
 
 const Navbar = () => (
-  <div className="component__navbar">
-    <h2>Navbar</h2>    
-
-    <Button>
-    Step
-    </Button>
-  </div>
+    <Menu className='component__navbar'>
+      <span style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <span style={{height: '100%', padding: '8px'}}>
+          <img src={Logo} className='ivy-logo'/>
+        </span>
+        <span style={{padding: '15px'}}>
+          <span style={{paddingRight: '7px'}} >
+            <WhiteButton text='Run' />
+          </span>
+          <WhiteButton text='Step' />
+        </span>
+      </span>
+    </Menu>
 )
 
 export default Navbar
