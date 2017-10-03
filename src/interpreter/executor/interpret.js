@@ -3,7 +3,8 @@
 //  Use this enum as a flag for certain logic
 const stateEnum = {
     DEFAULT : "default",
-    ACCEPTING_VAR : "capturing variable"
+    ACCEPTING_VAR : "accepting variable",
+    ASSIGNING_VAR : "assigning variable"
 }
 
 function Variable() {
@@ -11,6 +12,9 @@ function Variable() {
     this.name = "";
     this.value = "";
 }
+
+//List to hold variables in the case of multi variable declarations
+var currentVariables = [];
 
 var masterNameList = [];
 
@@ -55,6 +59,7 @@ function exitInterpret() {
     isRunning = false;
     userCode = [];
     currentDataHold = null;
+    currentVariables = [];
 }
 
 function interpretLine(lineNumber) {
@@ -89,12 +94,7 @@ function evalState(buffer) {
             break;
 
         case stateEnum.ACCEPTING_VAR:
-            //If this is the initial catch we will 
-            if (currentDataHold == null) {
-                currentDataHold = new Variable();
-            } else {
-                acceptingVar(buffer);
-            }
+            acceptingVar(buffer);
             break;
     }
 }
@@ -118,6 +118,9 @@ function findBufferState(buffer) {
     switch (buffer) {
         case "var":
             currentState = stateEnum.ACCEPTING_VAR;
+            currentDataHold = new Variable();
+            currentVariables = [];
+            currentVariables.push(currentDataHold);
             return "";
             break;
         default:
@@ -159,6 +162,8 @@ function evaluate(inputCode, isStep) {
 
 var code = `function helloWorld() {
                 var x=2;
+                var y = 3;
+                var n;
                 console.log('hello');
             }`;
 evaluate(code, false);
