@@ -4,8 +4,8 @@ node_js:
 
 before_install:
   - npm i -g npm@latest
-  - npm install semantic-ui
-  - npm install gulp -D
+  - npm install semantic-ui gulp-cli
+
 cache:
   directories:
     - "node_modules"
