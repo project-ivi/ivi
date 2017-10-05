@@ -14,11 +14,6 @@ Install the dependencies:
 ```
 npm install
 ```
-During the installation process, some additional steps are necessary to install the semantic-ui module. Navigate the prompts as follows:
-- 'Set-up Semantic UI' > Select `Automatic`
-- 'We detected you are using NPM Nice! Is this your project folder?' > Select `Yes`
-- 'Where should we put Semantic UI inside your project?' > Simply press `Enter` to specify the default location
-
 When the npm install process completes, run the following:
 ```
 cd semantic && gulp build
