@@ -10,9 +10,18 @@ To view our prototype, clone and enter the following repo:
 git clone git@github.com:project-ivi/ivi.git
 cd ivi
 ```
-Then install and build the sources.
+Install the dependencies:
 ```
 npm install
+```
+When the npm install process completes, run the following:
+```
+cd semantic && gulp build
+```
+
+Now build the source files:
+```
+cd ..
 npm run build
 ```
 IVI is now built. 

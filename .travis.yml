@@ -3,12 +3,19 @@ node_js:
   - 8 
 
 before_install:
-  npm i -g npm@latest
-  
+  - npm i -g npm@latest
+  - npm install semantic-ui 
+  - npm install gulp-cli -g
+
 cache:
   directories:
     - "node_modules"
+    - "semantic"
 
-install: npm install
+install: 
+  - npm install
+  - cd semantic/
+  - gulp build
+  - cd ..
 
 script: npm run build   
