@@ -1,4 +1,3 @@
-"use strict";
 // This is our 'state' when interpreting the code
 //  Use this enum as a flag for certain logic
 const stateEnum = {
@@ -7,34 +6,36 @@ const stateEnum = {
     ASSIGNING_VAR : "assigning variable"
 }
 
-function Variable() {
-    this.name = "";
-    this.value = "";
+class Variable {
+    constructor() {
+        this.name = "";
+        this.value = "";
+    }
 }
 
 // Our master state that we will output to visualizer
-var masterRep = [];
+let masterRep = [];
 
 // Single line representation we will push to master Rep
-var currentLineRep = [];
+let currentLineRep = [];
 
 // Current interpreter state for program
-var currentState = stateEnum.DEFAULT;
+let currentState = stateEnum.DEFAULT;
 
 // Current step in the user input code
-var currentStep = 0;
+let currentStep = 0;
 
 // Current object we are adding data to
-var currentDataHold = null;
+let currentDataHold = null;
 
 //  Flag to tell code editor to be writable or not
-var isRunning = false;
+let isRunning = false;
 
 // Global var to bump out of interpreting if in a block comment
-var isBlockComment = false;
+let isBlockComment = false;
 
 //  List to hold user code, use a list so we can index on stepCount
-var userCode = []
+let userCode = []
 
 // Setup for when we initially check syntax
 function setup(inputCode) {
@@ -46,7 +47,6 @@ function setup(inputCode) {
     try {
         new Function(inputCode);
     } catch(err) {
-        exitInterpret();
         return false;
     }
     
@@ -54,8 +54,8 @@ function setup(inputCode) {
     return true;
 }
 
-// Cleanup function to be called whenever exiting interpreter
-function exitInterpret() {
+// Cleanup function for data structures
+function cleanStructures() {
     
     masterRep = [];
     currentLineRep = [];
@@ -69,28 +69,31 @@ function exitInterpret() {
 
 function interpretLine(lineNumber) {
 
+    //Clean up structures before processing
+    cleanInterpretLineStructures();
+
     //Handling multi statements on one line
-    var statements = userCode[lineNumber].split(';');
+    let statements = userCode[lineNumber].split(';');
     
-    for (var i = 0; i < statements.length; i++) {
-        var statement = statements[i];
-        if (statement.trim() == "") {
+    for (let i = 0; i < statements.length; i++) {
+        let statement = statements[i];
+        if (statement.trim() === "") {
             continue;
         }
 
         //Fresh buffer for each statement
-        var buffer = "";
+        let buffer = "";
 
         // Iterate each character in the current user code line
-        for (var j = 0; j < statement.length; j++) {
-            if (statement[j] == ' ') {
+        for (let j = 0; j < statement.length; j++) {
+            if (statement[j] === ' ') {
                 continue;
             }
     
             buffer += statement[j]
             
             //Handling comments here
-            if (isBlockComment && buffer == '*') {
+            if (isBlockComment && buffer === '*') {
                 continue;
             }
             if (handleComments(buffer) || isBlockComment) {
@@ -104,7 +107,7 @@ function interpretLine(lineNumber) {
                 break;
             }
 
-            if (currentState == stateEnum.DEFAULT) {
+            if (currentState === stateEnum.DEFAULT) {
                 buffer = findBufferState(buffer);
             } else {
                 buffer = evalState(buffer);
@@ -114,18 +117,17 @@ function interpretLine(lineNumber) {
     }
 
     masterRep.push([lineNumber, currentLineRep]);
-    postInterpretCleanup();
 }
 
 
 // Beginning basic comment support
 function handleComments(buffer) {
 
-    if (buffer == "//") {
+    if (buffer === "//") {
         return true;
     }
 
-    if (buffer == "/*") {
+    if (buffer === "/*") {
         isBlockComment = true;
         return true;
     }
@@ -139,7 +141,7 @@ function handleComments(buffer) {
 }
 
 //Cleanup data structures after interpret
-function postInterpretCleanup() {
+function cleanInterpretLineStructures() {
     currentLineRep = [];
     currentDataHold = null;
 }
@@ -147,7 +149,7 @@ function postInterpretCleanup() {
 
 function resolveState(buffer) {
 
-    if (buffer == "") {
+    if (buffer === "") {
         return;
     }
     switch (currentState) {
@@ -200,7 +202,7 @@ function noKeywordVariable(buffer) {
 // May not need this if there are not many cases
 function shouldBeVariable(buffer) {
 
-    var isVar = true;
+    let isVar = true;
 
     if (!isNaN(parseInt(buffer))) {
         isVar = false;
@@ -212,7 +214,7 @@ function shouldBeVariable(buffer) {
 // Band Aid for things not yet covered
 function isNotCovered(buffer) {
 
-    var isNotCovered = false;
+    let isNotCovered = false;
 
     if (buffer.includes("function")) {
         isNotCovered = true;
@@ -252,7 +254,7 @@ function evalState(buffer) {
 // If we are in accepting_var state
 function acceptingVar(buffer) {
 
-    if (buffer[buffer.length - 1] == '=') {
+    if (buffer[buffer.length - 1] === '=') {
         buffer = buffer.substring(0, buffer.length - 1);
         
         currentDataHold.name = buffer
@@ -284,7 +286,10 @@ function findBufferState(buffer) {
 
 // Global evaluate function called on the step and run click
 function evaluate(inputCode) {
-    
+   
+    //Cleanup our structures before processing
+    cleanStructures();
+
     if (!setup(inputCode)) {
         return false;
     }    
@@ -295,24 +300,22 @@ function evaluate(inputCode) {
         currentStep += 1;
     }
 
-    masterRepToString(masterRep);
-    exitInterpret();
     return masterRep;
 }
 
 // Print out our representation
 function masterRepToString(representation) {
 
-    for (var i = 0; i < representation.length; i++) {
+    representation.forEach(function(repPair) {
+        console.log("Line Number: " + repPair[0]);
 
-        console.log("Line Number: " + representation[i][0]);
-        for (var j = 0; j < representation[i][1].length; j++) {            
-            console.log(JSON.stringify(representation[i][1][j]));
-        }
-    }
+        repPair[1].forEach(function(dataClass) {
+            console.log(JSON.stringify(dataClass));
+        });
+    });
 }
 
-var code = `function helloWorld() {
+const code = `function helloWorld() {
                 var a=2;
                 var b = 3
                 c = 4;
@@ -329,4 +332,10 @@ var code = `function helloWorld() {
                 console.log('hello');
                 var h = 2;
             }`;
-evaluate(code);
+
+const ret = evaluate(code);
+if (!ret) {
+    console.log("Syntax error");
+} else {
+    masterRepToString(ret);
+}
