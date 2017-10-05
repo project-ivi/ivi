@@ -1,5 +1,5 @@
 import React from 'react';
-import { /*Button, Card,*/ Menu } from 'semantic-ui-react';
+import { Menu } from 'semantic-ui-react';
 
 import Logo from '../assets/ivy-bg.png'
 import WhiteButton from '../components/WhiteButton';
