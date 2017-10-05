@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { Menu, Card } from 'semantic-ui-react'
-
 import Console from './console'
 import Editor from './editor'
 import Navbar from './navbar'
