@@ -1,5 +1,11 @@
+import { getSketchState, } from '../state'
+
 export default p => {
-  const gray = 150
+  // Used for drawing variable boxes
+  // Set to negative due to issues with incrementing in mousePressed() funct
+  let xCoord = -60
+  let yCoord = 30
+  let boxCount = 0
 
   function resizeCanvasToVisualizer() {
     const elem = document.getElementById('visualizer')
@@ -12,8 +18,22 @@ export default p => {
   }
 
   p.draw = () => {
-    p.background(0, gray, 0)
-    p.rect(p.width/2, p.height/2, 100, 100)
+  	// Background and box same color to give outlined effect
+    p.background('white')
+
+    const state = getSketchState()
+    Object.keys(state).forEach((val, i) => {
+      const xCoord = 15
+      const yCoord = 60 * i + 30
+
+      p.stroke('black')
+      p.fill('white')
+      p.rect(xCoord, yCoord, 80, 30, 3)
+
+      p.fill('black')
+      p.text(val, xCoord + 6, yCoord - 10)
+      p.text(state[val], xCoord + 6, yCoord + 20)  
+    })
   }
 
   p.windowResized = () => {
