@@ -13,7 +13,7 @@ const hoverStyle = {
     width: '90px'
 }
 
-class WhiteButton extends React.Component {
+export default class WhiteButton extends React.Component {
 
     constructor(props) {
         super(props);
@@ -32,14 +32,12 @@ class WhiteButton extends React.Component {
 
     render() {
         return (
-            <Button 
-                    style={this.state.currentStyle}
+            <Button style={this.state.currentStyle}
                     onMouseOver={this.hover}
-                    onMouseLeave={this.unhover} >
+                    onMouseLeave={this.unhover}
+                    onClick={ this.props.onClick } >
                 {this.props.text}
             </Button>
         );
     }
 }
-
-export default WhiteButton;
