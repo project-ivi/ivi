@@ -348,6 +348,31 @@ const code = `function helloWorld() {
                 var h = 2;
             }`;
 
+/* Expected output:
+
+    [  { lineNumber : 0,
+        dataArray  : [],
+        consoleOutput : ""
+    },
+
+    { lineNumber : 1,
+        dataArray  : [],
+        consoleOutput : ""
+    },
+    { lineNumber : 2,
+      dataArray : [ {
+                        name : a,
+                        value : 2
+      } ]
+      consoleOutput: ""
+    },
+      .
+      .
+      .
+   ]
+*/
+
+
 const ret = evaluate(code);
 if (!ret) {
     console.log("Syntax error");
