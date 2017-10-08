@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { evaluate, } from '../interpreter/executor/interpret'
-import { getSketchState, putInterpreterStep, clearSketchState, } from './visualizer/state'
+import { putInterpreterStep, clearSketchState, } from './visualizer/state'
 
 import Console from './console'
 import Editor from './editor'
