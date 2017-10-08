@@ -13,11 +13,19 @@ class Variable {
     }
 }
 
+class LineRep {
+    constructor() {
+        this.lineNumber = -1;
+        this.dataArray = [];
+        this.consoleOutput = "";
+    }
+}
+
 // Our master state that we will output to visualizer
 let masterRep = [];
 
 // Single line representation we will push to master Rep
-let currentLineRep = [];
+let currentDataArray = [];
 
 // Current interpreter state for program
 let currentState = stateEnum.DEFAULT;
@@ -27,6 +35,9 @@ let currentStep = 0;
 
 // Current object we are adding data to
 let currentDataHold = null;
+
+// Hold our current Line rep to store data into before we push to master rep
+let currentLineRep = null;
 
 //  Flag to tell code editor to be writable or not
 let isRunning = false;
@@ -58,19 +69,21 @@ function setup(inputCode) {
 function cleanStructures() {
     
     masterRep = [];
-    currentLineRep = [];
+    currentDataArray = [];
     currentState = stateEnum.DEFAULT;
     currentStep = 0;
     isRunning = false;
     userCode = [];
     isBlockComment = false;
     currentDataHold = null;
+    currentLineRep = null;
 }
 
 function interpretLine(lineNumber) {
 
     //Clean up structures before processing
     cleanInterpretLineStructures();
+    currentLineRep = new LineRep();
 
     //Handling multi statements on one line
     let statements = userCode[lineNumber].split(';');
@@ -116,7 +129,9 @@ function interpretLine(lineNumber) {
         resolveState(buffer);
     }
 
-    masterRep.push([lineNumber, currentLineRep]);
+    currentLineRep.lineNumber = lineNumber;
+    currentLineRep.dataArray = currentDataArray;
+    masterRep.push(currentLineRep);
 }
 
 
@@ -142,7 +157,7 @@ function handleComments(buffer) {
 
 //Cleanup data structures after interpret
 function cleanInterpretLineStructures() {
-    currentLineRep = [];
+    currentDataArray = [];
     currentDataHold = null;
 }
 
@@ -194,7 +209,7 @@ function noKeywordVariable(buffer) {
         currentDataHold.name = buffer;
     }
 
-    currentLineRep.push(currentDataHold);
+    currentDataArray.push(currentDataHold);
 }
 
 
@@ -273,7 +288,7 @@ function findBufferState(buffer) {
         case "var":
             currentState = stateEnum.ACCEPTING_VAR;
             currentDataHold = new Variable();
-            currentLineRep.push(currentDataHold);
+            currentDataArray.push(currentDataHold);
             return "";
             break;
         default:
@@ -306,10 +321,10 @@ function evaluate(inputCode) {
 // Print out our representation
 function masterRepToString(representation) {
 
-    representation.forEach(function(repPair) {
-        console.log("Line Number: " + repPair[0]);
+    representation.forEach(function(rep) {
+        console.log("Line Number: " + rep.lineNumber);
 
-        repPair[1].forEach(function(dataClass) {
+        rep.dataArray.forEach(function(dataClass) {
             console.log(JSON.stringify(dataClass));
         });
     });
@@ -332,6 +347,31 @@ const code = `function helloWorld() {
                 console.log('hello');
                 var h = 2;
             }`;
+
+/* Expected output:
+
+    [  { lineNumber : 0,
+        dataArray  : [],
+        consoleOutput : ""
+    },
+
+    { lineNumber : 1,
+        dataArray  : [],
+        consoleOutput : ""
+    },
+    { lineNumber : 2,
+      dataArray : [ {
+                        name : a,
+                        value : 2
+      } ]
+      consoleOutput: ""
+    },
+      .
+      .
+      .
+   ]
+*/
+
 
 const ret = evaluate(code);
 if (!ret) {
