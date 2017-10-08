@@ -19,6 +19,7 @@ class LineRep {
         this.lineNumber = -1;
         this.dataArray = [];
         this.consoleOutput = "";
+        this.unsupported = false;
     }
 }
 
@@ -97,6 +98,7 @@ function interpretLine(lineNumber) {
 
         //Fresh buffer for each statement
         let buffer = "";
+        currentState = stateEnum.DEFAULT;
 
         // Iterate each character in the current user code line
         for (let j = 0; j < statement.length; j++) {
@@ -117,6 +119,7 @@ function interpretLine(lineNumber) {
 
             //Skip on cases not yet covered yet
             if (isNotCovered(buffer)) {
+                currentLineRep.unsupported = true;
                 buffer = "";
                 break;
             }
@@ -258,6 +261,12 @@ function isNotCovered(buffer) {
         isNotCovered = true;
     } else if (buffer.includes("()")) {
         isNotCovered = true;
+    } else if (buffer.includes("class")) {
+        isNotCovered = true;
+    } else if (buffer.includes("let")) {
+        isNotCovered = true;
+    } else if (buffer.includes("const")) {
+        isNotCovered = true;
     }
 
     return isNotCovered;
@@ -362,6 +371,9 @@ function masterRepToString(representation) {
         console.log("Line Number: " + rep.lineNumber);
         if (rep.lineNumber != "") {
             console.log("Console output: " + rep.consoleOutput);
+        }
+        if (rep.unsupported) {
+            console.log("Unsupported element at line: " + rep.lineNumber);
         }
 
         rep.dataArray.forEach(function(dataClass) {
