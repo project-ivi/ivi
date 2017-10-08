@@ -1,30 +1,36 @@
 import React from 'react'
-import { Form, TextArea, Card } from 'semantic-ui-react'
+import { Card } from 'semantic-ui-react'
+import AceEditor from 'react-ace';
 
-const textAreaStyle = {
-	width: '100%', 
-	minHeight: '100%', 
-	borderColor: 'transparent',
-	fontFamily: 'Courier'
-}
+import 'brace/mode/javascript';
+import 'brace/theme/chrome';
+
+// constants
+const fontSize = 15;
 
 class Editor extends React.Component {
 
-	constructor(props) {
-		super(props);
+	componentDidMount() {
+		// get the ace DOM element
+		this.editor = this.refs.ace.editor;
 
-		this.state = {code: ''};
+		/* Disable automated syntax checking (for now).
+		We may want to implement our own at some point. */
+		this.editor.getSession().setUseWorker(false);
+
+		// other defaults
+		this.editor.setFontSize(fontSize)
 	}
-	
+
 	render() {
+
 		return (
 			<Card style={{width: '100%', height: '100%'}} raised={true} >
-				<Form style={{height: '100%', borderColor: 'transparent'}}>
-					<TextArea 
-						autoHeight placeholder="Code here..." 
-						style={textAreaStyle}
-					/>
-				</Form>
+				<AceEditor
+					ref="ace"
+					style={{width: '100%', height: '100%'}}
+					mode="javascript" 
+					theme="chrome" />
 			</Card>
 		);
 	}
