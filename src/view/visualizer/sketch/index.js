@@ -1,12 +1,6 @@
 import { getSketchState, } from '../state'
 
 export default p => {
-  // Used for drawing variable boxes
-  // Set to negative due to issues with incrementing in mousePressed() funct
-  let xCoord = -60
-  let yCoord = 30
-  let boxCount = 0
-
   function resizeCanvasToVisualizer() {
     const elem = document.getElementById('visualizer')
     p.resizeCanvas(elem.offsetWidth, elem.offsetHeight)
