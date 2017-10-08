@@ -5,7 +5,7 @@ export function getSketchState() {
 }
 
 export function putInterpreterStep(step) {
-    const actions = step[1]
+    const actions = step.dataArray
     for (const action of actions) {
         if (action.value === 'null') {
             delete state[action.name]
