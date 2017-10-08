@@ -51,7 +51,7 @@ let isBlockComment = false;
 let userCode = []
 
 // Setup for when we initially check syntax
-function setup(inputCode) {
+export function setup(inputCode) {
     
     //Lock  the code editor
     isRunning = true;
@@ -346,7 +346,7 @@ function findBufferState(buffer) {
 }
 
 // Global evaluate function called on the step and run click
-function evaluate(inputCode) {
+export function evaluate(inputCode) {
    
     //Cleanup our structures before processing
     cleanStructures();
