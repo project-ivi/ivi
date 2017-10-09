@@ -14,25 +14,29 @@ class Console extends React.Component {
 	
 	constructor(props) {
 		super(props);
-
+        
 		this.addLine = this.addLine.bind(this);
-		this.state = {consoleContents: ['o']}
+		this.state = {consoleContents: [],
+                      value : ""};
 	}
 
-	componentDidMount() {
-		console.log('this happened')
-		this.setState({consoleContents: ['okay']})
-	}
 
 	addLine(line) {
+        let oldArray = this.state.consoleContents.slice();
+        oldArray.push(line);
+        let longString = "";
+        oldArray.forEach(function(existingLine) {
+            longString += "> " + existingLine + "\n";
+        });
+        this.setState({consoleContents : oldArray,
+                       value : longString});
 	}
 	
 	render() {
 		return (
 			<Card raised={true} style={{height: '100%', width: '100%'}}>
 				<Form style={{height: '100%'}}>
-					<TextArea autoHeight placeholder='>' readOnly style={textAreaStyle}>
-						{this.state.consoleContents}
+					<TextArea autoHeight placeholder='>' readOnly style={textAreaStyle} value={this.state.value}>
 					</TextArea>
 				</Form>
 	  		</Card>
