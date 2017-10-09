@@ -130,7 +130,8 @@ function interpretLine(lineNumber) {
         resolveState(buffer);
     }
 
-    currentLineRep.lineNumber = lineNumber;
+    //Since code editor starts at 1 do an increment
+    currentLineRep.lineNumber = lineNumber + 1;
     currentLineRep.dataArray = currentDataArray;
     masterRep.push(currentLineRep);
 }
@@ -183,6 +184,7 @@ function resolveState(buffer) {
 
         case stateEnum.ASSIGNING_VAR:
             //We may want to talk about type inference
+            console.log(buffer);
             buffer = specialAssignments(buffer);
             currentDataHold.value = buffer;
             currentState = stateEnum.DEFAULT;
@@ -203,8 +205,9 @@ function specialAssignments(buffer) {
 
     //Catch case where variable is assigned to console log
     if (buffer.includes("console.log(")) {
-        currentLineRep.consoleOutput = buffer.substring(buffer.lastIndexOf("console.log(" + 1, 
-                                                                            buffer.length - 2));
+        currentLineRep.consoleOutput = buffer.substring(buffer.lastIndexOf("console.log(") 
+            + "console.log(".length + 1, 
+            buffer.length - 2);
         buffer = "";
     }
 
