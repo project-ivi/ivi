@@ -51,7 +51,7 @@ export default class Interpreter extends React.Component {
       }
 
       steps.reverse()
-      this.setState({ isRunning: true, interpreterSteps: steps, currentStep: 0, consoleOutput: [],})
+      this.setState({ isRunning: true, interpreterSteps: steps, isSteppingAutomatically: false, currentStep: 0, consoleOutput: [],})
       resolve()
     })
   }
