@@ -8,6 +8,8 @@ import Editor from './editor'
 import Navbar from './navbar'
 import Visualizer from './visualizer'
 
+const AUTOSTEP_INTERVAL_IN_MS = 1000
+
 export default class Interpreter extends React.Component {
   constructor() {
     super()
@@ -72,12 +74,22 @@ export default class Interpreter extends React.Component {
 
         const interval = setInterval(() => {
           this.stepInterpreter()
-        }, 1000)
+        }, AUTOSTEP_INTERVAL_IN_MS)
         
         this.setState({ autoStepInterval: interval, isSteppingAutomatically: true, })
         
       })
       .catch(error => console.log('Error on handleRunInterpreter: ' + error))
+
+    } else {
+      this.stepInterpreter()
+      
+      const interval = setInterval(() => {
+        this.stepInterpreter()
+      }, AUTOSTEP_INTERVAL_IN_MS)
+      
+      this.setState({ autoStepInterval: interval, isSteppingAutomatically: true, })
+      
     }
   }
 

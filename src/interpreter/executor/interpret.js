@@ -49,7 +49,7 @@ let isBlockComment = false;
 let userCode = []
 
 // Setup for when we initially check syntax
-export function setup(inputCode) {
+function setup(inputCode) {
     
     //Lock  the code editor
     isRunning = true;
