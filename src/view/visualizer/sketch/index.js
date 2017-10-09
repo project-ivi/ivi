@@ -70,6 +70,7 @@ export default p => {
     let xCoord = 50
     let yCoord = 0
     let curObj = -1
+    let changeWidth = false;
     Object.keys(state).forEach((val, i) => {
       curObj += 1
       yCoord = (rectHeight * 2) * curObj + rectHeight
@@ -87,12 +88,13 @@ export default p => {
       if (known[val] === undefined || known[val] !== state[val]) {
         p.background('white')
         let fillColor = getColor(Math.floor(Math.random() * 11) + 1)
-
         let update = known[val] !== undefined && known[val] !== state[val]
         if (p.textWidth(val) > rectWidth) {
             rectWidth = p.textWidth(val) + 15
+            changeWidth = true
         } else if (p.textWidth(state[val]) > rectWidth) {
             rectWidth = p.textWidth(state[val]) + 50
+            changeWidth = true
         }
         
         if (!update) {
@@ -107,6 +109,11 @@ export default p => {
             objs.push(newObj)
         }
 
+        if (changeWidth) {
+            p.background('white')
+            reDrawKnown()
+        }
+
         objs.forEach(function(variable) {
             if (update && variable.name === val) {
                 variable.highlight = true
@@ -116,6 +123,8 @@ export default p => {
             } else {
                 variable.highlight = false;
             }
+            variable.width = rectWidth
+            variable.height = rectHeight
             variable.display()
         })
 
@@ -136,6 +145,8 @@ export default p => {
     let yCoord = 0
     let curObj = -1
     objs.forEach(function(variable) {
+      variable.width = rectWidth
+      variable.height = rectHeight
       curObj += 1
       yCoord = (rectHeight * 2) * curObj + rectHeight
 

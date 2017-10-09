@@ -45,7 +45,7 @@ export default class Interpreter extends React.Component {
       //If there is a syntax error then handle and print to console
       if (steps === false) {
           const consoleOutput = []
-          consoleOutput.push("> Syntax Error in Code. Check code editor for details");
+          consoleOutput.push(" > Syntax Error in Code");
           this.setState({ isRunning: false, interpreterSteps : 0, consoleOutput : consoleOutput, })
           return
       }
@@ -67,7 +67,7 @@ export default class Interpreter extends React.Component {
     } else {
       const consoleOutput = this.state.consoleOutput.slice()    
       if (elem.unsupported) {
-          consoleOutput.push("> Unsupported code at line: " + elem.lineNumber);
+          consoleOutput.push(" > Unsupported code at line: " + elem.lineNumber);
       } else {
           // Update the Sketch state with access function.
           if (elem.variableValue) {
@@ -82,7 +82,7 @@ export default class Interpreter extends React.Component {
                   elem.consoleOutput = getSketchState()[elem.consoleOutput] !== undefined ? 
                     getSketchState()[elem.consoleOutput] : "undefined";
               }
-              consoleOutput.push("> " + elem.consoleOutput)
+              consoleOutput.push(" > " + elem.consoleOutput)
         }
       }
 
