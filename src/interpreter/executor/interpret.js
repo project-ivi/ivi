@@ -61,7 +61,7 @@ function setup(inputCode) {
         return false;
     }
     
-    userCode = inputCode.split(/[\r\n]+/)
+    userCode = inputCode.split(/[\r\n]/)
     return true;
 }
 

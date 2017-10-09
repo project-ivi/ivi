@@ -20,6 +20,7 @@ export default class Interpreter extends React.Component {
       isRunning: false,
       isSteppingAutomatically: false,
       interpreterSteps: [],
+      currentStep: 0, 
       consoleOutput: [],
     }
 
@@ -50,7 +51,7 @@ export default class Interpreter extends React.Component {
       }
 
       steps.reverse()
-      this.setState({ isRunning: true, interpreterSteps: steps, consoleOutput: [], })
+      this.setState({ isRunning: true, interpreterSteps: steps, currentStep: 0, consoleOutput: [],})
       resolve()
     })
   }
@@ -77,7 +78,7 @@ export default class Interpreter extends React.Component {
           putInterpreterStep(elem)
       }
 
-      this.setState({ interpreterSteps: newState, consoleOutput: consoleOutput, })
+      this.setState({ interpreterSteps: newState, currentStep: this.state.currentStep + 1, consoleOutput: consoleOutput,})
       return true
     }
   }
@@ -140,17 +141,36 @@ export default class Interpreter extends React.Component {
   }
 
   render() {
+
+    /* break down the interpreter state for the components
+      0 - stopped
+      1 - step mode
+      2 - run mode
+    */
+    let runMode;
+    if (this.state.isRunning) {
+      if (this.state.isSteppingAutomatically) {
+        runMode = 2
+      } else {
+        runMode= 1
+      }
+    } else {
+      runMode = 0
+    }
+
     return (
       <div className="main-view" >
         <div style={{height: '100%'}}>
           <div style={{float: 'left', width: '50%', height: '100%', paddingRight: '15px'}}>
             <div style={{height: '7%'}}>
               <Navbar code={ this.state.code }
+                      runMode={ runMode }
                       handleRun={ this.handleRunInterpreter }
                       handleStep={ this.handleStepInterpreter } />
             </div>
             <div style={{height: '93%', paddingTop: '15px'}}>
               <Editor isRunning={ this.state.isRunning }
+                      highlightedLine={ this.state.currentStep }
                       code={ this.state.code }
                       handleCodeChange={ this.handleCodeChange } />
             </div>
