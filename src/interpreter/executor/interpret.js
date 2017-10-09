@@ -236,7 +236,7 @@ function specialAssignments(buffer) {
         if (buffer.includes('"', startIndex) || buffer.includes("'", startIndex)) {
             currentLineRep.consoleOutput = buffer.substring(startIndex + 1, buffer.length - 2);
         } else {
-            currentLineRep.consoleOutput = buffer.substring(startIndex + 1, buffer.length - 1);
+            currentLineRep.consoleOutput = buffer.substring(startIndex, buffer.length - 1);
             currentLineRep.consoleVariable = true;
         }
         buffer = "undefined";
