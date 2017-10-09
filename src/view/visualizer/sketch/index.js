@@ -8,10 +8,10 @@ export default p => {
   }
  
   let known = {}
-  let colorState = 0
   p.setup = () => {
     p.createCanvas(0, 0)
     p.background('white')
+    p.noStroke()
     resizeCanvasToVisualizer()
   }
 
@@ -31,11 +31,9 @@ export default p => {
         xCoord += 100
         curObj = 0
       }
-      if (known[val] === undefined) {
-        colorState === 11 ? colorState = 0 : colorState += 1
-        let fillColor = getColor(colorState)
+      if (known[val] === undefined || known[val] !== state[val]) {
+        let fillColor = getColor(Math.floor(Math.random() * 11) + 1)
 
-        p.stroke('black')
         p.fill(fillColor)
         p.rect(xCoord, yCoord, 80, 30, 3)
 
@@ -69,10 +67,8 @@ export default p => {
         xCoord += 100
         curObj = 0
       }
-      colorState === 11 ? colorState = 0 : colorState += 1
-      let fillColor = getColor(colorState)
+      let fillColor = getColor(Math.floor(Math.random() * 11) + 1)
 
-      p.stroke('black')
       p.fill(fillColor)
       p.rect(xCoord, yCoord, 80, 30, 3)
 
