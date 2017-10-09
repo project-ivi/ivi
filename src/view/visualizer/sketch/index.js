@@ -1,13 +1,42 @@
 import { getSketchState, } from '../state'
 
 export default p => {
- 
+
+  class VariableRep {
+      constructor() {
+        this.color = ""
+        this.highlight = false
+        this.x = 0
+        this.y = 0
+        this.name = ""
+        this.value = ""
+      }
+
+      display() {
+        p.push()
+        p.fill(this.color)
+        if (this.highlight) {
+            p.stroke('black')
+        }
+        p.rect(this.x, this.y, 80, 30, 3)
+        p.noStroke()
+        p.fill('black')
+        p.text(this.name, this.x + 6, this.y - 10)
+        p.textStyle(p.BOLD)
+        p.fill('white')
+        p.text(this.val, this.x + 6, this.y + 20)
+        p.pop()
+      }
+  }
+
   function resizeCanvasToVisualizer() {
     const elem = document.getElementById('visualizer')
     p.resizeCanvas(elem.offsetWidth, elem.offsetHeight)
   }
  
   let known = {}
+  let objs = []
+  let changed = false
   p.setup = () => {
     p.createCanvas(0, 0)
     p.background('white')
@@ -16,9 +45,20 @@ export default p => {
   }
 
   p.draw = () => {
-
     const state = getSketchState()
-    
+    if (state === {}) {
+        known = {}
+        p.background('white')
+    }
+
+    if (changed) {
+        objs.forEach(function(variable) {
+            variable.highlight = false;
+            variable.display()
+        })
+        changed = false
+    }
+
     let xCoord = 15
     let yCoord = 0
     let curObj = -1
@@ -34,16 +74,22 @@ export default p => {
       if (known[val] === undefined || known[val] !== state[val]) {
         let fillColor = getColor(Math.floor(Math.random() * 11) + 1)
 
-        p.fill(fillColor)
-        p.rect(xCoord, yCoord, 80, 30, 3)
+        let newObj = new VariableRep()
+        newObj.x = xCoord
+        newObj.y = yCoord
+        newObj.color = fillColor
+        newObj.highlight = true
+        newObj.name = val
+        newObj.val = state[val]
 
-        p.fill('black')
-        p.text(val, xCoord + 6, yCoord - 10)
-        p.text(state[val], xCoord + 6, yCoord + 20)  
+        newObj.display()
 
+        objs.push(newObj)
         known[val] = state[val]
+        changed = true
       }
     })
+
   }
 
   p.windowResized = () => {
