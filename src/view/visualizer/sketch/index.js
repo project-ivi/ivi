@@ -16,9 +16,18 @@ export default p => {
     p.background('white')
 
     const state = getSketchState()
+    let xCoord = 15
+    let yCoord = 0
+    let curObj = -1
     Object.keys(state).forEach((val, i) => {
-      const xCoord = 15
-      const yCoord = 60 * i + 30
+      curObj += 1
+      yCoord = 60 * curObj + 30
+
+      if (yCoord > p.height - 45) {
+          yCoord = 30
+          xCoord += 100
+          curObj = 0
+      }
 
       p.stroke('black')
       p.fill('white')
