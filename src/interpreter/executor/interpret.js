@@ -10,7 +10,7 @@ const stateEnum = {
 class Variable {
     constructor() {
         this.name = "";
-        this.value = "";
+        this.value = "undefined";
     }
 }
 
@@ -19,6 +19,7 @@ class LineRep {
         this.lineNumber = -1;
         this.dataArray = [];
         this.consoleOutput = "";
+        this.consoleVariable = false;
         this.unsupported = false;
     }
 }
@@ -95,11 +96,32 @@ function interpretLine(lineNumber) {
 
         //Fresh buffer for each statement
         let buffer = "";
+        let inString = false;
+        let stringStart = '';
         currentState = stateEnum.DEFAULT;
 
         // Iterate each character in the current user code line
         for (let j = 0; j < statement.length; j++) {
-            if (statement[j] === ' ') {
+            //Handle strings, we do not want to elim spaces if we are in one
+            if (!inString) {
+                //Need to be able to flag our start to flag our end
+                if (statement[j] === "'") {
+                    stringStart = "'";
+                    inString = true;
+                } else if (statement[j] === '"') {
+                    stringStart = '"';
+                    inString = true;
+                }
+            } else if (inString) {
+
+                if (statement[j] === "'" && stringStart === "'") {
+                    inString = false;
+                } else if (statement[j] === '"' && stringStart === '"') {
+                    inString = false;
+                }
+            }
+            
+            if (!inString && statement[j] === ' ') {
                 continue;
             }
     
@@ -184,7 +206,6 @@ function resolveState(buffer) {
 
         case stateEnum.ASSIGNING_VAR:
             //We may want to talk about type inference
-            console.log(buffer);
             buffer = specialAssignments(buffer);
             currentDataHold.value = buffer;
             currentState = stateEnum.DEFAULT;
@@ -205,10 +226,14 @@ function specialAssignments(buffer) {
 
     //Catch case where variable is assigned to console log
     if (buffer.includes("console.log(")) {
-        currentLineRep.consoleOutput = buffer.substring(buffer.lastIndexOf("console.log(") 
-            + "console.log(".length + 1, 
-            buffer.length - 2);
-        buffer = "";
+        let startIndex = buffer.lastIndexOf("console.log(") + "console.log(".length;
+        if (buffer.includes('"', startIndex) || buffer.includes("'", startIndex)) {
+            currentLineRep.consoleOutput = buffer.substring(startIndex + 1, buffer.length - 2);
+        } else {
+            currentLineRep.consoleOutput = buffer.substring(startIndex + 1, buffer.length - 1);
+            currentLineRep.consoleVariable = true;
+        }
+        buffer = "undefined";
     }
 
     return buffer;
@@ -308,8 +333,12 @@ function acceptingConsole(buffer) {
     
     //There has to be a better way
     if (buffer[buffer.length - 1] === ')') {
-        
-        currentLineRep.consoleOutput = buffer.substring(1, buffer.length - 2);
+        if(buffer[0] === "'" || buffer[0] === '"') {
+            currentLineRep.consoleOutput = buffer.substring(1, buffer.length - 2);
+        } else {
+            currentLineRep.consoleOutput = buffer.substring(0, buffer.length - 1);
+            currentLineRep.consoleVariable = true;
+        }
         buffer = "";
     }
     return buffer;
@@ -354,7 +383,7 @@ function findBufferState(buffer) {
 
 // Global evaluate function called on the step and run click
 export function evaluate(inputCode) {
-   
+  
     //Cleanup our structures before processing
     cleanStructures();
 
@@ -372,6 +401,7 @@ export function evaluate(inputCode) {
 }
 
 // Print out our representation
+// eslint-disable-next-line
 function masterRepToString(representation) {
 
     representation.forEach(function(rep) {
@@ -389,6 +419,7 @@ function masterRepToString(representation) {
     });
 }
 
+/*
 const code = `
 
             var testing
@@ -406,14 +437,18 @@ const code = `
                    Work
                    Too 
                 */
+
+                /*
                 console.log('hello');
                 var h = 2;
                 var x = console.log("test");
             }`;
-
+            */
+/*
 const ret = evaluate(code);
 if (!ret) {
     console.log("Syntax error");
 } else {
     masterRepToString(ret);
 }
+*/
