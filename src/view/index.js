@@ -170,13 +170,13 @@ export default class Interpreter extends React.Component {
       <div className="main-view" >
         <div style={{height: '100%'}}>
           <div style={{float: 'left', width: '50%', height: '100%', paddingRight: '15px'}}>
-            <div style={{height: '7%'}}>
+            <div style={{height: '70px'}}>
               <Navbar code={ this.state.code }
                       runMode={ runMode }
                       handleRun={ this.handleRunInterpreter }
                       handleStep={ this.handleStepInterpreter } />
             </div>
-            <div style={{height: '93%', paddingTop: '15px'}}>
+            <div style={{height: 'calc(100% - 70px)', paddingTop: '15px'}}>
               <Editor isRunning={ this.state.isRunning }
                       highlightedLine={ this.state.currentStep }
                       code={ this.state.code }
