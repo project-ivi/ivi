@@ -3,7 +3,8 @@
 const stateEnum = {
     DEFAULT : "default",
     ACCEPTING_VAR : "accepting variable",
-    ASSIGNING_VAR : "assigning variable"
+    ASSIGNING_VAR : "assigning variable",
+    ACCEPTING_CONSOLE : "accepting console"
 }
 
 class Variable {
@@ -18,6 +19,7 @@ class LineRep {
         this.lineNumber = -1;
         this.dataArray = [];
         this.consoleOutput = "";
+        this.unsupported = false;
     }
 }
 
@@ -93,6 +95,7 @@ function interpretLine(lineNumber) {
 
         //Fresh buffer for each statement
         let buffer = "";
+        currentState = stateEnum.DEFAULT;
 
         // Iterate each character in the current user code line
         for (let j = 0; j < statement.length; j++) {
@@ -113,6 +116,7 @@ function interpretLine(lineNumber) {
 
             //Skip on cases not yet covered yet
             if (isNotCovered(buffer)) {
+                currentLineRep.unsupported = true;
                 buffer = "";
                 break;
             }
@@ -179,7 +183,12 @@ function resolveState(buffer) {
 
         case stateEnum.ASSIGNING_VAR:
             //We may want to talk about type inference
+            buffer = specialAssignments(buffer);
             currentDataHold.value = buffer;
+            currentState = stateEnum.DEFAULT;
+            break;
+       
+        case stateEnum.ACCEPTING_CONSOLE:
             currentState = stateEnum.DEFAULT;
             break;
 
@@ -188,6 +197,19 @@ function resolveState(buffer) {
     }
 }
 
+
+// Handle special assignment cases that result in undefined variable
+function specialAssignments(buffer) {
+
+    //Catch case where variable is assigned to console log
+    if (buffer.includes("console.log(")) {
+        currentLineRep.consoleOutput = buffer.substring(buffer.lastIndexOf("console.log(" + 1, 
+                                                                            buffer.length - 2));
+        buffer = "";
+    }
+
+    return buffer;
+}
 //If we believe we did not catch var but think there is a variable check it
 function noKeywordVariable(buffer) {
 
@@ -233,13 +255,17 @@ function isNotCovered(buffer) {
 
     if (buffer.includes("function")) {
         isNotCovered = true;
-    } else if (buffer.includes("console")) {
-        isNotCovered = true;
     } else if (buffer.includes("{")) {
         isNotCovered = true;
     } else if (buffer.includes("}")) {
         isNotCovered = true;
     } else if (buffer.includes("()")) {
+        isNotCovered = true;
+    } else if (buffer.includes("class")) {
+        isNotCovered = true;
+    } else if (buffer.includes("let")) {
+        isNotCovered = true;
+    } else if (buffer.includes("const")) {
         isNotCovered = true;
     }
 
@@ -263,8 +289,25 @@ function evalState(buffer) {
         case stateEnum.ASSIGNING_VAR:
             break;
 
+        case stateEnum.ACCEPTING_CONSOLE:
+            buffer = acceptingConsole(buffer);
+            break;
+
         default:
             return buffer;
+
+    }
+    return buffer;
+}
+
+// If we are taking in console input
+function acceptingConsole(buffer) {
+    
+    //There has to be a better way
+    if (buffer[buffer.length - 1] === ')') {
+        
+        currentLineRep.consoleOutput = buffer.substring(1, buffer.length - 2);
+        buffer = "";
     }
     return buffer;
 }
@@ -294,6 +337,10 @@ function findBufferState(buffer) {
             currentDataArray.push(currentDataHold);
             buffer = "";
             break;
+        case "console.log(":
+            currentState = stateEnum.ACCEPTING_CONSOLE;           
+            buffer = "";
+            break;
         default:
             currentState = stateEnum.DEFAULT;
             break;
@@ -310,10 +357,10 @@ export function evaluate(inputCode) {
 
     if (!setup(inputCode)) {
         return false;
-    }    
-
+    }
+    
     //While we haven't evaluated all of our code
-    while (currentStep < userCode.length - 1) {
+    while (currentStep < userCode.length) {
         interpretLine(currentStep);
         currentStep += 1;
     }
@@ -326,6 +373,12 @@ function masterRepToString(representation) {
 
     representation.forEach(function(rep) {
         console.log("Line Number: " + rep.lineNumber);
+        if (rep.lineNumber !== "") {
+            console.log("Console output: " + rep.consoleOutput);
+        }
+        if (rep.unsupported) {
+            console.log("Unsupported element at line: " + rep.lineNumber);
+        }
 
         rep.dataArray.forEach(function(dataClass) {
             console.log(JSON.stringify(dataClass));
@@ -333,7 +386,10 @@ function masterRepToString(representation) {
     });
 }
 
-const code = `function helloWorld() {
+const code = `
+
+            var testing
+            function helloWorld() {
                 var a=2;
                 var b = 3
                 c = 4;
@@ -349,32 +405,8 @@ const code = `function helloWorld() {
                 */
                 console.log('hello');
                 var h = 2;
+                var x = console.log("test");
             }`;
-
-/* Expected output:
-
-    [  { lineNumber : 0,
-        dataArray  : [],
-        consoleOutput : ""
-    },
-
-    { lineNumber : 1,
-        dataArray  : [],
-        consoleOutput : ""
-    },
-    { lineNumber : 2,
-      dataArray : [ {
-                        name : a,
-                        value : 2
-      } ]
-      consoleOutput: ""
-    },
-      .
-      .
-      .
-   ]
-*/
-
 
 const ret = evaluate(code);
 if (!ret) {
