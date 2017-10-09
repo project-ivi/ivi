@@ -4,7 +4,7 @@ Interactive Visual Interpreter is meant to help beginner CS students understand 
 
 ## Using
 ### Install  
-Our project requires `git`, `npm`&`node`. It will be easier on a unix-like system. For Windows We reccomend using [git bash](https://git-for-windows.github.io/).
+Our project requires `git`, `npm`&`node`. It will be easier on a unix-like system. For Windows we recomend using [git bash](https://git-for-windows.github.io/).
 
 To view our prototype, clone and enter the following repo:
 ```
