@@ -21,6 +21,7 @@ export default class Interpreter extends React.Component {
       isSteppingAutomatically: false,
       interpreterSteps: [],
       currentStep: 0, 
+      consoleOutput: [],
     }
 
     this.evaluateCode = this.evaluateCode.bind(this)
@@ -40,8 +41,17 @@ export default class Interpreter extends React.Component {
       // so in order to increase performance we will reverse the list and use
       // pop() for O(1) operations.
       const steps = evaluate(this.state.code)
+      
+      //If there is a syntax error then handle and print to console
+      if (steps === false) {
+          const consoleOutput = []
+          consoleOutput.push("> Syntax Error in Code. Check code editor for details");
+          this.setState({ isRunning: false, interpreterSteps : 0, consoleOutput : consoleOutput, })
+          return
+      }
+
       steps.reverse()
-      this.setState({ isRunning: true, interpreterSteps: steps, currentStep: 0})
+      this.setState({ isRunning: true, interpreterSteps: steps, currentStep: 0, consoleOutput: [],})
       resolve()
     })
   }
@@ -55,10 +65,20 @@ export default class Interpreter extends React.Component {
       this.setState({ autoStepInterval: null, isRunning: false, })
 
     } else {
-      // Update the Sketch state with access function.
-      putInterpreterStep(elem)
+      // Update console
+      const consoleOutput = this.state.consoleOutput.slice()
+      if (elem.consoleOutput !== "") {
+          consoleOutput.push("> " + elem.consoleOutput)
+      }
 
-      this.setState({ interpreterSteps: newState, currentStep: this.state.currentStep + 1})
+      if (elem.unsupported) {
+          consoleOutput.push("> Unsupported code at line: " + elem.lineNumber);
+      } else {
+          // Update the Sketch state with access function.
+          putInterpreterStep(elem)
+      }
+
+      this.setState({ interpreterSteps: newState, currentStep: this.state.currentStep + 1, consoleOutput: consoleOutput,})
       return true
     }
   }
@@ -160,7 +180,7 @@ export default class Interpreter extends React.Component {
               <Visualizer />
             </div>
             <div style={{height: '30%', paddingTop: '15px'}}>
-              <Console />
+              <Console consoleOutput={ this.state.consoleOutput } />
             </div>
           </div>
         </div>
