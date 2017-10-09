@@ -257,7 +257,7 @@ function noKeywordVariable(buffer) {
         }
         
         currentDataHold.name = buffer[0];
-        currentDataHold.value = buffer[1];
+        currentDataHold.value = specialAssignments(buffer[1]);
         if (isNaN(parseInt(buffer[1], 10))) {
             if (buffer[1][0] !== '"' && buffer[1][0] !== "'") {
                 currentLineRep.variableValue = true;
