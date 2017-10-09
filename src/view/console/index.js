@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, TextArea, Card } from 'semantic-ui-react'
+import { Card } from 'semantic-ui-react'
 
 const textAreaStyle = {
 	minHeight: '100%',
