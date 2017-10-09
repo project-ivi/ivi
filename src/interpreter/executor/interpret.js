@@ -209,7 +209,7 @@ function resolveState(buffer) {
             //We may want to talk about type inference
             buffer = specialAssignments(buffer);
             if (isNaN(parseInt(buffer, 10))) {
-                if (buffer[0] !== '"' || buffer[0] !== "'") {
+                if (buffer[0] !== '"' && buffer[0] !== "'") {
                     currentLineRep.variableValue = true;
                 }
             }
