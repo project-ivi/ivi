@@ -22,17 +22,22 @@ export default class Editor extends React.Component {
 	}
 
 	render() {
+		if (this.editor) {
+			this.editor.setReadOnly(this.props.isRunning)
+			if (this.props.isRunning) {
+				this.editor.gotoLine(this.props.highlightedLine)
+			}			
+		}
+
 		return (
 			<Card style={{ width: '100%', height: '100%', }} raised={true}>
-				{ this.props.isRunning ? 
-          <pre style={{ paddingRight: '15px', paddingLeft: '15px', }}>{ this.props.code }</pre> :
-          <AceEditor mode="javascript"
-                   onChange={ this.props.handleCodeChange }
-                   ref="ace"
-                   style={{ width: '100%', height: '100%', }}
-                   theme="chrome"
-                   value={ this.props.code } /> }
-      </Card>
-    )
+				<AceEditor mode="javascript"
+						onChange={ this.props.handleCodeChange }
+						ref="ace"
+						style={{ width: '100%', height: '100%', }}
+						theme="chrome"
+						value={ this.props.code } /> 
+      		</Card>
+    	)
 	}
 }
