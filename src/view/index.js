@@ -67,6 +67,8 @@ export default class Interpreter extends React.Component {
   }
 
   handleRunInterpreter() {
+    // If the user is starting from edit-mode to run, get the output of the
+    // program first, then start the automation.
     if (!this.state.isRunning) {
       this.evaluateCode()
       .then(() => {
@@ -82,26 +84,37 @@ export default class Interpreter extends React.Component {
       .catch(error => console.log('Error on handleRunInterpreter: ' + error))
 
     } else {
-      this.stepInterpreter()
-      
-      const interval = setInterval(() => {
+      // If the user is beginning to step through the interpreter
+      if (!this.state.isSteppingAutomatically) {
         this.stepInterpreter()
-      }, AUTOSTEP_INTERVAL_IN_MS)
-      
-      this.setState({ autoStepInterval: interval, isSteppingAutomatically: true, })
-      
+  
+        const interval = setInterval(() => {
+          this.stepInterpreter()
+        }, AUTOSTEP_INTERVAL_IN_MS)
+        
+        this.setState({ autoStepInterval: interval, isSteppingAutomatically: true, })
+
+      } else {
+        // If the user is already running automatically, cancel the existing one.
+        clearInterval(this.state.autoStepInterval)
+        this.setState({ autoStepInterval: null, isSteppingAutomatically: false, })
+      }
     }
   }
 
   handleStepInterpreter() {
+     // If the user is starting from edit-mode to step, get output of the
+     // program first.
     if (!this.state.isRunning) {
       this.evaluateCode()
       .then(() => { this.stepInterpreter() })
       .catch(error => console.log('Error on handleStepInterpreter: ' + error))
 
     } else {
+      // If the user is running the interpreter automatically and want to step,
+      // remove the interval for automating step.
       clearInterval(this.state.autoStepInterval)
-      this.setState({ autoStepInterval: null, })
+      this.setState({ autoStepInterval: null, isSteppingAutomatically: false, })
       this.stepInterpreter()
     }
   }

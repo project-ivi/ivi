@@ -39,9 +39,6 @@ let currentDataHold = null;
 // Hold our current Line rep to store data into before we push to master rep
 let currentLineRep = null;
 
-//  Flag to tell code editor to be writable or not
-let isRunning = false;
-
 // Global var to bump out of interpreting if in a block comment
 let isBlockComment = false;
 
@@ -51,11 +48,12 @@ let userCode = []
 // Setup for when we initially check syntax
 function setup(inputCode) {
     
-    //Lock  the code editor
-    isRunning = true;
-    
     //Check validity of inputCode first
     try {
+        // This is how we check for syntax, we need to run this so ignore eslint
+        // Backend does not actually call eval
+        
+        // eslint-disable-next-line
         new Function(inputCode);
     } catch(err) {
         return false;
@@ -72,7 +70,6 @@ function cleanStructures() {
     currentDataArray = [];
     currentState = stateEnum.DEFAULT;
     currentStep = 0;
-    isRunning = false;
     userCode = [];
     isBlockComment = false;
     currentDataHold = null;
@@ -185,6 +182,9 @@ function resolveState(buffer) {
             currentDataHold.value = buffer;
             currentState = stateEnum.DEFAULT;
             break;
+
+        default:
+            return;
     }
 }
 
@@ -196,7 +196,7 @@ function noKeywordVariable(buffer) {
         // We can assume there is something on the other side of
         // the '=' or else we would have a syntax error
         buffer = buffer.split("=");
-        if (!isNaN(parseInt(buffer[0]))) {
+        if (!isNaN(parseInt(buffer[0], 10))) {
             return;
         }
         
@@ -219,7 +219,7 @@ function shouldBeVariable(buffer) {
 
     let isVar = true;
 
-    if (!isNaN(parseInt(buffer))) {
+    if (!isNaN(parseInt(buffer, 10))) {
         isVar = false;
     }
 
@@ -262,6 +262,9 @@ function evalState(buffer) {
 
         case stateEnum.ASSIGNING_VAR:
             break;
+
+        default:
+            return buffer;
     }
     return buffer;
 }
@@ -289,7 +292,7 @@ function findBufferState(buffer) {
             currentState = stateEnum.ACCEPTING_VAR;
             currentDataHold = new Variable();
             currentDataArray.push(currentDataHold);
-            return "";
+            buffer = "";
             break;
         default:
             currentState = stateEnum.DEFAULT;
