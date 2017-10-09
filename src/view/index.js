@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { evaluate, } from '../interpreter/executor/interpret'
-import { putInterpreterStep, clearSketchState, } from './visualizer/state'
+import { putInterpreterStep, clearSketchState, getSketchState, } from './visualizer/state'
 
 import Console from './console'
 import Editor from './editor'
@@ -65,17 +65,25 @@ export default class Interpreter extends React.Component {
       this.setState({ autoStepInterval: null, isRunning: false, })
 
     } else {
-      // Update console
-      const consoleOutput = this.state.consoleOutput.slice()
-      if (elem.consoleOutput !== "") {
-          consoleOutput.push("> " + elem.consoleOutput)
-      }
-
+      const consoleOutput = this.state.consoleOutput.slice()    
       if (elem.unsupported) {
           consoleOutput.push("> Unsupported code at line: " + elem.lineNumber);
       } else {
           // Update the Sketch state with access function.
+          if (elem.variableValue) {
+              elem.dataArray[0].value = getSketchState()[elem.dataArray[0].value] !== undefined ?
+                getSketchState()[elem.dataArray[0].value] : "undefined"
+          }
           putInterpreterStep(elem)
+
+          // Update console
+          if (elem.consoleOutput !== "") {
+              if (elem.consoleVariable) {
+                  elem.consoleOutput = getSketchState()[elem.consoleOutput] !== undefined ? 
+                    getSketchState()[elem.consoleOutput] : "undefined";
+              }
+              consoleOutput.push("> " + elem.consoleOutput)
+        }
       }
 
       this.setState({ interpreterSteps: newState, currentStep: this.state.currentStep + 1, consoleOutput: consoleOutput,})
