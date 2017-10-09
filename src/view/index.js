@@ -121,13 +121,30 @@ export default class Interpreter extends React.Component {
   }
 
   render() {
+
+    /* break down the interpreter state for the components
+      0 - stopped
+      1 - step mode
+      2 - run mode
+    */
+    let runMode;
+    if (this.state.isRunning) {
+      if (this.state.isSteppingAutomatically) {
+        runMode = 2
+      } else {
+        runMode= 1
+      }
+    } else {
+      runMode = 0
+    }
+
     return (
       <div className="main-view" >
         <div style={{height: '100%'}}>
           <div style={{float: 'left', width: '50%', height: '100%', paddingRight: '15px'}}>
             <div style={{height: '7%'}}>
               <Navbar code={ this.state.code }
-                      isRunning={ this.state.isRunning }
+                      runMode={ runMode }
                       handleRun={ this.handleRunInterpreter }
                       handleStep={ this.handleStepInterpreter } />
             </div>
