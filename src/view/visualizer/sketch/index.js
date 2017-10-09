@@ -2,12 +2,16 @@ import { getSketchState, } from '../state'
 
 export default p => {
 
+  let rectWidth = 80
+  let rectHeight = 30
   class VariableRep {
       constructor() {
         this.color = ""
         this.highlight = false
         this.x = 0
         this.y = 0
+        this.width = rectWidth
+        this.height = rectHeight
         this.name = ""
         this.value = ""
       }
@@ -17,8 +21,10 @@ export default p => {
         p.fill(this.color)
         if (this.highlight) {
             p.stroke('black')
+        } else {
+            p.noStroke()
         }
-        p.rect(this.x, this.y, 80, 30, 3)
+        p.rect(this.x, this.y, this.width, this.height, 3)
         p.noStroke()
         p.fill('black')
         p.text(this.name, this.x + 6, this.y - 10)
@@ -36,7 +42,7 @@ export default p => {
  
   let known = {}
   let objs = []
-  let changed = false
+  let overflow = false;
   p.setup = () => {
     p.createCanvas(0, 0)
     p.background('white')
@@ -45,82 +51,104 @@ export default p => {
   }
 
   p.draw = () => {
+    if (overflow) {
+        p.background('white')
+        p.fill('red')
+        p.text("Canvas Too Small for Amount of Data", p.width / 2, p.height / 2)
+        return
+    }
+
     const state = getSketchState()
-    if (state === {}) {
+    if (Object.keys(state).length < objs.length) {
         known = {}
+        objs = []
+        rectWidth = 80
+        overflow = false
         p.background('white')
     }
 
-    if (changed) {
-        objs.forEach(function(variable) {
-            variable.highlight = false;
-            variable.display()
-        })
-        changed = false
-    }
-
-    let xCoord = 15
+    let xCoord = 50
     let yCoord = 0
     let curObj = -1
     Object.keys(state).forEach((val, i) => {
       curObj += 1
-      yCoord = 60 * curObj + 30
+      yCoord = (rectHeight * 2) * curObj + rectHeight
 
-      if (yCoord > p.height - 45) {
-        yCoord = 30
-        xCoord += 100
+      if (yCoord > p.height - (rectHeight + 15)) {
+        yCoord = rectHeight
+        xCoord += rectWidth + 20
         curObj = 0
       }
+      if (xCoord > p.width - (rectWidth + 20)) {
+          overflow = true
+          return
+      }
+
       if (known[val] === undefined || known[val] !== state[val]) {
+        p.background('white')
         let fillColor = getColor(Math.floor(Math.random() * 11) + 1)
 
-        let newObj = new VariableRep()
-        newObj.x = xCoord
-        newObj.y = yCoord
-        newObj.color = fillColor
-        newObj.highlight = true
-        newObj.name = val
-        newObj.val = state[val]
+        let update = known[val] !== undefined
+        if (p.textWidth(val) > rectWidth) {
+            rectWidth = p.textWidth(val) + 15
+        } else if (p.textWidth(state[val]) > rectWidth) {
+            rectWidth = p.textWidth(state[val]) + 50
+        }
+        
+        if (!update) {
+            let newObj = new VariableRep()
+            newObj.x = xCoord
+            newObj.y = yCoord
+            newObj.color = fillColor
+            newObj.highlight = true
+            newObj.name = val
+            newObj.val = state[val]
+            newObj.display()
+            objs.push(newObj)
+        }
 
-        newObj.display()
+        objs.forEach(function(variable) {
+            if (update && variable.name === val) {
+                variable.highlight = true;
+                variable.color = fillColor;
+            } else {
+                variable.highlight = false;
+            }
+            variable.display()
+        })
 
-        objs.push(newObj)
         known[val] = state[val]
-        changed = true
       }
     })
-
   }
 
   p.windowResized = () => {
     resizeCanvasToVisualizer()
-
+    overflow = false
     p.background('white')
     reDrawKnown()
   }
   
   function reDrawKnown() {
-
-    let xCoord = 15
+    let xCoord = 50
     let yCoord = 0
     let curObj = -1
-    Object.keys(known).forEach((val, i) => {
+    objs.forEach(function(variable) {
       curObj += 1
-      yCoord = 60 * curObj + 30
+      yCoord = (rectHeight * 2) * curObj + rectHeight
 
-      if (yCoord > p.height - 45) {
-        yCoord = 30
-        xCoord += 100
+      if (yCoord > p.height - (rectHeight + 15)) {
+        yCoord = rectHeight
+        xCoord += rectWidth + 20
         curObj = 0
       }
-      let fillColor = getColor(Math.floor(Math.random() * 11) + 1)
-
-      p.fill(fillColor)
-      p.rect(xCoord, yCoord, 80, 30, 3)
-
-      p.fill('black')
-      p.text(val, xCoord + 6, yCoord - 10)
-      p.text(known[val], xCoord + 6, yCoord + 20)  
+      if (xCoord > p.width - (rectWidth + 20)) {
+          overflow = true
+          return
+      }
+      variable.x = xCoord
+      variable.y = yCoord
+      variable.display()
     })
   }
 
