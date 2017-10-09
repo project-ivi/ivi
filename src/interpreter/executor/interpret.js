@@ -20,6 +20,7 @@ class LineRep {
         this.dataArray = [];
         this.consoleOutput = "";
         this.consoleVariable = false;
+        this.variableValue = false;
         this.unsupported = false;
     }
 }
@@ -207,6 +208,11 @@ function resolveState(buffer) {
         case stateEnum.ASSIGNING_VAR:
             //We may want to talk about type inference
             buffer = specialAssignments(buffer);
+            if (isNaN(parseInt(buffer, 10))) {
+                if (buffer[0] !== '"' || buffer[0] !== "'") {
+                    currentLineRep.variableValue = true;
+                }
+            }
             currentDataHold.value = buffer;
             currentState = stateEnum.DEFAULT;
             break;

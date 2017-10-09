@@ -69,6 +69,10 @@ export default class Interpreter extends React.Component {
           consoleOutput.push("> Unsupported code at line: " + elem.lineNumber);
       } else {
           // Update the Sketch state with access function.
+          if (elem.variableValue) {
+              elem.dataArray[0].value = getSketchState()[elem.dataArray[0].value] !== undefined ?
+                getSketchState()[elem.dataArray[0].value] : "undefined"
+          }
           putInterpreterStep(elem)
 
           // Update console
