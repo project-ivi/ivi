@@ -19,7 +19,8 @@ export default class Interpreter extends React.Component {
       code: '',
       isRunning: false,
       isSteppingAutomatically: false,
-      interpreterSteps: [], 
+      interpreterSteps: [],
+      consoleOutput: [],
     }
 
     this.evaluateCode = this.evaluateCode.bind(this)
@@ -40,7 +41,7 @@ export default class Interpreter extends React.Component {
       // pop() for O(1) operations.
       const steps = evaluate(this.state.code)
       steps.reverse()
-      this.setState({ isRunning: true, interpreterSteps: steps, })
+      this.setState({ isRunning: true, interpreterSteps: steps, consoleOutput: [], })
       resolve()
     })
   }
@@ -54,10 +55,14 @@ export default class Interpreter extends React.Component {
       this.setState({ autoStepInterval: null, isRunning: false, })
 
     } else {
+      // Update console
+      const consoleOutput = this.state.consoleOutput.slice()
+      consoleOutput.push(elem.consoleOutput)
+
       // Update the Sketch state with access function.
       putInterpreterStep(elem)
 
-      this.setState({ interpreterSteps: newState, })
+      this.setState({ interpreterSteps: newState, consoleOutput: consoleOutput, })
       return true
     }
   }
@@ -140,7 +145,7 @@ export default class Interpreter extends React.Component {
               <Visualizer />
             </div>
             <div style={{height: '30%', paddingTop: '15px'}}>
-              <Console />
+              <Console consoleOutput={ this.state.consoleOutput } />
             </div>
           </div>
         </div>
