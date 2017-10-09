@@ -13,7 +13,7 @@ export default p => {
         this.width = rectWidth
         this.height = rectHeight
         this.name = ""
-        this.value = ""
+        this.value = "undefined"
       }
 
       display() {
@@ -30,7 +30,7 @@ export default p => {
         p.text(this.name, this.x + 6, this.y - 10)
         p.textStyle(p.BOLD)
         p.fill('white')
-        p.text(this.val, this.x + 6, this.y + 20)
+        p.text(this.value, this.x + 6, this.y + 20)
         p.pop()
       }
   }
@@ -88,7 +88,7 @@ export default p => {
         p.background('white')
         let fillColor = getColor(Math.floor(Math.random() * 11) + 1)
 
-        let update = known[val] !== undefined
+        let update = known[val] !== undefined && known[val] !== state[val]
         if (p.textWidth(val) > rectWidth) {
             rectWidth = p.textWidth(val) + 15
         } else if (p.textWidth(state[val]) > rectWidth) {
@@ -102,15 +102,17 @@ export default p => {
             newObj.color = fillColor
             newObj.highlight = true
             newObj.name = val
-            newObj.val = state[val]
+            newObj.value = state[val]
             newObj.display()
             objs.push(newObj)
         }
 
         objs.forEach(function(variable) {
             if (update && variable.name === val) {
-                variable.highlight = true;
-                variable.color = fillColor;
+                variable.highlight = true
+                variable.color = fillColor
+                console.log(state[val])
+                variable.value = state[val]
             } else {
                 variable.highlight = false;
             }
