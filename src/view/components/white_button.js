@@ -1,18 +1,6 @@
 import React from 'react';
 import {Button} from 'semantic-ui-react';
 
-const unhoverStyle = {
-    backgroundColor: 'white',
-    transition: 'background-color 0.1s',
-    width: '90px'
-}
-
-const hoverStyle = {
-    backgroundColor: '#e6e6e6',
-    transition: 'background-color 0.1s',
-    width: '90px'
-}
-
 export default class WhiteButton extends React.Component {
 
     constructor(props) {
@@ -20,21 +8,35 @@ export default class WhiteButton extends React.Component {
 
         this.hover = this.hover.bind(this);
         this.unhover = this.unhover.bind(this);
-        this.state = {currentStyle: unhoverStyle}
+        this.state = {
+            hovering: false
+        }
     }
 
     hover() {
-        this.setState({currentStyle: hoverStyle})
+        this.setState({hovering: true})
     }
     unhover() {
-        this.setState({currentStyle: unhoverStyle})
+        this.setState({hovering: false})
     }
 
     render() {
+
+        let color;
+        if (this.state.hovering) {
+            color = this.props.isRunning ? '#cc0000' : '#e6e6e6'
+        } else {
+            color = this.props.isRunning ? '#ff0000' : 'white'
+        }
+
         return (
-            <Button style={this.state.currentStyle}
-                    onMouseOver={this.hover}
-                    onMouseLeave={this.unhover}
+            <Button style={{
+                        backgroundColor: color,
+                        transition: 'background-color 0.1s',
+                        width: '90px'
+                    }}
+                    onMouseOver={ this.hover }
+                    onMouseLeave={ this.unhover }
                     onClick={ this.props.onClick } >
                 {this.props.text}
             </Button>

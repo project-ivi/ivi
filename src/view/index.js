@@ -127,6 +127,7 @@ export default class Interpreter extends React.Component {
           <div style={{float: 'left', width: '50%', height: '100%', paddingRight: '15px'}}>
             <div style={{height: '7%'}}>
               <Navbar code={ this.state.code }
+                      isRunning={ this.state.isRunning }
                       handleRun={ this.handleRunInterpreter }
                       handleStep={ this.handleStepInterpreter } />
             </div>
