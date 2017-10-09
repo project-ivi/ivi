@@ -8,6 +8,9 @@ body {
   height: 100vh;
   padding: 20px;
   background-color: #ffffff;
+
+  min-width: 900px;
+  min-height: 450px;
 }
 
 .component__navbar {
