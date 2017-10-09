@@ -40,6 +40,15 @@ export default class Interpreter extends React.Component {
       // so in order to increase performance we will reverse the list and use
       // pop() for O(1) operations.
       const steps = evaluate(this.state.code)
+      
+      //If there is a syntax error then handle and print to console
+      if (steps === false) {
+          const consoleOutput = []
+          consoleOutput.push("> Syntax Error in Code. Check code editor for details");
+          this.setState({ isRunning: false, interpreterSteps : 0, consoleOutput : consoleOutput, })
+          return
+      }
+
       steps.reverse()
       this.setState({ isRunning: true, interpreterSteps: steps, consoleOutput: [], })
       resolve()
@@ -57,10 +66,16 @@ export default class Interpreter extends React.Component {
     } else {
       // Update console
       const consoleOutput = this.state.consoleOutput.slice()
-      consoleOutput.push(elem.consoleOutput)
+      if (elem.consoleOutput !== "") {
+          consoleOutput.push("> " + elem.consoleOutput)
+      }
 
-      // Update the Sketch state with access function.
-      putInterpreterStep(elem)
+      if (elem.unsupported) {
+          consoleOutput.push("> Unsupported code at line: " + elem.lineNumber);
+      } else {
+          // Update the Sketch state with access function.
+          putInterpreterStep(elem)
+      }
 
       this.setState({ interpreterSteps: newState, consoleOutput: consoleOutput, })
       return true
