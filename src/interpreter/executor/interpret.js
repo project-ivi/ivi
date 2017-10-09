@@ -258,7 +258,11 @@ function noKeywordVariable(buffer) {
         
         currentDataHold.name = buffer[0];
         currentDataHold.value = buffer[1];
-
+        if (isNaN(parseInt(buffer[1], 10))) {
+            if (buffer[1] !== '"' && buffer[1] !== "'") {
+                currentLineRep.variableValue = true;
+            }
+        }
     } else {
         // We do not need to parse buffer since we already did before falling
         // falling into this method, and we know there is no '=' in the buffer
