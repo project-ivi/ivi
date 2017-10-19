@@ -15,14 +15,8 @@ Install the dependencies:
 ```
 npm install
 ```
-When the npm install process completes, run the following:
+Now build IVI
 ```
-cd semantic && gulp build
-```
-
-Now build the source files:
-```
-cd ..
 npm run build
 ```
 IVI is now built. 
