@@ -12,10 +12,6 @@ cache:
     - "node_modules"
     - "semantic"
 
-install: 
-  - npm install
-  - cd semantic/
-  - gulp build
-  - cd ..
+install:  npm install
 
 script: npm run build   
