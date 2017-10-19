@@ -2,10 +2,7 @@ language: node_js
 node_js:
   - 8 
 
-before_install:
-  - npm i -g npm@latest
-  - npm install semantic-ui 
-  - npm install gulp-cli -g
+before_install: npm i -g npm@latest
 
 cache:
   directories:
