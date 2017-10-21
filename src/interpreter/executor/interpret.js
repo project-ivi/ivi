@@ -412,6 +412,8 @@ export function evaluate(inputCode) {
 
 // Print out our representation
 // eslint-disable-next-line
+/* 
+
 function masterRepToString(representation) {
 
     representation.forEach(function(rep) {
@@ -429,7 +431,6 @@ function masterRepToString(representation) {
     });
 }
 
-/*
 const code = `
 
             var testing
@@ -453,9 +454,9 @@ const code = `
                 var h = 2;
                 var x = console.log("test");
             }`;
-            */
-/*
+
 const ret = evaluate(code);
+
 if (!ret) {
     console.log("Syntax error");
 } else {
