@@ -3,12 +3,9 @@ node_js:
 - 8
 env:
   global:
-  - USER="project-ivi"
-  - EMAIL="gjbunyea@buffalo.edu"
-  - REPO="project-ivi.github.io"
+  - REPO="test"
   - FILES="dist/."
   - GH_REPO="github.com/${USER}/${REPO}.git"
-  - secure: nDA561fKBZ749p9/dfKRuTUmk/mvarWXF4q6sPldTiVie0pA9m+cFIM/ElFSFPA36trFJIM5LqH1w1xPqbV9DbAlfPtmrlH+MbYdk82aYLAG2a8hmpBFpTSztytBGa19G8sXknHIlhMjHf6Gq+I12iWkGdyXYcBqM+awOgE15l33kTHvkYlgma/UGibTR4tiyqcDIigjRz1dZCuFKvIXHu7BcU6VRs8b1nUrxxXl7GTUeauVRwr5u/i0rqs1B9HUpG40lirxwYgpQr35Yi24FrxtMHsahG632ErGg8vyYMy1LH9mnHWfqLiOnKUOcJQZHk+9bfCCJzBomOCfpvtAzKQej3bKbRQjbiJHbN+q2cfCHRuGP24ksotkLwAXzrjmQUF+NtIwgGs3CklmoToIbK2VGXwfcisiOyBc0X32BU9F0ujrenFFlaztjKUv6W3rw/GQ+M/WrAoNxVr7JMCJYFehPML7St4fmPSyybXvWkTciDxv+pi3p54MgmM7z7hxXiqf0hpn8m5VDMmj6VaD54autNy0qQT3u2Ni0GPxgCHI71U6FVgqhFBfs1oJ6QPmnEC+l1OWo6U6TKRG9/kdOhBhDDYtLHdnKsuomDb9x+XAoIgTENhQfnhpO5VqfZAAAH4z7MJMHY8/k1Mrj39USFKufgzNz8HsxRy+Gfc5cng=
 before_install: npm i -g npm@latest
 cache:
   directories:
