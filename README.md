@@ -27,9 +27,9 @@ IVI is now built.
 
 ### Test
 
-`jest` will run all tests as a single-run.
-
 To have tests auto-evaluate use `npm run test`. This will rerun all tests if any test code changes.
+
+Sometimes `npm run test` won't immediately run tests. This is often the case if tests have not changed between runs. It will still start the test enivronment. You can optionally start with `npm run test a` which will run all tests regardless of state. 
 
 ## Features
 ### Supported  
