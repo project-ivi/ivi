@@ -3,7 +3,7 @@ node_js:
 - 8
 env:
   global:
-  - REPO="test"
+  - REPO="project-ivi.github.io"
   - FILES="dist/."
   - GH_REPO="github.com/${USER}/${REPO}.git"
 before_install: npm i -g npm@latest
