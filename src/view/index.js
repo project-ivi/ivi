@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { evaluate, } from '../interpreter/executor/interpret'
-import { putInterpreterStep, clearSketchState, getSketchState, } from './visualizer/state'
+import { putInterpreterStep, clearSketchState, getSketchState, } from '../interpreter/executor/state'
 
 import Console from './console'
 import Editor from './editor'
@@ -45,13 +45,23 @@ export default class Interpreter extends React.Component {
       //If there is a syntax error then handle and print to console
       if (steps === false) {
           const consoleOutput = []
-          consoleOutput.push(" > Syntax Error in Code");
-          this.setState({ isRunning: false, interpreterSteps : 0, consoleOutput : consoleOutput, })
+          consoleOutput.push(" > Syntax Error in Code")
+          this.setState({
+            isRunning: false,
+            interpreterSteps: 0,
+            consoleOutput: consoleOutput,
+          })
           return
       }
 
       steps.reverse()
-      this.setState({ isRunning: true, interpreterSteps: steps, isSteppingAutomatically: false, currentStep: 0, consoleOutput: [],})
+      this.setState({
+        isRunning: true,
+        interpreterSteps: steps,
+        isSteppingAutomatically: false,
+        currentStep: 0,
+        consoleOutput: [],
+      })
       resolve()
     })
   }
@@ -65,28 +75,34 @@ export default class Interpreter extends React.Component {
       this.setState({ autoStepInterval: null, isRunning: false, })
 
     } else {
-      const consoleOutput = this.state.consoleOutput.slice()    
+      const consoleOutput = this.state.consoleOutput.slice()
       if (elem.unsupported) {
-          consoleOutput.push(" > Unsupported code at line: " + elem.lineNumber);
+        consoleOutput.push(" > Unsupported code at line: " + elem.lineNumber)
       } else {
-          // Update the Sketch state with access function.
-          if (elem.variableValue) {
-              elem.dataArray[0].value = getSketchState()[elem.dataArray[0].value] !== undefined ?
-                getSketchState()[elem.dataArray[0].value] : "undefined"
-          }
-          putInterpreterStep(elem)
+        // Update the Sketch state with access function.
+        if (elem.variableValue) {
+          elem.dataArray[0].value = getSketchState()[elem.dataArray[0].value] !== undefined ?
+            getSketchState()[elem.dataArray[0].value] : "undefined"
+        }
 
-          // Update console
-          if (elem.consoleOutput !== "") {
-              if (elem.consoleVariable) {
-                  elem.consoleOutput = getSketchState()[elem.consoleOutput] !== undefined ? 
-                    getSketchState()[elem.consoleOutput] : "undefined";
-              }
-              consoleOutput.push(" > " + elem.consoleOutput)
+        putInterpreterStep(elem)
+
+        // Update console
+        if (elem.consoleOutput !== "") {
+          if (elem.consoleVariable) {
+            elem.consoleOutput = getSketchState()[elem.consoleOutput] !== undefined ? 
+              getSketchState()[elem.consoleOutput] : "undefined"
+          }
+
+          consoleOutput.push(" > " + elem.consoleOutput)
         }
       }
 
-      this.setState({ interpreterSteps: newState, currentStep: this.state.currentStep + 1, consoleOutput: consoleOutput,})
+      this.setState({
+        interpreterSteps: newState,
+        currentStep: this.state.currentStep + 1,
+        consoleOutput: consoleOutput,
+      })
       return true
     }
   }
@@ -107,8 +123,10 @@ export default class Interpreter extends React.Component {
           this.stepInterpreter()
         }, AUTOSTEP_INTERVAL_IN_MS)
         
-        this.setState({ autoStepInterval: interval, isSteppingAutomatically: true, })
-        
+        this.setState({
+          autoStepInterval: interval,
+          isSteppingAutomatically: true,
+        })
       })
       .catch(error => console.log('Error on handleRunInterpreter: ' + error))
 
@@ -121,12 +139,18 @@ export default class Interpreter extends React.Component {
           this.stepInterpreter()
         }, AUTOSTEP_INTERVAL_IN_MS)
         
-        this.setState({ autoStepInterval: interval, isSteppingAutomatically: true, })
+        this.setState({
+          autoStepInterval: interval,
+          isSteppingAutomatically: true,
+        })
 
       } else {
         // If the user is already running automatically, cancel the existing one.
         clearInterval(this.state.autoStepInterval)
-        this.setState({ autoStepInterval: null, isSteppingAutomatically: false, })
+        this.setState({
+          autoStepInterval: null,
+          isSteppingAutomatically: false,
+        })
       }
     }
   }
@@ -143,24 +167,26 @@ export default class Interpreter extends React.Component {
       // If the user is running the interpreter automatically and want to step,
       // remove the interval for automating step.
       clearInterval(this.state.autoStepInterval)
-      this.setState({ autoStepInterval: null, isSteppingAutomatically: false, })
+      this.setState({
+        autoStepInterval: null,
+        isSteppingAutomatically: false,
+      })
       this.stepInterpreter()
     }
   }
 
   render() {
-
     /* break down the interpreter state for the components
       0 - stopped
       1 - step mode
       2 - run mode
     */
-    let runMode;
+    let runMode
     if (this.state.isRunning) {
       if (this.state.isSteppingAutomatically) {
         runMode = 2
       } else {
-        runMode= 1
+        runMode = 1
       }
     } else {
       runMode = 0
@@ -168,26 +194,26 @@ export default class Interpreter extends React.Component {
 
     return (
       <div className="main-view" >
-        <div style={{height: '100%'}}>
-          <div style={{float: 'left', width: '50%', height: '100%', paddingRight: '15px'}}>
-            <div style={{height: '70px'}}>
+        <div style={{ height: '100%' }}>
+          <div style={{ float: 'left', width: '50%', height: '100%', paddingRight: '15px' }}>
+            <div style={{ height: '70px' }}>
               <Navbar code={ this.state.code }
                       runMode={ runMode }
                       handleRun={ this.handleRunInterpreter }
                       handleStep={ this.handleStepInterpreter } />
             </div>
-            <div style={{height: 'calc(100% - 70px)', paddingTop: '15px'}}>
+            <div style={{ height: 'calc(100% - 70px)', paddingTop: '15px' }}>
               <Editor isRunning={ this.state.isRunning }
                       highlightedLine={ this.state.currentStep }
                       code={ this.state.code }
                       handleCodeChange={ this.handleCodeChange } />
             </div>
           </div>
-          <div style={{float: 'right', width: '50%', height: '100%'}}>
-            <div style={{height: '70%'}}>
+          <div style={{ float: 'right', width: '50%', height: '100%' }}>
+            <div style={{ height: '70%' }}>
               <Visualizer />
             </div>
-            <div style={{height: '30%', paddingTop: '15px'}}>
+            <div style={{ height: '30%', paddingTop: '15px' }}>
               <Console consoleOutput={ this.state.consoleOutput } />
             </div>
           </div>
