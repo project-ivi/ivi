@@ -66,19 +66,14 @@
     "fs-extra": "3.0.1",
     "gulp": "^3.9.1",
     "html-webpack-plugin": "2.29.0",
-<<<<<<< HEAD
     "object-assign": "4.1.1",
     "p5": "^0.5.14",
-=======
     "jest": "20.0.4",
->>>>>>> 522171c3e2566d9b09e739cf6c3ee13a1a7245e1
-    "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.6",
     "style-loader": "0.18.2",
     "sw-precache-webpack-plugin": "0.11.4",
     "webpack": "3.5.1",
     "webpack-dev-server": "2.7.1",
-<<<<<<< HEAD
     "webpack-manifest-plugin": "1.2.1",
     "whatwg-fetch": "2.0.3"
   },
@@ -107,10 +102,8 @@
   "author": "Ivy Dev Team",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/project-ivi/ivi/issues"
-=======
+    "url": "https://github.com/project-ivi/ivi/issues",
     "webpack-manifest-plugin": "1.2.1"
->>>>>>> 522171c3e2566d9b09e739cf6c3ee13a1a7245e1
   },
   "jest": {
     "collectCoverage": true,
