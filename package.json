@@ -2,7 +2,7 @@
   "name": "ivi",
   "version": "0.1.0",
   "private": true,
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
+  "description": "Interactive Visual Interpreter",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -24,7 +24,8 @@
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "jest",
+    "test-w": "jest --watch"
   },
   "dependencies": {
     "brace": "^0.10.0",
@@ -76,11 +77,12 @@
     "webpack-manifest-plugin": "1.2.1"
   },
   "jest": {
+    "collectCoverage": true,
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}"
     ],
     "testMatch": [
-      "<rootDir>/src/**/__tests__/**/*.js?(x)",
+      "<rootDir>/test/**/*_test.js?(x)",
       "<rootDir>/src/**/?(*.)(spec|test).js?(x)"
     ],
     "testEnvironment": "node",

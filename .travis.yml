@@ -12,8 +12,12 @@ env:
 before_install: npm i -g npm@latest
 cache:
   directories:
-  - node_modules
-  - semantic
-install: npm install
+    - "node_modules"
+    - "semantic"
+
+install:  npm install
+
+before_script: npm run test
+
 script: npm run build
 after_success: sh scripts/deploy.sh

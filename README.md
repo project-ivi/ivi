@@ -25,6 +25,10 @@ IVI is now built.
 
 `npm start` will run the dev server and open your browser. 
 
+### Test
+
+To run tests use `npm run test`. If you'd like to keep the test runner open use 'npm run test-w`. the `-w` is for "watch". Using the watch option will cause tests to reevaluate given any changes to test code.
+
 ## Features
 ### Supported  
 Currently IVI only handles variable processing and is relatively basic.
