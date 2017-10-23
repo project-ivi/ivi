@@ -2,7 +2,7 @@
   "name": "ivi",
   "version": "0.1.0",
   "private": true,
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
+  "description": "Interactive Visual Interpreter",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -24,7 +24,8 @@
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "jest",
+    "test-w": "jest --watch"
   },
   "dependencies": {
     "brace": "^0.10.0",
@@ -66,43 +67,13 @@
     "fs-extra": "3.0.1",
     "gulp": "^3.9.1",
     "html-webpack-plugin": "2.29.0",
-    "object-assign": "4.1.1",
-    "p5": "^0.5.14",
     "jest": "20.0.4",
+    "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.6",
     "style-loader": "0.18.2",
     "sw-precache-webpack-plugin": "0.11.4",
     "webpack": "3.5.1",
     "webpack-dev-server": "2.7.1",
-    "webpack-manifest-plugin": "1.2.1",
-    "whatwg-fetch": "2.0.3"
-  },
-  "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
-  },
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
-  "main": "index.js",
-  "devDependencies": {
-    "gulp": "^3.9.1",
-    "jest": "^20.0.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/project-ivi/ivi.git"
-  },
-  "keywords": [
-    "code",
-    "visualization",
-    "computer",
-    "science",
-    "education"
-  ],
-  "author": "Ivy Dev Team",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/project-ivi/ivi/issues",
     "webpack-manifest-plugin": "1.2.1"
   },
   "jest": {

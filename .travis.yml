@@ -17,7 +17,7 @@ cache:
 
 install:  npm install
 
-before_script: npm run test a
+before_script: npm run test
 
 script: npm run build
 after_success: sh scripts/deploy.sh

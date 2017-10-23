@@ -27,9 +27,7 @@ IVI is now built.
 
 ### Test
 
-To have tests auto-evaluate use `npm run test`. This will rerun all tests if any test code changes.
-
-Sometimes `npm run test` won't immediately run tests. This is often the case if tests have not changed between runs. It will still start the test enivronment. You can optionally start with `npm run test a` which will run all tests regardless of state. 
+To run tests use `npm run test`. If you'd like to keep the test runner open use 'npm run test-w`. the `-w` is for "watch". Using the watch option will cause tests to reevaluate given any changes to test code.
 
 ## Features
 ### Supported  
