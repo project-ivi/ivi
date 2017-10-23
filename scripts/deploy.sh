@@ -2,7 +2,7 @@
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" -o "$TRAVIS_BRANCH" != "$SOURCE_BRANCH" ]; then
   echo "skip deploy"
-elif [ ${TRAVIS_BRANCH} = "fucked_deploy" ] && [ ${TRAVIS_PULL_REQUEST} = "false" ]; then 
+elif [ ${TRAVIS_BRANCH} = "develop" ]; then 
   MESSAGE=$(git log --format=%B -n 1 $TRAVIS_COMMIT)
 	git clone git://${GH_REPO}
   mkdir ${REPO}/ivi
