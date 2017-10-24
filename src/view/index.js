@@ -32,7 +32,7 @@ export default class Interpreter extends React.Component {
   }
 
   evaluateCode() {
-    return new Promise((resolve, failure) => {
+    return new Promise((resolve) => {
       // Delete the sketch loaded on memory.
       clearSketchState()
   
@@ -44,14 +44,14 @@ export default class Interpreter extends React.Component {
       
       //If there is a syntax error then handle and print to console
       if (steps === false) {
-          const consoleOutput = []
-          consoleOutput.push(" > Syntax Error in Code")
-          this.setState({
-            isRunning: false,
-            interpreterSteps: 0,
-            consoleOutput: consoleOutput,
-          })
-          return
+        const consoleOutput = []
+        consoleOutput.push(' > Syntax Error in Code')
+        this.setState({
+          isRunning: false,
+          interpreterSteps: 0,
+          consoleOutput: consoleOutput,
+        })
+        return
       }
 
       steps.reverse()
@@ -77,24 +77,24 @@ export default class Interpreter extends React.Component {
     } else {
       const consoleOutput = this.state.consoleOutput.slice()
       if (elem.unsupported) {
-        consoleOutput.push(" > Unsupported code at line: " + elem.lineNumber)
+        consoleOutput.push(' > Unsupported code at line: ' + elem.lineNumber)
       } else {
         // Update the Sketch state with access function.
         if (elem.variableValue) {
           elem.dataArray[0].value = getSketchState()[elem.dataArray[0].value] !== undefined ?
-            getSketchState()[elem.dataArray[0].value] : "undefined"
+            getSketchState()[elem.dataArray[0].value] : 'undefined'
         }
 
         putInterpreterStep(elem)
 
         // Update console
-        if (elem.consoleOutput !== "") {
+        if (elem.consoleOutput !== '') {
           if (elem.consoleVariable) {
             elem.consoleOutput = getSketchState()[elem.consoleOutput] !== undefined ? 
-              getSketchState()[elem.consoleOutput] : "undefined"
+              getSketchState()[elem.consoleOutput] : 'undefined'
           }
 
-          consoleOutput.push(" > " + elem.consoleOutput)
+          consoleOutput.push(' > ' + elem.consoleOutput)
         }
       }
 
@@ -107,7 +107,7 @@ export default class Interpreter extends React.Component {
     }
   }
 
-  handleCodeChange(editorValue, event) {
+  handleCodeChange(editorValue) {
     if (!this.state.isRunning) this.setState({ code: editorValue, })
   }
 
@@ -116,19 +116,19 @@ export default class Interpreter extends React.Component {
     // program first, then start the automation.
     if (!this.state.isRunning) {
       this.evaluateCode()
-      .then(() => {
-        this.stepInterpreter()
-
-        const interval = setInterval(() => {
+        .then(() => {
           this.stepInterpreter()
-        }, AUTOSTEP_INTERVAL_IN_MS)
+
+          const interval = setInterval(() => {
+            this.stepInterpreter()
+          }, AUTOSTEP_INTERVAL_IN_MS)
         
-        this.setState({
-          autoStepInterval: interval,
-          isSteppingAutomatically: true,
+          this.setState({
+            autoStepInterval: interval,
+            isSteppingAutomatically: true,
+          })
         })
-      })
-      .catch(error => console.log('Error on handleRunInterpreter: ' + error))
+        .catch(error => console.log('Error on handleRunInterpreter: ' + error))
 
     } else {
       // If the user is beginning to step through the interpreter
@@ -156,12 +156,12 @@ export default class Interpreter extends React.Component {
   }
 
   handleStepInterpreter() {
-     // If the user is starting from edit-mode to step, get output of the
-     // program first.
+    // If the user is starting from edit-mode to step, get output of the
+    // program first.
     if (!this.state.isRunning) {
       this.evaluateCode()
-      .then(() => { this.stepInterpreter() })
-      .catch(error => console.log('Error on handleStepInterpreter: ' + error))
+        .then(() => { this.stepInterpreter() })
+        .catch(error => console.log('Error on handleStepInterpreter: ' + error))
 
     } else {
       // If the user is running the interpreter automatically and want to step,
@@ -193,20 +193,20 @@ export default class Interpreter extends React.Component {
     }
 
     return (
-      <div className="main-view" >
+      <div className='main-view' >
         <div style={{ height: '100%' }}>
           <div style={{ float: 'left', width: '50%', height: '100%', paddingRight: '15px' }}>
             <div style={{ height: '70px' }}>
               <Navbar code={ this.state.code }
-                      runMode={ runMode }
-                      handleRun={ this.handleRunInterpreter }
-                      handleStep={ this.handleStepInterpreter } />
+                runMode={ runMode }
+                handleRun={ this.handleRunInterpreter }
+                handleStep={ this.handleStepInterpreter } />
             </div>
             <div style={{ height: 'calc(100% - 70px)', paddingTop: '15px' }}>
               <Editor isRunning={ this.state.isRunning }
-                      highlightedLine={ this.state.currentStep }
-                      code={ this.state.code }
-                      handleCodeChange={ this.handleCodeChange } />
+                highlightedLine={ this.state.currentStep }
+                code={ this.state.code }
+                handleCodeChange={ this.handleCodeChange } />
             </div>
           </div>
           <div style={{ float: 'right', width: '50%', height: '100%' }}>

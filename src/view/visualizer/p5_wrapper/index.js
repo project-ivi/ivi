@@ -7,6 +7,6 @@ export default class P5Wrapper extends React.Component {
   }
 
   render() {
-    return <div id="visualizer" ref="wrapper" style={{ height: '100%', width: '100%', }}></div>
+    return <div id='visualizer' ref='wrapper' style={{ height: '100%', width: '100%', }}></div>
   }
 }
