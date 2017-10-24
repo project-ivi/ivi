@@ -1,11 +1,11 @@
 // This is our 'state' when interpreting the code
 //  Use this enum as a flag for certain logic
 const stateEnum = {
-  DEFAULT : 'default',
-  ACCEPTING_VAR : 'accepting variable',
-  ASSIGNING_VAR : 'assigning variable',
-  ACCEPTING_CONSOLE : 'accepting console',
-};
+    DEFAULT : "default",
+    ACCEPTING_VAR : "accepting variable",
+    ASSIGNING_VAR : "assigning variable",
+    ACCEPTING_CONSOLE : "accepting console",
+}
 
 class Variable {
   constructor() {
@@ -43,9 +43,6 @@ let currentDataHold = null;
 // Hold our current Line rep to store data into before we push to master rep
 let currentLineRep = null;
 
-// Global var to bump out of interpreting if in a block comment
-let isBlockComment = false;
-
 //  List to hold user code, use a list so we can index on stepCount
 let userCode = [];
 
@@ -59,25 +56,26 @@ function setup(inputCode) {
 
     // eslint-disable-next-line
         new Function(inputCode);
-  } catch (err) {
-    return false;
-  }
+    } catch(err) {
+        return false;
+    }
 
-  userCode = inputCode.split(/[\r\n]/);
-  return true;
+    // Replace comments
+    inputCode = inputCode.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, ' ');
+    userCode = inputCode.split(/[\r\n]/)
+    return true;
 }
 
 // Cleanup function for data structures
 function cleanStructures() {
-
-  masterRep = [];
-  currentDataArray = [];
-  currentState = stateEnum.DEFAULT;
-  currentStep = 0;
-  userCode = [];
-  isBlockComment = false;
-  currentDataHold = null;
-  currentLineRep = null;
+    
+    masterRep = [];
+    currentDataArray = [];
+    currentState = stateEnum.DEFAULT;
+    currentStep = 0;
+    userCode = [];
+    currentDataHold = null;
+    currentLineRep = null;
 }
 
 function interpretLine(lineNumber) {
@@ -115,10 +113,51 @@ function interpretLine(lineNumber) {
         }
       } else if (inString) {
 
-        if (statement[j] === '\'' && stringStart === '\'') {
-          inString = false;
-        } else if (statement[j] === '"' && stringStart === '"') {
-          inString = false;
+        //Fresh buffer for each statement
+        let buffer = "";
+        let inString = false;
+        let stringStart = '';
+        currentState = stateEnum.DEFAULT;
+
+        // Iterate each character in the current user code line
+        for (let j = 0; j < statement.length; j++) {
+            //Handle strings, we do not want to elim spaces if we are in one
+            if (!inString) {
+                //Need to be able to flag our start to flag our end
+                if (statement[j] === "'") {
+                    stringStart = "'";
+                    inString = true;
+                } else if (statement[j] === '"') {
+                    stringStart = '"';
+                    inString = true;
+                }
+            } else if (inString) {
+
+                if (statement[j] === "'" && stringStart === "'") {
+                    inString = false;
+                } else if (statement[j] === '"' && stringStart === '"') {
+                    inString = false;
+                }
+            }
+            
+            if (!inString && statement[j] === ' ') {
+                continue;
+            }
+    
+            buffer += statement[j]
+
+            //Skip on cases not yet covered yet
+            if (isNotCovered(buffer)) {
+                currentLineRep.unsupported = true;
+                buffer = "";
+                break;
+            }
+
+            if (currentState === stateEnum.DEFAULT) {
+                buffer = findBufferState(buffer);                
+            } else {
+                buffer = evalState(buffer);
+            }
         }
       }
 
@@ -159,33 +198,11 @@ function interpretLine(lineNumber) {
   masterRep.push(currentLineRep);
 }
 
-
-// Beginning basic comment support
-function handleComments(buffer) {
-
-  if (buffer === '//') {
-    return true;
-  }
-
-  if (buffer === '/*') {
-    isBlockComment = true;
-    return true;
-  }
-
-  if (buffer.includes('*/')) {
-    isBlockComment = false;
-    return true;
-  }
-
-  return false;
-}
-
 //Cleanup data structures after interpret
 function cleanInterpretLineStructures() {
   currentDataArray = [];
   currentDataHold = null;
 }
-
 
 function resolveState(buffer) {
 
@@ -430,36 +447,3 @@ function masterRepToString(representation) {
         });
     });
 }
-
-const code = `
-
-            var testing
-            function helloWorld() {
-                var a=2;
-                var b = 3
-                c = 4;
-                d = 5
-                var e;
-                f;
-                g
-                //Comments work in the code only at beginning of line
-                /* Block
-                   Comments
-                   Work
-                   Too 
-                */
-
-/*
-                console.log('hello');
-                var h = 2;
-                var x = console.log("test");
-            }`;
-
-const ret = evaluate(code);
-
-if (!ret) {
-    console.log("Syntax error");
-} else {
-    masterRepToString(ret);
-}
-*/
