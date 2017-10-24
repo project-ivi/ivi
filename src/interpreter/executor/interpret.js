@@ -4,7 +4,7 @@ const stateEnum = {
     DEFAULT : "default",
     ACCEPTING_VAR : "accepting variable",
     ASSIGNING_VAR : "assigning variable",
-    ACCEPTING_CONSOLE : "accepting console"
+    ACCEPTING_CONSOLE : "accepting console",
 }
 
 class Variable {
@@ -43,9 +43,6 @@ let currentDataHold = null;
 // Hold our current Line rep to store data into before we push to master rep
 let currentLineRep = null;
 
-// Global var to bump out of interpreting if in a block comment
-let isBlockComment = false;
-
 //  List to hold user code, use a list so we can index on stepCount
 let userCode = []
 
@@ -62,7 +59,9 @@ function setup(inputCode) {
     } catch(err) {
         return false;
     }
-    
+
+    // Replace comments
+    inputCode = inputCode.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, ' ');
     userCode = inputCode.split(/[\r\n]/)
     return true;
 }
@@ -75,7 +74,6 @@ function cleanStructures() {
     currentState = stateEnum.DEFAULT;
     currentStep = 0;
     userCode = [];
-    isBlockComment = false;
     currentDataHold = null;
     currentLineRep = null;
 }
@@ -127,15 +125,6 @@ function interpretLine(lineNumber) {
             }
     
             buffer += statement[j]
-            
-            //Handling comments here
-            if (isBlockComment && buffer === '*') {
-                continue;
-            }
-            if (handleComments(buffer) || isBlockComment) {
-                buffer = "";
-                break;
-            }
 
             //Skip on cases not yet covered yet
             if (isNotCovered(buffer)) {
@@ -145,10 +134,10 @@ function interpretLine(lineNumber) {
             }
 
             if (currentState === stateEnum.DEFAULT) {
-                buffer = findBufferState(buffer);
+                buffer = findBufferState(buffer);                
             } else {
                 buffer = evalState(buffer);
-            }        
+            }
         }
         resolveState(buffer);
     }
@@ -159,33 +148,11 @@ function interpretLine(lineNumber) {
     masterRep.push(currentLineRep);
 }
 
-
-// Beginning basic comment support
-function handleComments(buffer) {
-
-    if (buffer === "//") {
-        return true;
-    }
-
-    if (buffer === "/*") {
-        isBlockComment = true;
-        return true;
-    }
-
-    if (buffer.includes("*/")) {
-        isBlockComment = false;
-        return true;
-    }
-
-    return false;
-}
-
 //Cleanup data structures after interpret
 function cleanInterpretLineStructures() {
     currentDataArray = [];
     currentDataHold = null;
 }
-
 
 function resolveState(buffer) {
 
@@ -409,57 +376,3 @@ export function evaluate(inputCode) {
 
     return masterRep;
 }
-
-// Print out our representation
-// eslint-disable-next-line
-/* 
-
-function masterRepToString(representation) {
-
-    representation.forEach(function(rep) {
-        console.log("Line Number: " + rep.lineNumber);
-        if (rep.lineNumber !== "") {
-            console.log("Console output: " + rep.consoleOutput);
-        }
-        if (rep.unsupported) {
-            console.log("Unsupported element at line: " + rep.lineNumber);
-        }
-
-        rep.dataArray.forEach(function(dataClass) {
-            console.log(JSON.stringify(dataClass));
-        });
-    });
-}
-
-const code = `
-
-            var testing
-            function helloWorld() {
-                var a=2;
-                var b = 3
-                c = 4;
-                d = 5
-                var e;
-                f;
-                g
-                //Comments work in the code only at beginning of line
-                /* Block
-                   Comments
-                   Work
-                   Too 
-                */
-
-                /*
-                console.log('hello');
-                var h = 2;
-                var x = console.log("test");
-            }`;
-
-const ret = evaluate(code);
-
-if (!ret) {
-    console.log("Syntax error");
-} else {
-    masterRepToString(ret);
-}
-*/
