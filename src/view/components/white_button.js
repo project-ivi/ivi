@@ -1,13 +1,13 @@
-import React from 'react';
-import {Button} from 'semantic-ui-react';
+import React from 'react'
+import {Button} from 'semantic-ui-react'
 
 export default class WhiteButton extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.hover = this.hover.bind(this);
-    this.unhover = this.unhover.bind(this);
+    this.hover = this.hover.bind(this)
+    this.unhover = this.unhover.bind(this)
     this.state = {
       hovering: false,
     }
@@ -22,25 +22,25 @@ export default class WhiteButton extends React.Component {
 
   render() {
 
-    let color;
-    let text = this.props.text;
+    let color
+    let text = this.props.text
     let textColor = 'black'
     switch (this.props.runMode) {
     case 0:
       color = this.state.hovering ? '#e6e6e6' : 'white'
       text = 'Run'
       textColor = 'black'
-      break;
+      break
     case 1:
       color = this.state.hovering ? '#7300e6' : '#9933ff'
       text = 'Resume'
       textColor = 'white'
-      break;
+      break
     case 2:
       color = this.props.isRunning ? '#cc0000' : '#ff0000'
       text = 'Pause'
       textColor = 'white'
-      break;
+      break
     default:
       color = this.state.hovering ? '#e6e6e6' : 'white'  
     }
@@ -57,6 +57,6 @@ export default class WhiteButton extends React.Component {
       onClick={ this.props.onClick } >
         {text}
       </Button>
-    );
+    )
   }
 }

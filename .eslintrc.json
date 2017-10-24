@@ -23,7 +23,7 @@
     "no-undef": 0,
     "jsx-quotes": ["error", "prefer-single"],
     "quotes": ["error", "single"],
-    "semi": 0,
+    "semi": ["error", "never"],
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 1
   }

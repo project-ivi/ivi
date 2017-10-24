@@ -9,42 +9,42 @@ const stateEnum = {
 
 class Variable {
   constructor() {
-    this.name = '';
-    this.value = 'undefined';
+    this.name = ''
+    this.value = 'undefined'
   }
 }
 
 class LineRep {
   constructor() {
-    this.lineNumber = -1;
-    this.dataArray = [];
-    this.consoleOutput = '';
-    this.consoleVariable = false;
-    this.variableValue = false;
-    this.unsupported = false;
+    this.lineNumber = -1
+    this.dataArray = []
+    this.consoleOutput = ''
+    this.consoleVariable = false
+    this.variableValue = false
+    this.unsupported = false
   }
 }
 
 // Our master state that we will output to visualizer
-let masterRep = [];
+let masterRep = []
 
 // Single line representation we will push to master Rep
-let currentDataArray = [];
+let currentDataArray = []
 
 // Current interpreter state for program
-let currentState = stateEnum.DEFAULT;
+let currentState = stateEnum.DEFAULT
 
 // Current step in the user input code
-let currentStep = 0;
+let currentStep = 0
 
 // Current object we are adding data to
-let currentDataHold = null;
+let currentDataHold = null
 
 // Hold our current Line rep to store data into before we push to master rep
-let currentLineRep = null;
+let currentLineRep = null
 
 // Global var to bump out of interpreting if in a block comment
-let isBlockComment = false;
+let isBlockComment = false
 
 //  List to hold user code, use a list so we can index on stepCount
 let userCode = []
@@ -60,46 +60,46 @@ function setup(inputCode) {
     // eslint-disable-next-line
         new Function(inputCode);
   } catch(err) {
-    return false;
+    return false
   }
     
   userCode = inputCode.split(/[\r\n]/)
-  return true;
+  return true
 }
 
 // Cleanup function for data structures
 function cleanStructures() {
     
-  masterRep = [];
-  currentDataArray = [];
-  currentState = stateEnum.DEFAULT;
-  currentStep = 0;
-  userCode = [];
-  isBlockComment = false;
-  currentDataHold = null;
-  currentLineRep = null;
+  masterRep = []
+  currentDataArray = []
+  currentState = stateEnum.DEFAULT
+  currentStep = 0
+  userCode = []
+  isBlockComment = false
+  currentDataHold = null
+  currentLineRep = null
 }
 
 function interpretLine(lineNumber) {
 
   //Clean up structures before processing
-  cleanInterpretLineStructures();
-  currentLineRep = new LineRep();
+  cleanInterpretLineStructures()
+  currentLineRep = new LineRep()
 
   //Handling multi statements on one line
-  let statements = userCode[lineNumber].split(';');
+  let statements = userCode[lineNumber].split(';')
     
   for (let i = 0; i < statements.length; i++) {
-    let statement = statements[i];
+    let statement = statements[i]
     if (statement.trim() === '') {
-      continue;
+      continue
     }
 
     //Fresh buffer for each statement
-    let buffer = '';
-    let inString = false;
-    let stringStart = '';
-    currentState = stateEnum.DEFAULT;
+    let buffer = ''
+    let inString = false
+    let stringStart = ''
+    currentState = stateEnum.DEFAULT
 
     // Iterate each character in the current user code line
     for (let j = 0; j < statement.length; j++) {
@@ -107,56 +107,56 @@ function interpretLine(lineNumber) {
       if (!inString) {
         //Need to be able to flag our start to flag our end
         if (statement[j] === '\'') {
-          stringStart = '\'';
-          inString = true;
+          stringStart = '\''
+          inString = true
         } else if (statement[j] === '"') {
-          stringStart = '"';
-          inString = true;
+          stringStart = '"'
+          inString = true
         }
       } else if (inString) {
 
         if (statement[j] === '\'' && stringStart === '\'') {
-          inString = false;
+          inString = false
         } else if (statement[j] === '"' && stringStart === '"') {
-          inString = false;
+          inString = false
         }
       }
             
       if (!inString && statement[j] === ' ') {
-        continue;
+        continue
       }
     
       buffer += statement[j]
             
       //Handling comments here
       if (isBlockComment && buffer === '*') {
-        continue;
+        continue
       }
       if (handleComments(buffer) || isBlockComment) {
-        buffer = '';
-        break;
+        buffer = ''
+        break
       }
 
       //Skip on cases not yet covered yet
       if (isNotCovered(buffer)) {
-        currentLineRep.unsupported = true;
-        buffer = '';
-        break;
+        currentLineRep.unsupported = true
+        buffer = ''
+        break
       }
 
       if (currentState === stateEnum.DEFAULT) {
-        buffer = findBufferState(buffer);
+        buffer = findBufferState(buffer)
       } else {
-        buffer = evalState(buffer);
+        buffer = evalState(buffer)
       }        
     }
-    resolveState(buffer);
+    resolveState(buffer)
   }
 
   //Since code editor starts at 1 do an increment
-  currentLineRep.lineNumber = lineNumber + 1;
-  currentLineRep.dataArray = currentDataArray;
-  masterRep.push(currentLineRep);
+  currentLineRep.lineNumber = lineNumber + 1
+  currentLineRep.dataArray = currentDataArray
+  masterRep.push(currentLineRep)
 }
 
 
@@ -164,65 +164,65 @@ function interpretLine(lineNumber) {
 function handleComments(buffer) {
 
   if (buffer === '//') {
-    return true;
+    return true
   }
 
   if (buffer === '/*') {
-    isBlockComment = true;
-    return true;
+    isBlockComment = true
+    return true
   }
 
   if (buffer.includes('*/')) {
-    isBlockComment = false;
-    return true;
+    isBlockComment = false
+    return true
   }
 
-  return false;
+  return false
 }
 
 //Cleanup data structures after interpret
 function cleanInterpretLineStructures() {
-  currentDataArray = [];
-  currentDataHold = null;
+  currentDataArray = []
+  currentDataHold = null
 }
 
 
 function resolveState(buffer) {
 
   if (buffer === '') {
-    return;
+    return
   }
   switch (currentState) {
 
   case stateEnum.DEFAULT:
     if (shouldBeVariable(buffer) && !isNotCovered(buffer)) {
-      noKeywordVariable(buffer);
+      noKeywordVariable(buffer)
     }
-    break;
+    break
 
   case stateEnum.ACCEPTING_VAR:
-    currentDataHold.name = buffer;
-    currentState = stateEnum.DEFAULT;
-    break;
+    currentDataHold.name = buffer
+    currentState = stateEnum.DEFAULT
+    break
 
   case stateEnum.ASSIGNING_VAR:
     //We may want to talk about type inference
-    buffer = specialAssignments(buffer);
+    buffer = specialAssignments(buffer)
     if (isNaN(parseInt(buffer, 10))) {
       if (buffer[0] !== '"' && buffer[0] !== '\'') {
-        currentLineRep.variableValue = true;
+        currentLineRep.variableValue = true
       }
     }
-    currentDataHold.value = buffer;
-    currentState = stateEnum.DEFAULT;
-    break;
+    currentDataHold.value = buffer
+    currentState = stateEnum.DEFAULT
+    break
        
   case stateEnum.ACCEPTING_CONSOLE:
-    currentState = stateEnum.DEFAULT;
-    break;
+    currentState = stateEnum.DEFAULT
+    break
 
   default:
-    return;
+    return
   }
 }
 
@@ -232,44 +232,44 @@ function specialAssignments(buffer) {
 
   //Catch case where variable is assigned to console log
   if (buffer.includes('console.log(')) {
-    let startIndex = buffer.lastIndexOf('console.log(') + 'console.log('.length;
+    let startIndex = buffer.lastIndexOf('console.log(') + 'console.log('.length
     if (buffer.includes('"', startIndex) || buffer.includes('\'', startIndex)) {
-      currentLineRep.consoleOutput = buffer.substring(startIndex + 1, buffer.length - 2);
+      currentLineRep.consoleOutput = buffer.substring(startIndex + 1, buffer.length - 2)
     } else {
-      currentLineRep.consoleOutput = buffer.substring(startIndex, buffer.length - 1);
-      currentLineRep.consoleVariable = true;
+      currentLineRep.consoleOutput = buffer.substring(startIndex, buffer.length - 1)
+      currentLineRep.consoleVariable = true
     }
-    buffer = 'undefined';
+    buffer = 'undefined'
   }
 
-  return buffer;
+  return buffer
 }
 //If we believe we did not catch var but think there is a variable check it
 function noKeywordVariable(buffer) {
 
-  currentDataHold = new Variable();
+  currentDataHold = new Variable()
   if (buffer.includes('=')) {
     // We can assume there is something on the other side of
     // the '=' or else we would have a syntax error
-    buffer = buffer.split('=');
+    buffer = buffer.split('=')
     if (!isNaN(parseInt(buffer[0], 10))) {
-      return;
+      return
     }
         
-    currentDataHold.name = buffer[0];
-    currentDataHold.value = specialAssignments(buffer[1]);
+    currentDataHold.name = buffer[0]
+    currentDataHold.value = specialAssignments(buffer[1])
     if (isNaN(parseInt(buffer[1], 10))) {
       if (buffer[1][0] !== '"' && buffer[1][0] !== '\'') {
-        currentLineRep.variableValue = true;
+        currentLineRep.variableValue = true
       }
     }
   } else {
     // We do not need to parse buffer since we already did before falling
     // falling into this method, and we know there is no '=' in the buffer
-    currentDataHold.name = buffer;
+    currentDataHold.name = buffer
   }
 
-  currentDataArray.push(currentDataHold);
+  currentDataArray.push(currentDataHold)
 }
 
 
@@ -277,37 +277,37 @@ function noKeywordVariable(buffer) {
 // May not need this if there are not many cases
 function shouldBeVariable(buffer) {
 
-  let isVar = true;
+  let isVar = true
 
   if (!isNaN(parseInt(buffer, 10))) {
-    isVar = false;
+    isVar = false
   }
 
-  return isVar;
+  return isVar
 }
 
 // Band Aid for things not yet covered
 function isNotCovered(buffer) {
 
-  let isNotCovered = false;
+  let isNotCovered = false
 
   if (buffer.includes('function')) {
-    isNotCovered = true;
+    isNotCovered = true
   } else if (buffer.includes('{')) {
-    isNotCovered = true;
+    isNotCovered = true
   } else if (buffer.includes('}')) {
-    isNotCovered = true;
+    isNotCovered = true
   } else if (buffer.includes('()')) {
-    isNotCovered = true;
+    isNotCovered = true
   } else if (buffer.includes('class')) {
-    isNotCovered = true;
+    isNotCovered = true
   } else if (buffer.includes('let')) {
-    isNotCovered = true;
+    isNotCovered = true
   } else if (buffer.includes('const')) {
-    isNotCovered = true;
+    isNotCovered = true
   }
 
-  return isNotCovered;
+  return isNotCovered
 }
 
 // Handle our current state cases
@@ -317,25 +317,25 @@ function evalState(buffer) {
         
   //We should not ever hit this case but let's put it in here just in case
   case stateEnum.DEFAULT:
-    findBufferState(buffer);
-    break;
+    findBufferState(buffer)
+    break
 
   case stateEnum.ACCEPTING_VAR:
-    buffer = acceptingVar(buffer);
-    break;
+    buffer = acceptingVar(buffer)
+    break
 
   case stateEnum.ASSIGNING_VAR:
-    break;
+    break
 
   case stateEnum.ACCEPTING_CONSOLE:
-    buffer = acceptingConsole(buffer);
-    break;
+    buffer = acceptingConsole(buffer)
+    break
 
   default:
-    return buffer;
+    return buffer
 
   }
-  return buffer;
+  return buffer
 }
 
 // If we are taking in console input
@@ -344,29 +344,29 @@ function acceptingConsole(buffer) {
   //There has to be a better way
   if (buffer[buffer.length - 1] === ')') {
     if(buffer[0] === '\'' || buffer[0] === '"') {
-      currentLineRep.consoleOutput = buffer.substring(1, buffer.length - 2);
+      currentLineRep.consoleOutput = buffer.substring(1, buffer.length - 2)
     } else {
-      currentLineRep.consoleOutput = buffer.substring(0, buffer.length - 1);
-      currentLineRep.consoleVariable = true;
+      currentLineRep.consoleOutput = buffer.substring(0, buffer.length - 1)
+      currentLineRep.consoleVariable = true
     }
-    buffer = '';
+    buffer = ''
   }
-  return buffer;
+  return buffer
 }
 
 // If we are in accepting_var state
 function acceptingVar(buffer) {
 
   if (buffer[buffer.length - 1] === '=') {
-    buffer = buffer.substring(0, buffer.length - 1);
+    buffer = buffer.substring(0, buffer.length - 1)
         
     currentDataHold.name = buffer
 
     //Reset Variable to start accepting value
-    buffer = '';
-    currentState = stateEnum.ASSIGNING_VAR;
+    buffer = ''
+    currentState = stateEnum.ASSIGNING_VAR
   }
-  return buffer;
+  return buffer
 }
 
 //Evaluate our buffer to try to find a state
@@ -374,40 +374,40 @@ function findBufferState(buffer) {
 
   switch (buffer) {
   case 'var':
-    currentState = stateEnum.ACCEPTING_VAR;
-    currentDataHold = new Variable();
-    currentDataArray.push(currentDataHold);
-    buffer = '';
-    break;
+    currentState = stateEnum.ACCEPTING_VAR
+    currentDataHold = new Variable()
+    currentDataArray.push(currentDataHold)
+    buffer = ''
+    break
   case 'console.log(':
-    currentState = stateEnum.ACCEPTING_CONSOLE;           
-    buffer = '';
-    break;
+    currentState = stateEnum.ACCEPTING_CONSOLE           
+    buffer = ''
+    break
   default:
-    currentState = stateEnum.DEFAULT;
-    break;
+    currentState = stateEnum.DEFAULT
+    break
   }
 
-  return buffer;
+  return buffer
 }
 
 // Global evaluate function called on the step and run click
 export function evaluate(inputCode) {
   
   //Cleanup our structures before processing
-  cleanStructures();
+  cleanStructures()
 
   if (!setup(inputCode)) {
-    return false;
+    return false
   }
     
   //While we haven't evaluated all of our code
   while (currentStep < userCode.length) {
-    interpretLine(currentStep);
-    currentStep += 1;
+    interpretLine(currentStep)
+    currentStep += 1
   }
 
-  return masterRep;
+  return masterRep
 }
 
 // Print out our representation
