@@ -4,7 +4,7 @@ Interactive Visual Interpreter is meant to help beginner CS students understand 
 
 ## Using
 ### Install  
-Our project requires `git`, `npm`&`node`. It will be easier on a unix-like system. For Windows we recomend using [git bash](https://git-for-windows.github.io/).
+Our project requires `git`, `npm`&`node`. Node should be version 8, NPM version 5. It will be easier on a unix-like system. For Windows we recomend using [git bash](https://git-for-windows.github.io/).
 
 To view our prototype, clone and enter the following repo:
 ```
@@ -27,7 +27,7 @@ IVI is now built.
 
 ### Test
 
-To run tests use `npm run test`. If you'd like to keep the test runner open use 'npm run test-w`. the `-w` is for "watch". Using the watch option will cause tests to reevaluate given any changes to test code.
+To run tests use `npm run test`. If you'd like to keep the test runner open use `npm run test-w`. the `-w` is for "watch". Using the watch option will cause tests to reevaluate given any changes to test code.
 
 ## Features
 ### Supported  
