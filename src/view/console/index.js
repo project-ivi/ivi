@@ -1,5 +1,5 @@
-import React from 'react'
-import { Card } from 'semantic-ui-react'
+import React from 'react';
+import { Card } from 'semantic-ui-react';
 
 const textAreaStyle = {
   minHeight: '100%',
@@ -8,16 +8,16 @@ const textAreaStyle = {
   color: 'white',
   fontFamily: 'Courier',
   overflow: 'scroll'
-}
+};
 
-const Console = ({ consoleOutput, }) => (
-  <Card raised={ true } style={{ height: '100%', width: '100%', }}>
+const Console = ({ consoleOutput }) => (
+  <Card raised={ true } style={{ height: '100%', width: '100%' }}>
     <div style={ textAreaStyle }>
       { consoleOutput.map(elem => (
         <div>{ elem }</div>
       )) }
     </div>
   </Card>
-)
+);
 
-export default Console
+export default Console;

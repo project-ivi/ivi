@@ -18,13 +18,38 @@
     "eslint:recommended"
   ],
   "rules": {
-    "indent": ["error", 2],
+    "brace-style": 1,
+    "comma-dangle": 1,
+    "comma-spacing": 1,
+    "indent": [
+      "error",
+      2
+    ],
+    "jsx-quotes": [
+      "error",
+      "prefer-single"
+    ],
+    "keyword-spacing": 1,
+    "max-len": [
+      "error",
+      {
+        "code": 120
+      }
+    ],
     "no-console": 0,
+    "no-trailing-spaces": 1,
     "no-undef": 0,
-    "jsx-quotes": ["error", "prefer-single"],
-    "quotes": ["error", "single"],
-    "semi": ["error", "never"],
+    "quotes": [
+      "error",
+      "single"
+    ],
     "react/jsx-uses-react": 2,
-    "react/jsx-uses-vars": 1
+    "react/jsx-uses-vars": 1,
+    "semi": [
+      "error",
+      "always"
+    ],
+    "space-infix-ops": 1,
+    "space-before-blocks": 1
   }
 }
