@@ -8,13 +8,14 @@ const stateEnum = {
     CONSUMED : "consumed"
 }
 
-// If we add object support this will not be able to be a const
+// This is our enum for data types for variables
 const typeEnum  = {
     STRING : "string",
     NUMBER : "number",
     UNDEFINED : "undefined"
 }
 
+// Class representing a variable
 class Variable {
     constructor() {
         this.name = "";
@@ -23,12 +24,14 @@ class Variable {
     }
 }
 
+// Class representing console output
 class Console {
     constructor() {
         this.output = "";
     }
 }
 
+// Class representing unsupported code
 class Unsupported {
     construcor() {
         this.value = "";
@@ -36,6 +39,7 @@ class Unsupported {
     }
 }
 
+// Class representing syntax error
 class Syntax {
     constructor() {
         this.caughtText = "";
@@ -43,6 +47,7 @@ class Syntax {
     }
 }
 
+// Class representing basic expression
 class Expression {
     constructor(derivedFrom) {
         this.numLines = 0;
@@ -54,9 +59,10 @@ class Expression {
 // All our known variables in the program
 let vars = {};
 
-// flag setup output is an error
+// Flag setup output is an error
 let flagError = false;
 
+// Output of expressions for visualiser
 let output = [];
 
 // Setup for when we initially check syntax
@@ -71,13 +77,16 @@ function evaluate(inputCode) {
         // eslint-disable-next-line
         new Function(inputCode);
     } catch(err) {
+        // Flip to check syntax if we caught an error
         searchSyntax = true;
     }
 
     // Replace comments
     inputCode = inputCode.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, '');
+    // Split on semi colons for multiline support
     inputCode = inputCode.split(/;/)
 
+    // Check our code for unsupported errors, and syntax errors if we need to
     for (let i = 0; i < inputCode.length; i++) {
         if (isNotCovered(inputCode[i])) {
             let unsupported = new Unsupported();
@@ -94,11 +103,13 @@ function evaluate(inputCode) {
         }
     }
 
+    // If we have output at this point, bump out and don't interpret
     if (output.length > 0) {
         flagError = true
         return output;
     }
 
+    // Interpret our code
     for (let i = 0; i < inputCode.length; i++) {
         if (inputCode[i].trim() != "") {
             interpretLine(inputCode[i]);
@@ -108,17 +119,23 @@ function evaluate(inputCode) {
     return output;
 }
 
+// Master interpret function, will insert into output on consume,
+// Will return expression if no expression consumed
 function interpretLine(inputLine) {
 
+    // New expression to build into
     let currExpression = new Expression(inputLine);
 
+    // Initialize some variables
     let buffer = "";
     let inString = false;
     let stringStart = '';
     let currentState = stateEnum.DEFAULT;
     let resTup = null;
 
+    // For each character in our inputLine
     for (let i = 0; i < inputLine.length; i++) {
+        // String handling, do not skip spaces for strings
         if (!inString) {
             if (inputLine[i] === "'") {
                 stringStart = "'";
@@ -135,32 +152,38 @@ function interpretLine(inputLine) {
             }
         }
         
+        // Not in string and space, continue
         if (!inString && inputLine[i] === ' ') {
             continue;
         }
 
+        // If new line keep going, but tell our expression
         if (inputLine[i] === '\n') {
             currExpression.numLines += 1;
             continue;
         }
-    
+        
         buffer += inputLine[i]
 
+        // If we haven't found buffer, try to find, else eval
         if (currentState === stateEnum.DEFAULT) {
             resTup = findBufferState(buffer, currExpression);
         } else {
             resTup = evalState(buffer, currentState, currExpression, inputLine);
         }
 
+        // Update our buffer and state
         buffer = resTup[0];
         currentState = resTup[1];
 
+        // If we consumed, exit our expression
         if (currentState === stateEnum.CONSUMED) {
             output.push(currExpression);
             return;
         }
     }
 
+    // Handle case where we didn't see key words, try to find expression
     currentState = looseEnds(buffer, currentState, currExpression);
     if (currentState === stateEnum.CONSUMED) {
         output.push(currExpression);
@@ -170,11 +193,14 @@ function interpretLine(inputLine) {
     return currExpression;
 }
 
+// Evaluate a sub expression, if we didn't get a return, grab last output expression
+// If we did return that expression
 function getSubExpression(inputText) {
     let evaledExpression = interpretLine(inputText);
     return evaledExpression = evaledExpression === undefined ? output[output.length - 1] : evaledExpression;
 }
 
+// Handle cases where we never found a buffer state for the expression
 function looseEnds(buffer, currentState, currExpression) {
 
     if (currentState === stateEnum.DEFAULT) {
@@ -192,6 +218,7 @@ function looseEnds(buffer, currentState, currExpression) {
 function findBufferState(buffer, currExpression) {
 
     let currentState = stateEnum.DEFAULT;
+
     // Handle non-labeled variables
     if (buffer.indexOf('=') >= 0) {
         currentState = stateEnum.ASSIGNING_VAR;
@@ -200,6 +227,7 @@ function findBufferState(buffer, currExpression) {
         return ["", currentState];
     }
 
+    // Switch on key words, insert base object if found into expression
     switch (buffer) {
         case "var":
             currentState = stateEnum.ACCEPTING_VAR;
@@ -244,10 +272,15 @@ function evalState(buffer, currentState, currExpression, inputLine) {
     return resTup;
 }
 
+// Handle assigning variable state
 function assigningVar(buffer, currentState, currExpression, inputLine) {
     
+    // Get rest of the line and evaluate right side assignment expressions
     let restOfLine = inputLine.substring(inputLine.indexOf(buffer), inputLine.length);
     let evaledExpression = getSubExpression(restOfLine);
+
+    // If we have a null data on the expression returned, assume the text is a base assignment
+    // Otherwise evaluate what the value should be based on the data object from the expression
     if (evaledExpression.data === null) {
         if (isVariableName(evaledExpression.derivedFrom.trim())) {
             currExpression.data.value = vars[evaledExpression.derivedFrom.trim()];
@@ -262,6 +295,8 @@ function assigningVar(buffer, currentState, currExpression, inputLine) {
             currExpression.data.value = evaledExpression.data.value;
         }
     }
+
+    // Insert the value into our known variables
     vars[currExpression.data.name] = currExpression.data.value;
     return ["", stateEnum.CONSUMED];
 }
@@ -269,8 +304,11 @@ function assigningVar(buffer, currentState, currExpression, inputLine) {
 // If we are taking in console input
 function acceptingConsole(buffer, currExpression, inputLine) {
     
+    // Get what is in the parenthesis
     inputLine = inputLine.trim();
     let inParens = inputLine.substring("console.log(".length, inputLine.length - 1);
+    
+    // If we see a variable name grab value, otherwise eval expression and grab result
     if (isVariableName(inParens)){
         currExpression.data.output = vars[inParens];
     } else {
@@ -283,21 +321,22 @@ function acceptingConsole(buffer, currExpression, inputLine) {
             }
         }
     }
-    buffer = "";
+
     currentState = stateEnum.CONSUMED;
-    return [buffer, currentState];
+    return ["", currentState];
 }
 
 // If we are in accepting_var state
 function acceptingVar(buffer, currExpression) {
 
     let currentState = stateEnum.ACCEPTING_VAR;
+
+    // If we see '=' shift to accepting value state and assign name to expression
     if (buffer[buffer.length - 1] === '=') {
         buffer = buffer.substring(0, buffer.length - 1);
         
         currExpression.data.name = buffer
 
-        //Reset Variable to start accepting value
         buffer = "";
         currentState = stateEnum.ASSIGNING_VAR;
     }
