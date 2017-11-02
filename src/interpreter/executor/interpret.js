@@ -1,60 +1,5 @@
-// This is our 'state' when interpreting the code
-//  Use this enum as a flag for certain logic
-const stateEnum = {
-    DEFAULT : "default",
-    ACCEPTING_VAR : "accepting variable",
-    ASSIGNING_VAR : "assigning variable",
-    ACCEPTING_CONSOLE : "accepting console",
-    CONSUMED : "consumed"
-}
-
-// This is our enum for data types for variables
-const typeEnum  = {
-    STRING : "string",
-    NUMBER : "number",
-    UNDEFINED : "undefined"
-}
-
-// Class representing a variable
-class Variable {
-    constructor() {
-        this.name = "";
-        this.value = "undefined";
-        this.inferredType = "";
-    }
-}
-
-// Class representing console output
-class Console {
-    constructor() {
-        this.output = "";
-    }
-}
-
-// Class representing unsupported code
-class Unsupported {
-    construcor() {
-        this.value = "";
-        this.lineNum = "";
-    }
-}
-
-// Class representing syntax error
-class Syntax {
-    constructor() {
-        this.caughtText = "";
-        this.lineNum = "";
-    }
-}
-
-// Class representing basic expression
-class Expression {
-    constructor(derivedFrom) {
-        this.numLines = 0;
-        this.data = null;
-        this.derivedFrom = derivedFrom;
-    }
-}
+import { Console, Expression, Syntax, Unsupported, Variable } from  './abstracts';
+import { stateEnum, typeEnum } from './enums';
 
 // All our known variables in the program
 let vars = {};
@@ -66,7 +11,7 @@ let flagError = false;
 let output = [];
 
 // Setup for when we initially check syntax
-function evaluate(inputCode) {
+export function evaluate(inputCode) {
     
     let searchSyntax = false;
     //Check validity of inputCode first
@@ -262,7 +207,7 @@ function evalState(buffer, currentState, currExpression, inputLine) {
             break;
 
         case stateEnum.ACCEPTING_CONSOLE:
-            resTup = acceptingConsole(buffer, currExpression, inputLine);
+            resTup = acceptingConsole(buffer, currentState, currExpression, inputLine);
             break;
 
         default:
@@ -302,7 +247,7 @@ function assigningVar(buffer, currentState, currExpression, inputLine) {
 }
 
 // If we are taking in console input
-function acceptingConsole(buffer, currExpression, inputLine) {
+function acceptingConsole(buffer, currentState, currExpression, inputLine) {
     
     // Get what is in the parenthesis
     inputLine = inputLine.trim();

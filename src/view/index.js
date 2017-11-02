@@ -35,7 +35,7 @@ export default class Interpreter extends React.Component {
     return new Promise((resolve, failure) => {
       // Delete the sketch loaded on memory.
       clearSketchState()
-  
+      
       // Ideally this is constructed as a queue but because of JavaScript
       // limitations the default implementation is an O(n) operation on access,
       // so in order to increase performance we will reverse the list and use
@@ -85,16 +85,17 @@ export default class Interpreter extends React.Component {
             getSketchState()[elem.dataArray[0].value] : "undefined"
         }
 
-        putInterpreterStep(elem)
 
         // Update console
-        if (elem.consoleOutput !== "") {
-          if (elem.consoleVariable) {
-            elem.consoleOutput = getSketchState()[elem.consoleOutput] !== undefined ? 
-              getSketchState()[elem.consoleOutput] : "undefined"
-          }
-
-          consoleOutput.push(" > " + elem.consoleOutput)
+        switch (elem.data.constructor.name) {
+          case 'Console':
+            consoleOutput.push(" > " + elem.data.output);
+            break;
+          case 'Variable':
+            putInterpreterStep(elem.data);
+            break;
+          default:
+            break;
         }
       }
 
@@ -128,7 +129,10 @@ export default class Interpreter extends React.Component {
           isSteppingAutomatically: true,
         })
       })
-      .catch(error => console.log('Error on handleRunInterpreter: ' + error))
+      .catch(error => {
+        console.log('Error on handleRunInterpreter: ')
+        console.log(error)
+      })
 
     } else {
       // If the user is beginning to step through the interpreter

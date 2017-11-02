@@ -5,13 +5,10 @@ export function getSketchState() {
 }
 
 export function putInterpreterStep(step) {
-    const actions = step.dataArray
-    for (const action of actions) {
-        if (action.value === 'null') {
-            delete state[action.name]
-        } else {
-            state[action.name] = action.value
-        }
+    if (step.value === 'null') {
+        delete state[step.name]
+    } else {
+        state[step.name] = step.value
     }
 }
 

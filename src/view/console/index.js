@@ -14,7 +14,7 @@ const Console = ({ consoleOutput, }) => (
   <Card raised={ true } style={{ height: '100%', width: '100%', }}>
     <div style={ textAreaStyle }>
       { consoleOutput.map(elem => (
-        <div>{ elem }</div>
+        <div key={ elem } >{ elem }</div>
       )) }
     </div>
   </Card>
