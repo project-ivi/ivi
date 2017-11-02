@@ -1,5 +1,8 @@
-const STROKE_WEIGHT = 3;
-const EDGE_RADIUS = 10; 
+import { VAR_WIDTH, VAR_HEIGHT, FONT_SIZE } from './variable';
+
+const STROKE_WEIGHT = 2;
+const EDGE_RADIUS = 10;
+const PADDING = 12;
 
 class Scope {
 
@@ -8,12 +11,6 @@ class Scope {
         this.canvas = canvas;
         this.child = null;
         this.variables = []
-
-        // temporary
-        this.x = 10
-        this.y = 10
-        this.width = 400
-        this.height = 400
 
         this.setBounds = this.setBounds.bind(this);
     }
@@ -30,7 +27,7 @@ class Scope {
         p.push();
 
         p.stroke('#000000');
-        p.strokeWeight(2);
+        p.strokeWeight(STROKE_WEIGHT);
         p.noFill(); // for now
 
         p.rect(
@@ -41,13 +38,40 @@ class Scope {
             EDGE_RADIUS
         );
 
+        let row = 0;
+        let column = 0;
+
+        // total number of variables we can fit in a row
+        const paddedHeight = this.height - PADDING * 2
+        const numVars = Math.floor(paddedHeight / (VAR_HEIGHT + FONT_SIZE + PADDING - 1))
+        const varsHeight = (numVars * (VAR_HEIGHT + FONT_SIZE + PADDING)) - PADDING
+        const extra = (paddedHeight - varsHeight) / numVars
+        
+        this.variables.forEach(elem => {
+
+            if (row === numVars) {
+                row = 0;
+                column += 1;
+            }
+
+            let x = this.x + PADDING + column * (VAR_WIDTH + PADDING)
+            let y = this.y + FONT_SIZE + PADDING + row * (VAR_HEIGHT + FONT_SIZE + PADDING + extra)
+
+            elem.x = x
+            elem.y = y;
+            elem.draw();
+
+            row += 1
+        });
+
         // should probably enforce that this is also a scope...
         if (this.child) {
             let bounds = {}
-            bounds.x = this.x + 20
-            bounds.y = this.y + 20
-            bounds.width = this.width - 40
-            bounds.height = this.height - 40
+            const xOffset = ((column + 1) * (VAR_WIDTH + PADDING)) - PADDING + PADDING * 2
+            bounds.x = this.x + xOffset
+            bounds.y = this.y + PADDING
+            bounds.width = this.width - xOffset - PADDING
+            bounds.height = this.height - PADDING * 2
 
             this.child.setBounds(bounds);
             this.child.draw();
