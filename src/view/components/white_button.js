@@ -9,7 +9,7 @@ export default class WhiteButton extends React.Component {
     this.hover = this.hover.bind(this);
     this.unhover = this.unhover.bind(this);
     this.state = {
-      hovering: false
+      hovering: false,
     };
   }
 
@@ -50,7 +50,7 @@ export default class WhiteButton extends React.Component {
         backgroundColor: color,
         color: textColor,
         transition: 'background-color 0.1s',
-        width: '90px'
+        width: '90px',
       }}
       onMouseOver={ this.hover }
       onMouseLeave={ this.unhover }

@@ -19,7 +19,10 @@
   ],
   "rules": {
     "brace-style": 1,
-    "comma-dangle": 1,
+    "comma-dangle": [
+      "error", 
+      "always-multiline"
+    ],
     "comma-spacing": 1,
     "indent": [
       "error",

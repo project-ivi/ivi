@@ -4,7 +4,7 @@ const stateEnum = {
   DEFAULT : 'default',
   ACCEPTING_VAR : 'accepting variable',
   ASSIGNING_VAR : 'assigning variable',
-  ACCEPTING_CONSOLE : 'accepting console'
+  ACCEPTING_CONSOLE : 'accepting console',
 };
 
 class Variable {

@@ -21,7 +21,7 @@ export default class Interpreter extends React.Component {
       isSteppingAutomatically: false,
       interpreterSteps: [],
       currentStep: 0,
-      consoleOutput: []
+      consoleOutput: [],
     };
 
     this.evaluateCode = this.evaluateCode.bind(this);
@@ -49,7 +49,7 @@ export default class Interpreter extends React.Component {
         this.setState({
           isRunning: false,
           interpreterSteps: 0,
-          consoleOutput: consoleOutput
+          consoleOutput: consoleOutput,
         });
         return;
       }
@@ -60,7 +60,7 @@ export default class Interpreter extends React.Component {
         interpreterSteps: steps,
         isSteppingAutomatically: false,
         currentStep: 0,
-        consoleOutput: []
+        consoleOutput: [],
       });
       resolve();
     });
@@ -101,7 +101,7 @@ export default class Interpreter extends React.Component {
       this.setState({
         interpreterSteps: newState,
         currentStep: this.state.currentStep + 1,
-        consoleOutput: consoleOutput
+        consoleOutput: consoleOutput,
       });
       return true;
     }
@@ -125,7 +125,7 @@ export default class Interpreter extends React.Component {
 
           this.setState({
             autoStepInterval: interval,
-            isSteppingAutomatically: true
+            isSteppingAutomatically: true,
           });
         })
         .catch(error => console.log('Error on handleRunInterpreter: ' + error));
@@ -141,7 +141,7 @@ export default class Interpreter extends React.Component {
 
         this.setState({
           autoStepInterval: interval,
-          isSteppingAutomatically: true
+          isSteppingAutomatically: true,
         });
 
       } else {
@@ -149,7 +149,7 @@ export default class Interpreter extends React.Component {
         clearInterval(this.state.autoStepInterval);
         this.setState({
           autoStepInterval: null,
-          isSteppingAutomatically: false
+          isSteppingAutomatically: false,
         });
       }
     }
@@ -171,7 +171,7 @@ export default class Interpreter extends React.Component {
       clearInterval(this.state.autoStepInterval);
       this.setState({
         autoStepInterval: null,
-        isSteppingAutomatically: false
+        isSteppingAutomatically: false,
       });
       this.stepInterpreter();
     }
