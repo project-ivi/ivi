@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { submitCode, nextStep, resetInterpreter, getState, getLog } from '../interpreter/executor';
+import { submitCode, nextStep, resetInterpreter, getLog } from '../interpreter/executor';
 
 import Console from './console';
 import Editor from './editor';
@@ -53,7 +53,7 @@ export default class Interpreter extends React.Component {
       this.setState({ autoStepInterval: null, isRunning: false });
       return false;
     }
-      
+
     this.setState({ currentStep: this.state.currentStep + 1 });
     return true;
   }
@@ -80,7 +80,7 @@ export default class Interpreter extends React.Component {
           });
         })
         .catch(error => {
-          console.log('Error on handleRunInterpreter')
+          console.log('Error on handleRunInterpreter');
           console.log(error);
         });
 
@@ -157,15 +157,15 @@ export default class Interpreter extends React.Component {
           <div style={{ float: 'left', width: '50%', height: '100%', paddingRight: '15px' }}>
             <div style={{ height: '70px' }}>
               <Navbar code={ this.state.code }
-                      runMode={ runMode }
-                      handleRun={ this.handleRunInterpreter }
-                      handleStep={ this.handleStepInterpreter } />
+                runMode={ runMode }
+                handleRun={ this.handleRunInterpreter }
+                handleStep={ this.handleStepInterpreter } />
             </div>
             <div style={{ height: 'calc(100% - 70px)', paddingTop: '15px' }}>
               <Editor isRunning={ this.state.isRunning }
-                      highlightedLine={ this.state.currentStep }
-                      code={ this.state.code }
-                      handleCodeChange={ this.handleCodeChange } />
+                highlightedLine={ this.state.currentStep }
+                code={ this.state.code }
+                handleCodeChange={ this.handleCodeChange } />
             </div>
           </div>
           <div style={{ float: 'right', width: '50%', height: '100%' }}>

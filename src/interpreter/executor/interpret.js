@@ -6,6 +6,12 @@ import { isNotCovered, isVariableName } from './util';
 // Output of expressions for visualiser
 let output = [];
 
+// Global representing our current scope level
+export let scopeLevel = 0;
+
+// Global representing each level of scope
+export let scope = [0];
+
 // Setup for when we initially check syntax
 export function evaluate(inputCode) {
   let searchSyntax = false;
@@ -27,7 +33,7 @@ export function evaluate(inputCode) {
   for (let i = 0; i < inputCode.length; i++) {
     if (isNotCovered(inputCode[i])) {
       let unsupported = new Unsupported(inputCode[i]);
-      output.push(unsuported);
+      output.push(unsupported);
 
     } else if (searchSyntax) {
       try {
@@ -103,6 +109,19 @@ function interpretLine(inputLine) {
     // If new line keep going, but tell our expression
     if (inputLine[i] === '\n') {
       currExpression.numLines += 1;
+      continue;
+    }
+
+    if (inputLine[i] === '{') {
+      scopeLevel += 1;
+      if (scope.length < scopeLevel + 1) {
+        scope.push(0);
+      }
+
+      scope[scopeLevel] += 1;
+      continue;
+    } else if (inputLine[i] === '}') {
+      scopeLevel -= 1;
       continue;
     }
 

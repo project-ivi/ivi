@@ -1,7 +1,7 @@
 // Class representing console output
 class Console {
   constructor() {
-    this.output = "";
+    this.output = '';
   }
 }
 
@@ -17,25 +17,25 @@ class Expression {
 // Class representing syntax error
 class Syntax {
   constructor() {
-    this.caughtText = "";
-    this.lineNum = "";
+    this.caughtText = '';
+    this.lineNum = '';
   }
 }
 
 // Class representing unsupported code
 class Unsupported {
   construcor() {
-    this.value = "";
-    this.lineNum = "";
+    this.value = '';
+    this.lineNum = '';
   }
 }
 
 // Class representing a variable
 class Variable {
   constructor() {
-    this.name = "";
-    this.value = "undefined";
-    this.inferredType = "";
+    this.name = '';
+    this.value = 'undefined';
+    this.inferredType = '';
   }
 }
 
@@ -45,4 +45,4 @@ export {
   Syntax,
   Unsupported,
   Variable,
-}
+};
