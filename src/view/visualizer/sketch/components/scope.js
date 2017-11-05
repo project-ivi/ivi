@@ -59,6 +59,7 @@ class Scope {
 
             elem.x = x
             elem.y = y;
+
             elem.draw();
 
             row += 1
@@ -79,6 +80,21 @@ class Scope {
 
         p.pop()
     }
+    // Go through all varables, redraw the desired one with larger one
+    // with modified settings
+    mouseHover(x,y) {
+        this.variables.forEach(elem =>{
+            if ((x > elem.x && x < elem.x + VAR_WIDTH)
+                && (y > elem.y && y < elem.y + VAR_HEIGHT)) {
+                elem.name = ''
+                elem.width = 150;
+                elem.font = 15
+                elem.draw();
+                }
+        })
+    }
+    
+    
 }
 
 export default Scope;
