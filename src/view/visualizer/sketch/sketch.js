@@ -10,6 +10,22 @@ export default p => {
         p.background('white')
         p.noStroke()
         resizeCanvasToVisualizer()
+
+        const s = new Scope(p);
+        s.depth = 1;
+        s.x = 20; s.y = 20; 
+        s.width = p.width - 40; s.height = p.height - 40;
+        s.child = new Scope(p);
+        s.child.child = new Scope(p);
+        s.child.child.child = new Scope(p);
+
+        for (let i = 0; i < 15; i++) {
+            s.variables.push(new Variable(p))
+            // s.child.variables.push(new Variable(p))
+            // s.child.child.variables.push(new Variable(p))
+        }
+
+        this.xvf = s
     }
 
     function resizeCanvasToVisualizer() {
@@ -20,18 +36,10 @@ export default p => {
     p.draw = () => {
         p.background('white')
 
-        const s = new Scope(p);
-        s.x = 20; s.y = 20; 
-        s.width = p.width - 40; s.height = p.height - 40;
-        s.child = new Scope(p);
-        s.child.child = new Scope(p);
-
-        for (let i = 0; i < 20; i++) {
-            s.variables.push(new Variable(p))
-            s.child.variables.push(new Variable(p))
-            s.child.child.variables.push(new Variable(p))
+        if (this.xvf) {
+            this.xvf.width = p.width - 40; this.xvf.height = p.height - 40;
+            this.xvf.draw()
         }
-        s.draw();
     }
 
     p.windowResized = () => {
@@ -39,5 +47,4 @@ export default p => {
         // overflow = false
         p.background('white')
       }
-
 }

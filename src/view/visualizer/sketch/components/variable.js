@@ -14,7 +14,6 @@ export class Variable {
 
     draw() {
         const p = this.canvas;
-        p.push();
 
         p.noStroke()
         p.fill('#000000')
@@ -39,8 +38,5 @@ export class Variable {
             VAR_HEIGHT,
             EDGE_RADIUS
         )
-
-        p.pop()
     }
-
 }
