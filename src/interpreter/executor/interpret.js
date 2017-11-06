@@ -308,6 +308,12 @@ function acceptingVar(buffer, currExpression) {
   return [buffer, currentState];
 }
 
+// Reset our scope values
+export function resetScope() {
+  scopeLevel = 0;
+  scope = [];
+}
+
 /*
 let answer = evaluate(` tt = 3;
                         var a = 44;
