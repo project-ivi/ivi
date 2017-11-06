@@ -11,9 +11,10 @@ const BACKGROUND_COLORS = [
 
 class Scope {
 
-    constructor(canvas) {
+    constructor(canvas, sketch) {
         
         this.canvas = canvas;
+        this.sketch = sketch;
         this.child = null;
         this.depth = null;
         this.variables = [];
@@ -65,7 +66,7 @@ class Scope {
             elem.x = x
             elem.y = y;
 
-            elem.draw();
+            elem.draw()
 
             row += 1
         });
@@ -91,28 +92,6 @@ class Scope {
             this.child.draw();
         }
     }
-    // Go through all varables, redraw the desired one with larger one
-    // with modified settings
-    mouseHover(x,y) {
-        this.variables.forEach(elem =>{
-            if ((x > elem.x && x < elem.x + VAR_WIDTH)
-                && (y > elem.y && y < elem.y + VAR_HEIGHT)) {
-                // Each variable extends a custom amount depending on string lenght
-                let w;
-                if (elem.value.length < 4){
-                    w = VAR_WIDTH
-                }else {
-                    w = VAR_WIDTH + (elem.value.length - 6) * 8.5
-                }
-                elem.name = ''
-                elem.width = w
-                elem.font = 15
-                elem.draw()
-                }
-        })
-    }
-    
-    
 }
 
 export default Scope;
