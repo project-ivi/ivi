@@ -1,7 +1,8 @@
 import { Console, Expression, Syntax, Unsupported, Variable } from './classes';
-import { stateEnum } from './enums';
+import { stateEnum, operationsEnum } from './enums';
 import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
 import { isNotCovered, isVariableName } from './util';
+import { addition, subtraction } from './operations';
 
 // Output of expressions for visualiser
 let output = [];
@@ -114,6 +115,12 @@ function interpretLine(inputLine) {
 
     buffer += inputLine[i];
 
+    resTup = arithmetic(buffer, inputLine, currentState);
+    if (resTup[1] === stateEnum.CONSUMED) {
+      currExpression.derivedFrom = resTup[0];
+      break;
+    }
+
     // If we haven't found buffer, try to find, else eval
     if (currentState === stateEnum.DEFAULT) {
       resTup = findBufferState(buffer, currExpression);
@@ -150,6 +157,24 @@ function interpretLine(inputLine) {
 function getSubExpression(inputText) {
   let evaledExpression = interpretLine(inputText);
   return evaledExpression = evaledExpression === undefined ? output[output.length - 1] : evaledExpression;
+}
+
+function getSubExpressionValue(evaledExpression) {
+
+  if (evaledExpression.data === null) {
+    if (isVariableName(evaledExpression.derivedFrom.trim())) {
+      return getClosestValue(evaledExpression.derivedFrom.trim());
+    } else {
+      return evaledExpression.derivedFrom.trim();
+    }
+  } else {
+    if (evaledExpression.data instanceof Console) {
+      return 'undefined';
+
+    } else if (evaledExpression.data instanceof Variable) {
+      return evaledExpression.data.value;
+    }
+  }
 }
 
 // Handle cases where we never found a buffer state for the expression
@@ -229,22 +254,7 @@ function assigningVar(buffer, currentState, currExpression, inputLine) {
   let restOfLine = inputLine.substring(inputLine.indexOf('=') + 1);
   let evaledExpression = getSubExpression(restOfLine);
 
-  // If we have a null data on the expression returned, assume the text is a base assignment
-  // Otherwise evaluate what the value should be based on the data object from the expression
-  if (evaledExpression.data === null) {
-    if (isVariableName(evaledExpression.derivedFrom.trim())) {
-      currExpression.data.value = getClosestValue(evaledExpression.derivedFrom.trim());
-    } else {
-      currExpression.data.value = evaledExpression.derivedFrom.trim();
-    }
-  } else {
-    if (evaledExpression.data instanceof Console) {
-      currExpression.data.value = 'undefined';
-
-    } else if (evaledExpression.data instanceof Variable) {
-      currExpression.data.value = evaledExpression.data.value;
-    }
-  }
+  currExpression.data.value = getSubExpressionValue(evaledExpression);
 
   // Insert the value into our known variables
   insertVar(currExpression.data);
@@ -256,7 +266,6 @@ function acceptingConsole(buffer, currExpression, inputLine) {
 
   // Get what is in the parenthesis
   inputLine = inputLine.trim();
-  console.log(inputLine);
   let inParens = inputLine.substring(inputLine.indexOf('console.log(') + 'console.log('.length, inputLine.length - 1);
   // If we see a variable name grab value, otherwise eval expression and grab result
   if (isVariableName(inParens)) {
@@ -266,11 +275,7 @@ function acceptingConsole(buffer, currExpression, inputLine) {
     if (evaledExpression.data === null) {
       currExpression.data.output = evaledExpression.derivedFrom.trim();
     } else {
-      if (evaledExpression.data instanceof Console) {
-        currExpression.data.output = 'undefined';
-      } else if (evaledExpression.data instanceof Variable) {
-        currExpression.data.output = 'undefined';
-      }
+      currExpression.data.output = 'undefined';
     }
   }
 
@@ -291,6 +296,27 @@ function acceptingVar(buffer, currExpression) {
     currentState = stateEnum.ASSIGNING_VAR;
   }
   return [buffer, currentState];
+}
+
+function arithmetic(buffer, inputLine, currentState) {
+  let newState = stateEnum.CONSUMED;
+  let left = buffer.substring(0, buffer.length - 1);
+  switch (buffer[buffer.length - 1]) {
+  case operationsEnum.ADDITION:
+    let right = inputLine.substring(inputLine.indexOf('+') + 1);
+    right = getSubExpressionValue(getSubExpression(right));
+    buffer = addition(left, right);
+    break;
+  case operationsEnum.SUBTRACTION:
+    right = inputLine.substring(inputLine.indexOf('-') + 1);
+    right = getSubExpressionValue(getSubExpression(right));
+    buffer = subtraction(left, right);
+    break;
+  default:
+    newState = currentState;
+    break;
+  }
+  return [buffer, newState];
 }
 
 /*
