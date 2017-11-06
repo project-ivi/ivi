@@ -3,6 +3,11 @@ import { VAR_WIDTH, VAR_HEIGHT, FONT_SIZE } from './variable';
 const STROKE_WEIGHT = 2;
 const EDGE_RADIUS = 10;
 const PADDING = 12;
+const BACKGROUND_COLORS = [
+    '#89C4F4',
+    '#BE90D4',
+    '#86E2D5'
+]
 
 class Scope {
 
@@ -11,7 +16,8 @@ class Scope {
         this.canvas = canvas;
         this.sketch = sketch;
         this.child = null;
-        this.variables = []
+        this.depth = null;
+        this.variables = [];
 
         this.setBounds = this.setBounds.bind(this);
     }
@@ -25,11 +31,10 @@ class Scope {
 
     draw() {
         const p = this.canvas;
-        p.push();
 
         p.stroke('#000000');
         p.strokeWeight(STROKE_WEIGHT);
-        p.noFill(); // for now
+        p.fill(BACKGROUND_COLORS[this.depth % BACKGROUND_COLORS.length]);
 
         p.rect(
             this.x, 
@@ -70,16 +75,22 @@ class Scope {
         if (this.child) {
             let bounds = {}
             const xOffset = ((column + 1) * (VAR_WIDTH + PADDING)) - PADDING + PADDING * 2
-            bounds.x = this.x + xOffset
+
+            if (this.variables.length === 0) {
+                bounds.x = this.x + PADDING
+                bounds.width = this.width - PADDING * 2
+            } else {
+                bounds.x = this.x + xOffset
+                bounds.width = this.width - xOffset - PADDING
+            }
+            
             bounds.y = this.y + PADDING
-            bounds.width = this.width - xOffset - PADDING
             bounds.height = this.height - PADDING * 2
 
             this.child.setBounds(bounds);
+            this.child.depth = this.depth + 1
             this.child.draw();
         }
-
-        p.pop()
     }
 }
 

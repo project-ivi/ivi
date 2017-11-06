@@ -21,7 +21,6 @@ export class Variable {
 
     draw() {
         const p = this.canvas;
-        p.push();
 
         // Variable name
         p.noStroke()

@@ -11,12 +11,6 @@ export default p => {
         p.background('white')
         p.noStroke()
         resizeCanvasToVisualizer()
-
-        this.variables = []
-        for (let i = 0; i < 15; i++) {
-            const v = new Variable(p, this);
-            this.variables.push(v);
-        }
     }
 
     function resizeCanvasToVisualizer() {
@@ -27,21 +21,8 @@ export default p => {
     p.draw = () => {
         p.background('white')
 
-        const s = new Scope(p, this);
-        s.x = 10; s.y = 10; 
-        s.width = p.width - 20; s.height = p.height - 20;
-
         if (this.variables) {
-
-            for (let i = 0; i < 15; i++) {
-                const v = new Variable(p, this);
-                s.variables.push(this.variables[i]);
-            }
-
-            s.draw();
-
             this.variables.forEach(elem => {
-
                 let w;
                 if (p.mouseX > elem.x && p.mouseX < elem.x + VAR_WIDTH && p.mouseY > elem.y && p.mouseY < elem.y + VAR_HEIGHT) {
                     // Each variable extends a custom amount depending on string length
@@ -70,6 +51,4 @@ export default p => {
         // overflow = false
         p.background('white')
     }
-    
-
 }
