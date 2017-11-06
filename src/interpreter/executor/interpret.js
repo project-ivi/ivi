@@ -1,16 +1,10 @@
 import { Console, Expression, Syntax, Unsupported, Variable } from './classes';
 import { stateEnum } from './enums';
-import { state as vars } from './state';
+import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
 import { isNotCovered, isVariableName } from './util';
 
 // Output of expressions for visualiser
 let output = [];
-
-// Global representing our current scope leve
-export let scopeLevel = 0;
-
-// Global representing each level of scope
-export let scope = [0];
 
 // Setup for when we initially check syntax
 export function evaluate(inputCode) {
@@ -58,7 +52,7 @@ export function evaluate(inputCode) {
   // Interpret our code
   for (let i = 0; i < inputCode.length; i++) {
     if (inputCode[i].trim() != '') {
-      interpretLine(inputCode[i]);
+      interpretLine(inputCode[i].trim());
     }
   }
 
@@ -71,7 +65,6 @@ export function evaluate(inputCode) {
 // Master interpret function, will insert into output on consume,
 // Will return expression if no expression consumed
 function interpretLine(inputLine) {
-
   // New expression to build into
   let currExpression = new Expression(inputLine);
 
@@ -81,7 +74,6 @@ function interpretLine(inputLine) {
   let stringStart = '';
   let currentState = stateEnum.DEFAULT;
   let resTup = null;
-
   // For each character in our inputLine
   for (let i = 0; i < inputLine.length; i++) {
     // String handling, do not skip spaces for strings
@@ -102,7 +94,7 @@ function interpretLine(inputLine) {
     }
 
     // Not in string and space, continue
-    if (!inString && inputLine[i] === ' ') {
+    if (!inString && (inputLine[i] === ' ' || inputLine[i] === '\t')) {
       continue;
     }
 
@@ -113,15 +105,10 @@ function interpretLine(inputLine) {
     }
 
     if (inputLine[i] === '{') {
-      scopeLevel += 1;
-      if (scope.length < scopeLevel + 1) {
-        scope.push(0);
-      }
-
-      scope[scopeLevel] += 1;
+      increaseScope();
       continue;
     } else if (inputLine[i] === '}') {
-      scopeLevel -= 1;
+      decreaseScope();
       continue;
     }
 
@@ -152,7 +139,7 @@ function interpretLine(inputLine) {
     return;
   }
 
-  if (isVariableName(buffer.trim()) && vars[buffer.trim()] === undefined) {
+  if (isVariableName(buffer.trim()) && getClosestValue(buffer.trim()) === 'undefined') {
     currExpression.derivedFrom = 'undefined';
   }
   return currExpression;
@@ -171,7 +158,7 @@ function looseEnds(buffer, currentState, currExpression) {
   if (currentState === stateEnum.ACCEPTING_VAR) {
     if (isVariableName(buffer.trim())) {
       currExpression.data.name = buffer.trim();
-      vars[buffer.trim()] = 'undefined';
+      insertVar(currExpression.data);
       currentState = stateEnum.CONSUMED;
     }
   }
@@ -238,16 +225,15 @@ function evalState(buffer, currentState, currExpression, inputLine) {
 
 // Handle assigning variable state
 function assigningVar(buffer, currentState, currExpression, inputLine) {
-
   // Get rest of the line and evaluate right side assignment expressions
-  let restOfLine = inputLine.substring(inputLine.indexOf(buffer), inputLine.length);
+  let restOfLine = inputLine.substring(inputLine.indexOf('=') + 1);
   let evaledExpression = getSubExpression(restOfLine);
 
   // If we have a null data on the expression returned, assume the text is a base assignment
   // Otherwise evaluate what the value should be based on the data object from the expression
   if (evaledExpression.data === null) {
     if (isVariableName(evaledExpression.derivedFrom.trim())) {
-      currExpression.data.value = String(vars[evaledExpression.derivedFrom.trim()]);
+      currExpression.data.value = getClosestValue(evaledExpression.derivedFrom.trim());
     } else {
       currExpression.data.value = evaledExpression.derivedFrom.trim();
     }
@@ -261,7 +247,7 @@ function assigningVar(buffer, currentState, currExpression, inputLine) {
   }
 
   // Insert the value into our known variables
-  vars[currExpression.data.name] = currExpression.data.value;
+  insertVar(currExpression.data);
   return ['', stateEnum.CONSUMED];
 }
 
@@ -270,11 +256,11 @@ function acceptingConsole(buffer, currExpression, inputLine) {
 
   // Get what is in the parenthesis
   inputLine = inputLine.trim();
-  let inParens = inputLine.substring('console.log('.length, inputLine.length - 1);
-
+  console.log(inputLine);
+  let inParens = inputLine.substring(inputLine.indexOf('console.log(') + 'console.log('.length, inputLine.length - 1);
   // If we see a variable name grab value, otherwise eval expression and grab result
   if (isVariableName(inParens)) {
-    currExpression.data.output = String(vars[inParens]);
+    currExpression.data.output = getClosestValue(inParens);
   } else {
     let evaledExpression = getSubExpression(inParens);
     if (evaledExpression.data === null) {
@@ -302,16 +288,9 @@ function acceptingVar(buffer, currExpression) {
 
     currExpression.data.name = buffer;
 
-    buffer = '';
     currentState = stateEnum.ASSIGNING_VAR;
   }
   return [buffer, currentState];
-}
-
-// Reset our scope values
-export function resetScope() {
-  scopeLevel = 0;
-  scope = [];
 }
 
 /*

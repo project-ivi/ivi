@@ -1,4 +1,4 @@
-import { scope, scopeLevel } from './interpret';
+import { scope, scopeLevel } from './state';
 
 // Class representing console output
 export class Console {
