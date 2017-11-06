@@ -69,7 +69,6 @@ export function insertAtScope(scopeArr, variable) {
   }
   currentScope[variable.name] = variable.value;
   generateVisualRep(scopeArr);
-  console.log(visualRep);
 }
 
 export function generateVisualRep(scopeArr) {
