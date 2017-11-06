@@ -258,7 +258,6 @@ function acceptingConsole(buffer, currExpression, inputLine) {
   inputLine = inputLine.trim();
   console.log(inputLine);
   let inParens = inputLine.substring(inputLine.indexOf('console.log(') + 'console.log('.length, inputLine.length - 1);
-  console.log(inParens);
   // If we see a variable name grab value, otherwise eval expression and grab result
   if (isVariableName(inParens)) {
     currExpression.data.output = getClosestValue(inParens);
