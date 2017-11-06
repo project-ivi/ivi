@@ -1,9 +1,10 @@
 import Scope from './components/scope';
 import { Variable } from './components/variable';
-
 import { VAR_WIDTH, VAR_HEIGHT } from './components/variable';
+import { visualRep } from '../../../interpreter/executor/state';
 
-const VARIABLES = [];
+let VARIABLES = [];
+let base = null;
 
 export default p => {
 
@@ -22,15 +23,29 @@ export default p => {
   p.draw = () => {
     p.background('white');
 
+    base = new Scope(p);
+    base.width = p.width - 20;
+    base.height = p.height - 20;
+    base.x = 20;
+    base.y = 20;
+
+    let s = base;
+    for (let i = 0; i < visualRep.length; i++) {
+      if (i !== 0) {
+        s.child = new Scope(p);
+        s = s.child;
+      }
+      for (let j = 0; j < visualRep[i].length; j++) {
+        let variable = new Variable(p);
+        variable.name = visualRep[i][j][0];
+        variable.value = visualRep[i][j][1];
+        s.variables.push(variable);
+        VARIABLES.push(variable);
+      }
+    }
     if (VARIABLES.length > 0) {
 
-    //   let s = new Scope(p);
-    //   for (let i = 0; i < 15; i++) {
-    //     s.variables.push(VARIABLES[i]);
-    //   }
-
-    //   s.draw();
-
+      base.draw();
       VARIABLES.forEach(elem => {
 
         let w;
