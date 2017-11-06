@@ -133,6 +133,9 @@ function interpretLine(inputLine) {
     return;
   }
 
+  if (isVariableName(buffer.trim()) && vars[buffer.trim()] === undefined) {
+    currExpression.derivedFrom = 'undefined';
+  }
   return currExpression;
 }
 
@@ -146,14 +149,7 @@ function getSubExpression(inputText) {
 // Handle cases where we never found a buffer state for the expression
 function looseEnds(buffer, currentState, currExpression) {
 
-  if (currentState === stateEnum.DEFAULT) {
-    if (isVariableName(buffer.trim()) && vars[buffer.trim()] === undefined) {
-      currExpression.data = new Variable();
-      currExpression.data.name = buffer.trim();
-      vars[buffer.trim()] = 'undefined';
-      currentState = stateEnum.CONSUMED;
-    }
-  } else if (currentState === stateEnum.ACCEPTING_VAR) {
+  if (currentState === stateEnum.ACCEPTING_VAR) {
     if (isVariableName(buffer.trim())) {
       currExpression.data.name = buffer.trim();
       vars[buffer.trim()] = 'undefined';
@@ -232,7 +228,7 @@ function assigningVar(buffer, currentState, currExpression, inputLine) {
   // Otherwise evaluate what the value should be based on the data object from the expression
   if (evaledExpression.data === null) {
     if (isVariableName(evaledExpression.derivedFrom.trim())) {
-      currExpression.data.value = vars[evaledExpression.derivedFrom.trim()];
+      currExpression.data.value = String(vars[evaledExpression.derivedFrom.trim()]);
     } else {
       currExpression.data.value = evaledExpression.derivedFrom.trim();
     }
@@ -259,7 +255,7 @@ function acceptingConsole(buffer, currExpression, inputLine) {
 
   // If we see a variable name grab value, otherwise eval expression and grab result
   if (isVariableName(inParens)) {
-    currExpression.data.output = vars[inParens];
+    currExpression.data.output = String(vars[inParens]);
   } else {
     let evaledExpression = getSubExpression(inParens);
     if (evaledExpression.data === null) {
