@@ -1,6 +1,6 @@
 import { Console, Expression, Syntax, Unsupported, Variable } from './classes';
 import { stateEnum } from './enums';
-import { currScope, increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
+import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
 import { isNotCovered, isVariableName } from './util';
 
 // Output of expressions for visualiser
@@ -256,7 +256,8 @@ function acceptingConsole(buffer, currExpression, inputLine) {
 
   // Get what is in the parenthesis
   inputLine = inputLine.trim();
-  let inParens = inputLine.substring('console.log('.length, inputLine.length - 1);
+  console.log(inputLine);
+  let inParens = inputLine.substring(inputLine.indexOf('console.log(') + 'console.log('.length, inputLine.length - 1);
   console.log(inParens);
   // If we see a variable name grab value, otherwise eval expression and grab result
   if (isVariableName(inParens)) {

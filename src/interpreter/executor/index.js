@@ -1,5 +1,5 @@
 import { state, log, resetState } from './state';
-import { evaluate, resetScope } from './interpret';
+import { evaluate } from './interpret';
 
 let output = null;
 

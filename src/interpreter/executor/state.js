@@ -31,8 +31,8 @@ export function resetState() {
 // no easy way to go backwards
 function traverseToScope() {
 
-  let newScope = symbolTable;
-  for (let i = 0; i < scopeLevel + 1; i++) {
+  let newScope = symbolTable[0];
+  for (let i = 1; i < scopeLevel + 1; i++) {
     newScope = newScope[scope[i]];
   }
   return newScope;
@@ -40,18 +40,19 @@ function traverseToScope() {
 
 // Insert a variable into the current scope
 export function insertVar(variable) {
-    currScope[variable.name] = variable.value;
+  currScope[variable.name] = variable.value;
 }
 
 export function getClosestValue(varName) {
   let currentScope = symbolTable[0];
   let closest = currentScope[varName];
   for (let i = 1; i < scopeLevel + 1; i++) {
+    currentScope = currentScope[scope[i]];
     if (currentScope[varName] !== undefined) {
       closest = currentScope[varName];
     }
-    currentScope = currentScope[scope[i]];
   }
+
   return String(closest);
 }
 
@@ -63,7 +64,7 @@ export function increaseScope() {
   }
 
   scope[scopeLevel] += 1;
-  
+
   currScope[scope[scopeLevel]] = {};
   currScope = currScope[scope[scopeLevel]];
 }
