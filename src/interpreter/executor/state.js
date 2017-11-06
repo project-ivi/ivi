@@ -1,22 +1,12 @@
-const state = {};
+export let state = {};
+export let log = [];
 
-export function getSketchState() {
-  return state;
-}
+export function resetState() {
+  log = [];
 
-export function putInterpreterStep(step) {
-  const actions = step.dataArray;
-  for (const action of actions) {
-    if (action.value === 'null') {
-      delete state[action.name];
-    } else {
-      state[action.name] = action.value;
+  for (const key in state) {
+    if (state.hasOwnProperty(key)){
+      delete state[key];
     }
   }
-}
-
-export function clearSketchState() {
-  Object.keys(state).forEach(val => {
-    delete state[val];
-  });
 }
