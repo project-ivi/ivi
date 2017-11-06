@@ -1,3 +1,31 @@
+import { getClosestValue } from './state';
+import { typeEnum } from './enums';
+
+
+export function deriveType(buffer) {
+  buffer = buffer.trim();
+  if (buffer[0] === '\'' || buffer[0] === '"') {
+    return typeEnum.STRING;
+  } else if (!isVariableName(buffer)) {
+    return typeEnum.NUMBER;
+  } else if (isVariableName(buffer)) {
+    return deriveType(getClosestValue(buffer));
+  } else if (buffer === 'NaN') {
+    return typeEnum.NAN;
+  } else {
+    return typeEnum.UNDEFINED;
+  }
+}
+
+export function stripIfString(aString) {
+  aString = aString.trim();
+  if (aString[0] === '\'' || aString[0] === '"') {
+    return aString.substring(1, aString.length - 1);
+  }
+
+  return aString;
+}
+
 // Band Aid for things not yet covered
 export function isNotCovered(buffer) {
 
@@ -49,6 +77,8 @@ export function isNotCovered(buffer) {
   } else if (buffer.includes('>')) {
     isNotCovered = true;
   } else if (buffer.includes('\\')) {
+    isNotCovered = true;
+  } else if (buffer.includes('null')) {
     isNotCovered = true;
   }
   return isNotCovered;
