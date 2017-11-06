@@ -5,7 +5,7 @@ export function resetState() {
   log = [];
 
   for (const key in state) {
-    if (state.hasOwnProperty(key)){
+    if (state.hasOwnProperty(key)) {
       delete state[key];
     }
   }

@@ -27,7 +27,7 @@ export function evaluate(inputCode) {
   for (let i = 0; i < inputCode.length; i++) {
     if (isNotCovered(inputCode[i])) {
       let unsupported = new Unsupported(inputCode[i]);
-      output.push(unsuported);
+      output.push(unsupported);
 
     } else if (searchSyntax) {
       try {
