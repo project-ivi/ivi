@@ -14,3 +14,8 @@ export const typeEnum = {
   NUMBER: 'number',
   UNDEFINED: 'undefined',
 };
+
+// This is our enum for operations
+export const operationsEnum = {
+  ADDITION: '+',
+};
