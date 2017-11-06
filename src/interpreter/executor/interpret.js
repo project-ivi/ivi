@@ -2,7 +2,7 @@ import { Console, Expression, Syntax, Unsupported, Variable } from './classes';
 import { stateEnum, operationsEnum } from './enums';
 import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
 import { isNotCovered, isVariableName } from './util';
-import { addition } from './operations';
+import { addition, subtraction } from './operations';
 
 // Output of expressions for visualiser
 let output = [];
@@ -255,7 +255,6 @@ function assigningVar(buffer, currentState, currExpression, inputLine) {
   let evaledExpression = getSubExpression(restOfLine);
 
   currExpression.data.value = getSubExpressionValue(evaledExpression);
-  console.log(currExpression.data.value);
 
   // Insert the value into our known variables
   insertVar(currExpression.data);
@@ -307,6 +306,11 @@ function arithmetic(buffer, inputLine, currentState) {
     let right = inputLine.substring(inputLine.indexOf('+') + 1);
     right = getSubExpressionValue(getSubExpression(right));
     buffer = addition(left, right);
+    break;
+  case operationsEnum.SUBTRACTION:
+    right = inputLine.substring(inputLine.indexOf('-') + 1);
+    right = getSubExpressionValue(getSubExpression(right));
+    buffer = subtraction(left, right);
     break;
   default:
     newState = currentState;
