@@ -4,6 +4,7 @@ let symbolTable = {0 : {}};
 export let currScope = symbolTable[0];
 export let scope = [0];
 export let scopeLevel = 0;
+export let visualRep = [];
 
 export function resetState() {
   log = [];
@@ -11,6 +12,7 @@ export function resetState() {
   scopeLevel = 0;
   symbolTable = {0: {}};
   currScope = symbolTable[0];
+  visualRep = [];
 
   for (const key in state) {
     if (state.hasOwnProperty(key)) {
@@ -56,6 +58,36 @@ export function getClosestValue(varName) {
   return String(closest);
 }
 
+//Intake scope arr and input into symbol table
+export function insertAtScope(scopeArr, variable) {
+  let currentScope = symbolTable[0];
+  for (let i = 1; i < scopeArr.length; i++) {
+    if (currentScope[scopeArr[i]] === undefined) {
+      currentScope[scopeArr[i]] = {};
+    }
+    currentScope = currentScope[scopeArr[i]];
+  }
+  currentScope[variable.name] = variable.value;
+  generateVisualRep(scopeArr);
+}
+
+export function generateVisualRep(scopeArr) {
+  let newRep = [];
+  let currentScope = symbolTable;
+  for (let i = 0; i < scopeArr.length; i++) {
+    newRep.push([]);
+  }
+
+  for (let i = 0; i < scopeArr.length; i++) {
+    currentScope = currentScope[scopeArr[i]];
+    for (let key in currentScope) {
+      if (!(currentScope[key] instanceof Object)) {
+        newRep[i].push([key, currentScope[key]]);
+      }
+    }
+  }
+  visualRep = newRep;
+}
 
 export function increaseScope() {
   scopeLevel += 1;

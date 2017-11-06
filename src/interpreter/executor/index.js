@@ -1,4 +1,4 @@
-import { state, log, resetState } from './state';
+import { log, resetState, insertAtScope } from './state';
 import { evaluate } from './interpret';
 
 let output = null;
@@ -45,7 +45,7 @@ export function nextStep() {
     log.push(expression.output);
     break;
   case 'Variable':
-    state[expression.name] = expression.value;
+    insertAtScope(expression.scope, expression);
     break;
   default:
     break;
@@ -57,10 +57,6 @@ export function nextStep() {
 export function resetInterpreter() {
   output = null;
   resetState();
-}
-
-export function getState() {
-  return state;
 }
 
 export function getLog() {
