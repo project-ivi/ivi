@@ -226,7 +226,7 @@ function evalState(buffer, currentState, currExpression, inputLine) {
 // Handle assigning variable state
 function assigningVar(buffer, currentState, currExpression, inputLine) {
   // Get rest of the line and evaluate right side assignment expressions
-  let restOfLine = inputLine.substring(inputLine.indexOf(buffer));
+  let restOfLine = inputLine.substring(inputLine.indexOf('=') + 1);
   let evaledExpression = getSubExpression(restOfLine);
 
   // If we have a null data on the expression returned, assume the text is a base assignment
@@ -257,7 +257,7 @@ function acceptingConsole(buffer, currExpression, inputLine) {
   // Get what is in the parenthesis
   inputLine = inputLine.trim();
   let inParens = inputLine.substring('console.log('.length, inputLine.length - 1);
-
+  console.log(inParens);
   // If we see a variable name grab value, otherwise eval expression and grab result
   if (isVariableName(inParens)) {
     currExpression.data.output = getClosestValue(inParens);
@@ -288,7 +288,6 @@ function acceptingVar(buffer, currExpression) {
 
     currExpression.data.name = buffer;
 
-    buffer = '';
     currentState = stateEnum.ASSIGNING_VAR;
   }
   return [buffer, currentState];

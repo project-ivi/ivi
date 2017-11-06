@@ -25,6 +25,10 @@ export function resetState() {
   }
 }
 
+
+// Traverse to the dictionary of our new scope
+// Used when we decrease scope because we have
+// no easy way to go backwards
 function traverseToScope() {
 
   let newScope = symbolTable;
@@ -34,14 +38,15 @@ function traverseToScope() {
   return newScope;
 }
 
+// Insert a variable into the current scope
 export function insertVar(variable) {
-    traverseToScope()[variable.name] = variable.value;
+    currScope[variable.name] = variable.value;
 }
 
 export function getClosestValue(varName) {
-  let closest = undefined;
-  let currentScope = symbolTable;
-  for (let i = 0; i < scopeLevel + 1; i++) {
+  let currentScope = symbolTable[0];
+  let closest = currentScope[varName];
+  for (let i = 1; i < scopeLevel + 1; i++) {
     if (currentScope[varName] !== undefined) {
       closest = currentScope[varName];
     }

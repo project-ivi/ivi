@@ -22,7 +22,6 @@ export function submitCode(code) {
     // so in order to increase performance we will reverse the list and use
     // pop() for O(1) operations.
     output.reverse();
-    console.log(output);
     return true;
 
   }
