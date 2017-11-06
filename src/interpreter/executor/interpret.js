@@ -18,10 +18,25 @@ export function evaluate(inputCode) {
     // Flip to check syntax if we caught an error
     searchSyntax = true;
   }
-  // Replace comments
-  inputCode = inputCode.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, '');
+  
   // Split on semi colons for multiline support
   inputCode = inputCode.split(/;/);
+  lineLengths = []
+  inputCode = inputCode.map(elem => {
+
+    let newlineCount = 0;
+    for (let i = 0; i < elem.length; i++) {
+      if (elem[i] == '\n') {
+        newlineCount += 1;
+      }
+    }
+
+    elem = elem.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, '');
+    lineLengths.push(newlineCount);
+
+    return elem;
+  });
+  console.log(inputCode)
 
   // Check our code for unsupported errors, and syntax errors if we need to
   for (let i = 0; i < inputCode.length; i++) {
