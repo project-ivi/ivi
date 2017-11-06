@@ -24,8 +24,6 @@ export function isNotCovered(buffer) {
     isNotCovered = true;
   } else if (buffer.includes('while')) {
     isNotCovered = true;
-  } else if (buffer.includes('+')) {
-    isNotCovered = true;
   } else if (buffer.includes('-')) {
     isNotCovered = true;
   } else if (buffer.includes('/')) {

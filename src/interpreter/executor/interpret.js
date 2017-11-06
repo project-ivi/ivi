@@ -1,5 +1,5 @@
 import { Console, Expression, Syntax, Unsupported, Variable } from './classes';
-import { stateEnum } from './enums';
+import { stateEnum, operationsEnum } from './enums';
 import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
 import { isNotCovered, isVariableName } from './util';
 
@@ -113,6 +113,8 @@ function interpretLine(inputLine) {
     }
 
     buffer += inputLine[i];
+
+    arithmetic(buffer, inputLine);
 
     // If we haven't found buffer, try to find, else eval
     if (currentState === stateEnum.DEFAULT) {
@@ -291,6 +293,16 @@ function acceptingVar(buffer, currExpression) {
     currentState = stateEnum.ASSIGNING_VAR;
   }
   return [buffer, currentState];
+}
+
+function arithmetic(buffer, inputLine) {
+  switch (buffer[buffer.length - 1]) {
+  case operationsEnum.ADDITION:
+    console.log('here');
+    break;
+  default:
+    break;
+  }
 }
 
 /*
