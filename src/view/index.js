@@ -16,13 +16,16 @@ export default class Interpreter extends React.Component {
 
     this.state = {
       autoStepInterval: null,
+      //code: sessionStorage.getItem('code'),
       code: '',
       isRunning: false,
       isSteppingAutomatically: false,
       interpreterSteps: [],
-      currentStep: 0, 
+      currentStep: 0,
       consoleOutput: [],
     }
+
+
 
     this.evaluateCode = this.evaluateCode.bind(this)
     this.stepInterpreter = this.stepInterpreter.bind(this)
@@ -35,13 +38,13 @@ export default class Interpreter extends React.Component {
     return new Promise((resolve, failure) => {
       // Delete the sketch loaded on memory.
       clearSketchState()
-  
+
       // Ideally this is constructed as a queue but because of JavaScript
       // limitations the default implementation is an O(n) operation on access,
       // so in order to increase performance we will reverse the list and use
       // pop() for O(1) operations.
       const steps = evaluate(this.state.code)
-      
+
       //If there is a syntax error then handle and print to console
       if (steps === false) {
           const consoleOutput = []
@@ -69,7 +72,7 @@ export default class Interpreter extends React.Component {
   stepInterpreter() {
     const newState = this.state.interpreterSteps.slice(0)
     const elem = newState.pop()
-    
+
     if (!elem) {
       clearInterval(this.state.autoStepInterval)
       this.setState({ autoStepInterval: null, isRunning: false, })
@@ -90,7 +93,7 @@ export default class Interpreter extends React.Component {
         // Update console
         if (elem.consoleOutput !== "") {
           if (elem.consoleVariable) {
-            elem.consoleOutput = getSketchState()[elem.consoleOutput] !== undefined ? 
+            elem.consoleOutput = getSketchState()[elem.consoleOutput] !== undefined ?
               getSketchState()[elem.consoleOutput] : "undefined"
           }
 
@@ -108,7 +111,10 @@ export default class Interpreter extends React.Component {
   }
 
   handleCodeChange(editorValue, event) {
-    if (!this.state.isRunning) this.setState({ code: editorValue, })
+    if (!this.state.isRunning){
+     this.setState({ code: editorValue, })
+     sessionStorage.setItem('code', editorValue);
+    }
   }
 
   handleRunInterpreter() {
@@ -122,7 +128,7 @@ export default class Interpreter extends React.Component {
         const interval = setInterval(() => {
           this.stepInterpreter()
         }, AUTOSTEP_INTERVAL_IN_MS)
-        
+
         this.setState({
           autoStepInterval: interval,
           isSteppingAutomatically: true,
@@ -134,11 +140,11 @@ export default class Interpreter extends React.Component {
       // If the user is beginning to step through the interpreter
       if (!this.state.isSteppingAutomatically) {
         this.stepInterpreter()
-  
+
         const interval = setInterval(() => {
           this.stepInterpreter()
         }, AUTOSTEP_INTERVAL_IN_MS)
-        
+
         this.setState({
           autoStepInterval: interval,
           isSteppingAutomatically: true,

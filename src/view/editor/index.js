@@ -19,6 +19,14 @@ export default class Editor extends React.Component {
 
 		// other defaults
 		this.editor.setFontSize(fontSize)
+
+		// Get code from sessionStorage, and if found, sets the state of the editor with it
+		const localCode = sessionStorage.getItem('code');
+		if(localCode){
+			this.editor.setValue(localCode)
+			window.alert(localCode)
+		}
+
 	}
 
 	render() {
@@ -26,7 +34,7 @@ export default class Editor extends React.Component {
 			this.editor.setReadOnly(this.props.isRunning)
 			if (this.props.isRunning) {
 				this.editor.gotoLine(this.props.highlightedLine)
-			}			
+			}
 		}
 
 		return (
@@ -36,7 +44,7 @@ export default class Editor extends React.Component {
 						ref="ace"
 						style={{ width: '100%', height: '100%', }}
 						theme="chrome"
-						value={ this.props.code } /> 
+						value={ this.props.code } />
       		</Card>
     	)
 	}
