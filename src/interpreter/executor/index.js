@@ -1,5 +1,5 @@
 import { state, log, resetState } from './state';
-import { evaluate } from './interpret';
+import { evaluate, resetScope } from './interpret';
 
 let output = null;
 
@@ -57,6 +57,7 @@ export function nextStep() {
 export function resetInterpreter() {
   output = null;
   resetState();
+  resetScope();
 }
 
 export function getState() {
