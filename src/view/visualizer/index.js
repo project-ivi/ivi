@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from 'semantic-ui-react';
 
 import P5Wrapper from './p5_wrapper';
-import Sketch from './sketch';
+import Sketch from './sketch/sketch';
 
 const Visualizer = () => (
   <div style={{ height: '100%' }}>
