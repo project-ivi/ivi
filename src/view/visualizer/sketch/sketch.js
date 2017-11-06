@@ -12,7 +12,7 @@ export default p => {
   p.setup = () => {
     p.createCanvas(0, 0);
     p.background('white');
-    p.frameRate(10);
+    p.frameRate(20);
     p.noStroke();
     resizeCanvasToVisualizer();
   };
@@ -24,8 +24,9 @@ export default p => {
 
   p.draw = () => {
 
-    if (onChange || redraw) {
+    if (true) {
       p.background('white');
+      console.log('draw')
 
       base = new Scope(p);
       base.width = p.width - 40;
@@ -44,6 +45,7 @@ export default p => {
           variable.name = visualRep[i][j][0];
           variable.value = visualRep[i][j][1];
           s.variables.push(variable);
+          VARIABLES = []
           VARIABLES.push(variable);
         }
       }
