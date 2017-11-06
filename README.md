@@ -33,26 +33,30 @@ To run tests use `npm run test`. If you'd like to keep the test runner open use 
 
 ## Features
 ### Supported  
-Currently IVI only handles variable processing and is relatively basic.
+Currently IVI is basic but is quickly expanding
+We support the types:
+-Number
+-String
+-undefined
+-NaN
+
+We support:
+- Chained statements ex: `a=b=c=4;`, `console.log(console.log(console.log('test')));`
 - Variable declaration
-- Assigning strings
-- Assigning numbers
+- Variable Assignment
 - Assigning to other variable's values
-- Printing to console 
+- Printing to console
+- Comments in Code
+- Addition
+- Subtraction
+- Scoping through plain braces
+- Multiline statements
 
 ### Unsupported
-- Obscure Variable Declaration methods
-  - `var a,b = 2,3`
-  - multi line assignment
-    ```
-    var a
-    =
-    5
-    ```
-  - `x = y = 5`
 - Control flow
-- Math
 - Functions
 - Everything else not listed in 'Supported'
 
+### Syntax errors will output to console, unsupported features will also print to console with line numbers and text that caused them
 
+## Statements Must End in Semi-Colons or Unpredictable behavior will happen
