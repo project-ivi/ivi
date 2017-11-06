@@ -267,6 +267,8 @@ function acceptingConsole(buffer, currExpression, inputLine) {
     } else {
       if (evaledExpression.data instanceof Console) {
         currExpression.data.output = 'undefined';
+      } else if (evaledExpression.data instanceof Variable) {
+        currExpression.data.output = 'undefined';
       }
     }
   }
