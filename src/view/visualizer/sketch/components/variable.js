@@ -10,11 +10,12 @@ export class Variable {
     constructor(canvas) {
         this.canvas = canvas;
         this.name = "Variable";
-        this.value = "Long string test";
+        this.value = "Long string";
         this.color = "";
         this.width = VAR_WIDTH;
         this.height = VAR_HEIGHT
-        this.font = 14;
+        this.size = 14;
+        this.first = true
     }
 
     draw() {
@@ -25,6 +26,7 @@ export class Variable {
         p.fill('#000000')
         p.textStyle(p.NORMAL)
         p.textSize(12)
+        p.textFont("Courier")
         p.textAlign(p.LEFT)
         p.text(
             this.name, 
@@ -46,16 +48,33 @@ export class Variable {
         );
         // Variable value
         p.fill('black')
-        p.textSize(this.font)
+        p.textSize(this.size)
         p.noStroke()
         p.textStyle(p.BOLD)
-        p.text(
-            this.value,
+        if (this.first === true && this.value.length > 4) {
+            this.first = false
+            let temp = ""
+            for(let i = 0; i < 3; i++) {
+                temp += this.value[i]
+            }
+            temp += "..."
+            p.text(
+            temp,
             this.x + 5,
             this.y + FONT_SIZE - 1,
             this.x + this.width,
             this.y
         );
+        }
+        else{
+            p.text(
+                this.value,
+                this.x + 5,
+                this.y + FONT_SIZE - 1,
+                this.x + this.width,
+                this.y
+            );
+        }
 
         p.pop()
     }
