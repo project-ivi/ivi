@@ -2,6 +2,7 @@ import { getSketchState, } from '../state'
 import Scope from './components/scope'
 import { Variable } from './components/variable'
 
+import { VAR_WIDTH, VAR_HEIGHT } from './components/variable'
 
 export default p => {
 
@@ -10,6 +11,12 @@ export default p => {
         p.background('white')
         p.noStroke()
         resizeCanvasToVisualizer()
+
+        this.variables = []
+        for (let i = 0; i < 15; i++) {
+            const v = new Variable(p, this);
+            this.variables.push(v);
+        }
     }
 
     function resizeCanvasToVisualizer() {
@@ -20,29 +27,42 @@ export default p => {
     p.draw = () => {
         p.background('white')
 
-        const s = new Scope(p);
+        const s = new Scope(p, this);
         s.x = 10; s.y = 10; 
         s.width = p.width - 20; s.height = p.height - 20;
-        s.child = new Scope(p);
-        s.child.child = new Scope(p);
 
-        for (let i = 0; i < 15; i++) {
-            s.variables.push(new Variable(p))
-        }
-        for(let i = 0; i < 6; i++) {
-            s.child.variables.push(new Variable(p));
-        }
-        for(let i = 0; i < 20; i++) {
-            s.child.child.variables.push(new Variable(p))
-        }
-        s.draw();
+        if (this.variables) {
 
-        // THIS NEEDS TO BE APPLIED TO EVERY SCOPE
-        s.mouseHover(p.mouseX, p.mouseY)
-        s.child.mouseHover(p.mouseX, p.mouseY)
-        s.child.child.mouseHover(p.mouseX, p.mouseY)
-        
-        
+            for (let i = 0; i < 15; i++) {
+                const v = new Variable(p, this);
+                s.variables.push(this.variables[i]);
+            }
+
+            s.draw();
+
+            this.variables.forEach(elem => {
+
+                let w;
+                if (p.mouseX > elem.x && p.mouseX < elem.x + VAR_WIDTH && p.mouseY > elem.y && p.mouseY < elem.y + VAR_HEIGHT) {
+                    // Each variable extends a custom amount depending on string length
+                    if (elem.value.length < 4) {
+                        w = VAR_WIDTH
+                    } else {
+                        w = VAR_WIDTH + (elem.value.length - 6) * 8.5
+                    }
+
+                    elem.font = 15
+                    elem.width = w
+                    elem.hovering = true;
+
+                    elem.draw();
+
+                } else {
+                    elem.width = VAR_WIDTH;
+                    elem.hovering = false;
+                }
+            });
+        }
     }
 
     p.windowResized = () => {
