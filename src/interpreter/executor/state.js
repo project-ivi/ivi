@@ -1,6 +1,6 @@
 export let state = {};
 export let log = [];
-let symbolTable = {0 : {}};
+export let symbolTable = {0 : {}};
 export let currScope = symbolTable[0];
 export let scope = [0];
 export let scopeLevel = 0;
@@ -56,6 +56,17 @@ export function getClosestValue(varName) {
   return String(closest);
 }
 
+//Intake scope arr and input into symbol table
+export function insertAtScope(scopeArr, variable) {
+  let currentScope = symbolTable[0];
+  for (let i = 1; i < scopeArr.length; i++) {
+    if (currentScope[scopeArr[i]] === undefined) {
+      currentScope[scopeArr[i]] = {};
+    }
+    currentScope = currentScope[scopeArr[i]];
+  }
+  currentScope[variable.name] = variable.value;
+}
 
 export function increaseScope() {
   scopeLevel += 1;
