@@ -10,12 +10,12 @@ export class Variable {
     constructor(canvas) {
         this.canvas = canvas;
         this.name = "Variable";
-        this.value = "Long string";
+        this.value = "Med length twits";
         this.color = "";
         this.width = VAR_WIDTH;
         this.height = VAR_HEIGHT
         this.size = 14;
-        this.first = true
+        this.originalPrint = true
     }
 
     draw() {
@@ -38,7 +38,7 @@ export class Variable {
         // Variable box
         p.stroke('#000000');
         p.strokeWeight(STROKE_WEIGHT);
-        p.fill(this.color);
+        p.fill('orange');
         p.rect(
             this.x,
             this.y,
@@ -47,12 +47,13 @@ export class Variable {
             EDGE_RADIUS
         );
         // Variable value
-        p.fill('black')
+        p.fill('white')
         p.textSize(this.size)
         p.noStroke()
         p.textStyle(p.BOLD)
-        if (this.first === true && this.value.length > 4) {
-            this.first = false
+        // First time printed long values are truncated
+        if (this.originalPrint === true && this.value.length > 4) {
+            this.originalPrint = false
             let temp = ""
             for(let i = 0; i < 3; i++) {
                 temp += this.value[i]
@@ -66,6 +67,7 @@ export class Variable {
             this.y
         );
         }
+        // Otherwise it is a hover over, print the whole string
         else{
             p.text(
                 this.value,
