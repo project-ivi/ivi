@@ -19,13 +19,18 @@ export default class Editor extends React.Component {
 
     // other defaults
     this.editor.setFontSize(fontSize);
+
+    // disable line numbers (for now)
+    this.editor.renderer.setOption('showLineNumbers', false)
   }
 
   render() {
     if (this.editor) {
       this.editor.setReadOnly(this.props.isRunning);
+      this.editor.setHighlightActiveLine(!this.props.isRunning);
       if (this.props.isRunning) {
-        this.editor.gotoLine(this.props.highlightedLine);
+        /* disable line highlighting for the time being */
+        // this.editor.gotoLine(this.props.highlightedLine);
       }
     }
 
