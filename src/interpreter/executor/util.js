@@ -4,10 +4,6 @@ export function isNotCovered(buffer) {
   let isNotCovered = false;
   if (buffer.includes('function')) {
     isNotCovered = true;
-  } else if (buffer.includes('{')) {
-    isNotCovered = true;
-  } else if (buffer.includes('}')) {
-    isNotCovered = true;
   } else if (buffer.includes('()')) {
     isNotCovered = true;
   } else if (buffer.includes('class')) {

@@ -46,6 +46,7 @@ export function nextStep() {
     break;
   case 'Variable':
     state[expression.name] = expression.value;
+    console.log(expression.scope);
     break;
   default:
     break;

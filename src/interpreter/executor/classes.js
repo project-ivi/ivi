@@ -1,3 +1,5 @@
+import { scope, scopeLevel } from './interpret';
+
 // Class representing console output
 export class Console {
   constructor() {
@@ -36,5 +38,6 @@ export class Variable {
     this.name = '';
     this.value = 'undefined';
     this.inferredType = '';
+    this.scope = scope.slice(0, scopeLevel + 1);
   }
 }
