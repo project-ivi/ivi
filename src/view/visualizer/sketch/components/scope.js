@@ -87,9 +87,9 @@ class Scope {
             if ((x > elem.x && x < elem.x + VAR_WIDTH)
                 && (y > elem.y && y < elem.y + VAR_HEIGHT)) {
                 elem.name = ''
-                elem.width = 150;
+                elem.width = 150
                 elem.font = 15
-                elem.draw();
+                elem.draw()
                 }
         })
     }
