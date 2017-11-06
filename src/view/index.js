@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { evaluate } from '../interpreter/executor/interpret';
-import { putInterpreterStep, clearSketchState, getSketchState } from '../interpreter/executor/state';
+import { submitCode, nextStep, resetInterpreter, getLog } from '../interpreter/executor';
 
 import Console from './console';
 import Editor from './editor';
@@ -19,9 +18,7 @@ export default class Interpreter extends React.Component {
       code: '',
       isRunning: false,
       isSteppingAutomatically: false,
-      interpreterSteps: [],
       currentStep: 0,
-      consoleOutput: [],
     };
 
     this.evaluateCode = this.evaluateCode.bind(this);
@@ -32,79 +29,33 @@ export default class Interpreter extends React.Component {
   }
 
   evaluateCode() {
-    return new Promise((resolve) => {
-      // Delete the sketch loaded on memory.
-      clearSketchState();
+    return new Promise(resolve => {
+      // Clear state loaded.
+      resetInterpreter();
 
-      // Ideally this is constructed as a queue but because of JavaScript
-      // limitations the default implementation is an O(n) operation on access,
-      // so in order to increase performance we will reverse the list and use
-      // pop() for O(1) operations.
-      const steps = evaluate(this.state.code);
-
-      //If there is a syntax error then handle and print to console
-      if (steps === false) {
-        const consoleOutput = [];
-        consoleOutput.push(' > Syntax Error in Code');
+      if (submitCode(this.state.code)) {
         this.setState({
-          isRunning: false,
-          interpreterSteps: 0,
-          consoleOutput: consoleOutput,
+          isRunning: true,
+          currentStep: 0,
         });
-        return;
       }
 
-      steps.reverse();
-      this.setState({
-        isRunning: true,
-        interpreterSteps: steps,
-        isSteppingAutomatically: false,
-        currentStep: 0,
-        consoleOutput: [],
-      });
       resolve();
     });
   }
 
   stepInterpreter() {
-    const newState = this.state.interpreterSteps.slice(0);
-    const elem = newState.pop();
-
-    if (!elem) {
+    if (!nextStep()) {
+      // If nextStep returns false, that means the program has concluded.
+      // Stop the autorunner if there is one active, and mark the interpreter as
+      // not running.
       clearInterval(this.state.autoStepInterval);
       this.setState({ autoStepInterval: null, isRunning: false });
-
-    } else {
-      const consoleOutput = this.state.consoleOutput.slice();
-      if (elem.unsupported) {
-        consoleOutput.push(' > Unsupported code at line: ' + elem.lineNumber);
-      } else {
-        // Update the Sketch state with access function.
-        if (elem.variableValue) {
-          elem.dataArray[0].value = getSketchState()[elem.dataArray[0].value] !== undefined ?
-            getSketchState()[elem.dataArray[0].value] : 'undefined';
-        }
-
-        putInterpreterStep(elem);
-
-        // Update console
-        if (elem.consoleOutput !== '') {
-          if (elem.consoleVariable) {
-            elem.consoleOutput = getSketchState()[elem.consoleOutput] !== undefined ?
-              getSketchState()[elem.consoleOutput] : 'undefined';
-          }
-
-          consoleOutput.push(' > ' + elem.consoleOutput);
-        }
-      }
-
-      this.setState({
-        interpreterSteps: newState,
-        currentStep: this.state.currentStep + 1,
-        consoleOutput: consoleOutput,
-      });
-      return true;
+      return false;
     }
+
+    this.setState({ currentStep: this.state.currentStep + 1 });
+    return true;
   }
 
   handleCodeChange(editorValue) {
@@ -128,7 +79,10 @@ export default class Interpreter extends React.Component {
             isSteppingAutomatically: true,
           });
         })
-        .catch(error => console.log('Error on handleRunInterpreter: ' + error));
+        .catch(error => {
+          console.log('Error on handleRunInterpreter');
+          console.log(error);
+        });
 
     } else {
       // If the user is beginning to step through the interpreter
@@ -163,7 +117,10 @@ export default class Interpreter extends React.Component {
         .then(() => {
           this.stepInterpreter();
         })
-        .catch(error => console.log('Error on handleStepInterpreter: ' + error));
+        .catch(error => {
+          console.log('Error on handleStepInterpreter: ');
+          console.log(error);
+        });
 
     } else {
       // If the user is running the interpreter automatically and want to step,
@@ -216,7 +173,7 @@ export default class Interpreter extends React.Component {
               <Visualizer />
             </div>
             <div style={{ height: '30%', paddingTop: '15px' }}>
-              <Console consoleOutput={ this.state.consoleOutput } />
+              <Console consoleOutput={ getLog() } />
             </div>
           </div>
         </div>

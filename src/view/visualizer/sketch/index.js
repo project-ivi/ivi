@@ -1,4 +1,4 @@
-import { getSketchState } from '../../../interpreter/executor/state';
+import { state } from '../../../interpreter/executor/state';
 
 export default p => {
   let rectWidth = 80;
@@ -61,7 +61,6 @@ export default p => {
       return;
     }
 
-    const state = getSketchState();
     if (Object.keys(state).length < objs.length) {
       known = {};
       objs = [];
