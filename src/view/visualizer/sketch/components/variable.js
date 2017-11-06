@@ -7,9 +7,8 @@ export const FONT_SIZE = 12;
 
 export class Variable {
 
-  constructor(canvas, sketch) {
+  constructor(canvas) {
     this.canvas = canvas;
-    this.sketch = sketch;
     this.name = 'Variable';
     this.value = 'Med length twits';
     this.color = '';

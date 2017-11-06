@@ -11,10 +11,9 @@ const BACKGROUND_COLORS = [
 
 class Scope {
 
-  constructor(canvas, sketch) {
+  constructor(canvas) {
 
     this.canvas = canvas;
-    this.sketch = sketch;
     this.child = null;
     this.depth = null;
     this.variables = [];

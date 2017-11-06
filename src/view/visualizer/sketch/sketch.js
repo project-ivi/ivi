@@ -24,11 +24,12 @@ export default p => {
 
     if (VARIABLES.length > 0) {
 
-      for (let i = 0; i < 15; i++) {
-        s.variables.push(VARIABLES[i]);
-      }
+    //   let s = new Scope(p);
+    //   for (let i = 0; i < 15; i++) {
+    //     s.variables.push(VARIABLES[i]);
+    //   }
 
-      s.draw();
+    //   s.draw();
 
       VARIABLES.forEach(elem => {
 
