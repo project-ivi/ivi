@@ -1,16 +1,18 @@
 import Scope from './components/scope';
 import { Variable } from './components/variable';
 import { VAR_WIDTH, VAR_HEIGHT } from './components/variable';
-import { visualRep } from '../../../interpreter/executor/state';
+import { visualRep, onChange, cancelChange } from '../../../interpreter/executor/state';
 
 let VARIABLES = [];
 let base = null;
+let redraw = false;
 
 export default p => {
 
   p.setup = () => {
     p.createCanvas(0, 0);
     p.background('white');
+    p.frameRate(10);
     p.noStroke();
     resizeCanvasToVisualizer();
   };
@@ -21,31 +23,37 @@ export default p => {
   }
 
   p.draw = () => {
-    p.background('white');
 
-    base = new Scope(p);
-    base.width = p.width - 20;
-    base.height = p.height - 20;
-    base.x = 20;
-    base.y = 20;
+    if (onChange || redraw) {
+      p.background('white');
 
-    let s = base;
-    for (let i = 0; i < visualRep.length; i++) {
-      if (i !== 0) {
-        s.child = new Scope(p);
-        s = s.child;
+      base = new Scope(p);
+      base.width = p.width - 40;
+      base.height = p.height - 40;
+      base.x = 20;
+      base.y = 20;
+
+      let s = base;
+      for (let i = 0; i < visualRep.length; i++) {
+        if (i !== 0) {
+          s.child = new Scope(p);
+          s = s.child;
+        }
+        for (let j = 0; j < visualRep[i].length; j++) {
+          let variable = new Variable(p);
+          variable.name = visualRep[i][j][0];
+          variable.value = visualRep[i][j][1];
+          s.variables.push(variable);
+          VARIABLES.push(variable);
+        }
       }
-      for (let j = 0; j < visualRep[i].length; j++) {
-        let variable = new Variable(p);
-        variable.name = visualRep[i][j][0];
-        variable.value = visualRep[i][j][1];
-        s.variables.push(variable);
-        VARIABLES.push(variable);
-      }
+      base.draw();
+      cancelChange();
+      redraw = false;
     }
+
     if (VARIABLES.length > 0) {
 
-      base.draw();
       VARIABLES.forEach(elem => {
 
         let w;
@@ -66,6 +74,7 @@ export default p => {
         } else {
           elem.width = VAR_WIDTH;
           elem.hovering = false;
+          redraw = true;
         }
       });
     }

@@ -79,6 +79,7 @@ export class Variable {
         this.x + this.width,
         this.y
       );
+      this.hovering = false;
     }
 
     p.pop();

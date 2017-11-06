@@ -5,6 +5,7 @@ export let currScope = symbolTable[0];
 export let scope = [0];
 export let scopeLevel = 0;
 export let visualRep = [];
+export let onChange = false;
 
 export function resetState() {
   log = [];
@@ -13,6 +14,7 @@ export function resetState() {
   symbolTable = {0: {}};
   currScope = symbolTable[0];
   visualRep = [];
+  onChange = false;
 
   for (const key in state) {
     if (state.hasOwnProperty(key)) {
@@ -69,6 +71,7 @@ export function insertAtScope(scopeArr, variable) {
   }
   currentScope[variable.name] = variable.value;
   generateVisualRep(scopeArr);
+  onChange = true;
 }
 
 export function generateVisualRep(scopeArr) {
@@ -87,6 +90,10 @@ export function generateVisualRep(scopeArr) {
     }
   }
   visualRep = newRep;
+}
+
+export function cancelChange() {
+  onChange = false;
 }
 
 export function increaseScope() {
