@@ -13,6 +13,7 @@ export const typeEnum = {
   STRING: 'string',
   NUMBER: 'number',
   UNDEFINED: 'undefined',
+  NAN: 'NaN',
 };
 
 // This is our enum for operations
