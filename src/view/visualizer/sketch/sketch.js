@@ -24,7 +24,6 @@ export default p => {
   p.draw = () => {
 
     p.background('white');
-    console.log('draw');
 
     base = new Scope(p);
     base.width = p.width - 40;
@@ -33,6 +32,7 @@ export default p => {
     base.y = 20;
 
     let s = base;
+    VARIABLES = []
     for (let i = 0; i < visualRep.length; i++) {
       if (i !== 0) {
         s.child = new Scope(p);
@@ -43,44 +43,41 @@ export default p => {
         variable.name = visualRep[i][j][0];
         variable.value = visualRep[i][j][1];
         s.variables.push(variable);
-        VARIABLES = [];
         VARIABLES.push(variable);
       }
     }
     base.draw();
-  };
 
-  if (VARIABLES.length > 0) {
+    if (VARIABLES.length > 0) {
 
-    VARIABLES.forEach(elem => {
+      VARIABLES.forEach(elem => {
 
-      let w;
-      if (p.mouseX > elem.x && p.mouseX < elem.x + VAR_WIDTH && p.mouseY > elem.y && p.mouseY < elem.y + VAR_HEIGHT) {
-        // Each variable extends a custom amount depending on string length
-        if (elem.value.length < 4) {
-          w = VAR_WIDTH;
+        let w;
+        if (p.mouseX > elem.x && p.mouseX < elem.x + VAR_WIDTH && p.mouseY > elem.y && p.mouseY < elem.y + VAR_HEIGHT) {
+          // Each variable extends a custom amount depending on string length
+          if (elem.value.length < 4) {
+            w = VAR_WIDTH;
+          } else {
+            w = VAR_WIDTH + (elem.value.length - 6) * 8.5;
+          }
+
+          elem.font = 15;
+          elem.width = w;
+          elem.hovering = true;
+
+          elem.draw();
+
         } else {
-          w = VAR_WIDTH + (elem.value.length - 6) * 8.5;
+          elem.width = VAR_WIDTH;
+          elem.hovering = false;
         }
-
-        elem.font = 15;
-        elem.width = w;
-        elem.hovering = true;
-
-        elem.draw();
-
-      } else {
-        elem.width = VAR_WIDTH;
-        elem.hovering = false;
-      }
-    });
-  }
-
-  p.windowResized = () => {
-    resizeCanvasToVisualizer();
-    // overflow = false
-    p.background('white');
+      });
+    }
   };
-
-
+    
+  p.windowResized = () => {
+      resizeCanvasToVisualizer();
+      // overflow = false
+      p.background('white');
+  };
 };
