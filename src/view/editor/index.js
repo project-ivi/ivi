@@ -21,7 +21,7 @@ export default class Editor extends React.Component {
     this.editor.setFontSize(fontSize);
 
     // disable line numbers (for now)
-    this.editor.renderer.setOption('showLineNumbers', false)
+    this.editor.renderer.setOption('showLineNumbers', false);
   }
 
   render() {

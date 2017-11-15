@@ -19,6 +19,16 @@ export function deriveType(buffer) {
   }
 }
 
+export function getValueIfVariable(buffer) {
+  if (buffer[0] !== '\'' && buffer[0] !== '"') {
+    if (isVariableName(buffer)) {
+      return stripIfString(getClosestValue(buffer));
+    }
+  }
+  return stripIfString(buffer);
+}
+
+
 export function stripIfString(aString) {
   aString = aString.trim();
   if (aString[0] === '\'' || aString[0] === '"') {
