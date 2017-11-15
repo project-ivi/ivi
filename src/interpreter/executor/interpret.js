@@ -301,9 +301,10 @@ function acceptingVar(buffer, currExpression) {
 function arithmetic(buffer, inputLine, currentState) {
   let newState = stateEnum.CONSUMED;
   let left = buffer.substring(0, buffer.length - 1);
+  let right = null;
   switch (buffer[buffer.length - 1]) {
   case operationsEnum.ADDITION:
-    let right = inputLine.substring(inputLine.indexOf('+') + 1);
+    right = inputLine.substring(inputLine.indexOf('+') + 1);
     right = getSubExpressionValue(getSubExpression(right));
     buffer = addition(left, right);
     break;
