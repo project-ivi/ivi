@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { submitCode, nextStep, resetInterpreter, getLog } from '../interpreter/executor';
+import { submitCode, nextStep, resetInterpreter } from '../interpreter/executor';
 
 import Console from './console';
 import Editor from './editor';
@@ -29,7 +29,7 @@ export default class Interpreter extends React.Component {
   }
 
   evaluateCode() {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       // Clear state loaded.
       resetInterpreter();
 
@@ -38,9 +38,18 @@ export default class Interpreter extends React.Component {
           isRunning: true,
           currentStep: 0,
         });
-      }
 
-      resolve();
+        resolve();
+
+      } else {
+        this.setState({
+          isRunning: false,
+          currentStep: 0,
+        });
+        this.stepInterpreter();
+
+        reject();
+      }
     });
   }
 
@@ -173,7 +182,7 @@ export default class Interpreter extends React.Component {
               <Visualizer />
             </div>
             <div style={{ height: '30%', paddingTop: '15px' }}>
-              <Console consoleOutput={ getLog() } />
+              <Console />
             </div>
           </div>
         </div>
