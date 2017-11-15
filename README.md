@@ -55,6 +55,7 @@ We support:
 ### Unsupported
 - Using `NaN` or `unsupported` as variable names.
 - Order of operations, the program will recurse to the end of the line then pass values up backwards
+- Some console log edge cases ex: `console.log(1 + 2 + 'hello');` will log 12hello because we promote everything to a string first since we are passing values up from the end
 - Adding with negative number, we allow subtraction but adding negative numbers not supported
 - Control flow
 - Functions
