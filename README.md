@@ -53,6 +53,7 @@ We support:
 - Multiline statements
 
 ### Unsupported
+- Using `NaN` or `unsupported` as variable names.
 - Control flow
 - Functions
 - Everything else not listed in 'Supported'
