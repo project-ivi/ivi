@@ -9,8 +9,8 @@ export class Variable {
 
   constructor(canvas) {
     this.canvas = canvas;
-    this.name = 'Variable';
-    this.value = 'Med length twits';
+    this.name = '';
+    this.value = null
     this.color = '';
     this.width = VAR_WIDTH;
     this.height = VAR_HEIGHT;
@@ -21,6 +21,30 @@ export class Variable {
   draw() {
     const p = this.canvas;
     p.push();
+
+    // conditional formatting based on length and hover
+    let printValue = this.value
+    if (!this.hovering) {
+      if (this.value.length > 6) {
+        let temp = '';
+
+        for (let i = 0; i < 3; i++) {
+          temp += this.value[i];
+        }
+
+        temp += '...'
+        printValue = temp
+      }
+
+    } else {
+
+      // Each variable extends a custom amount depending on string length
+      if (this.value.length > 6) {
+        this.width = VAR_WIDTH + (this.value.length - 6) * 8.5;
+      } else {
+        this.width = VAR_WIDTH;
+      }
+    }
 
     // Variable name
     p.noStroke();
@@ -55,32 +79,13 @@ export class Variable {
     p.noStroke();
     p.textStyle(p.BOLD);
 
-    if (!this.hovering && this.value.length > 4) {
-      this.originalPrint = false;
-      let temp = '';
-
-      for (let i = 0; i < 3; i++) {
-        temp += this.value[i];
-      }
-
-      temp += '...';
-      p.text(
-        temp,
-        this.x + 5,
-        this.y + FONT_SIZE - 1,
-        this.x + this.width,
-        this.y
-      );
-    } else {
-      p.text(
-        this.value,
-        this.x + 5,
-        this.y + FONT_SIZE - 1,
-        this.x + this.width,
-        this.y
-      );
-      this.hovering = false;
-    }
+    p.text(
+      printValue,
+      this.x + 5,
+      this.y + FONT_SIZE - 1,
+      this.x + this.width,
+      this.y
+    );
 
     p.pop();
   }
