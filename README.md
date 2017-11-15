@@ -54,6 +54,8 @@ We support:
 
 ### Unsupported
 - Using `NaN` or `unsupported` as variable names.
+- Order of operations, the program will recurse to the end of the line then pass values up backwards
+- Adding with negative number, we allow subtraction but adding negative numbers not supported
 - Control flow
 - Functions
 - Everything else not listed in 'Supported'
