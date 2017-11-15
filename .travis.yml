@@ -14,7 +14,8 @@ cache:
 
 install:  npm install
 
-before_script: npm run test
+before_script: 
+  - npm run lint
 
 script: npm run build
 after_success: sh scripts/deploy.sh

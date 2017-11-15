@@ -25,32 +25,40 @@ IVI is now built.
 
 `npm start` will run the dev server and open your browser. 
 
-### Test
+### Linting
 
-To run tests use `npm run test`. If you'd like to keep the test runner open use `npm run test-w`. the `-w` is for "watch". Using the watch option will cause tests to reevaluate given any changes to test code.
+To lint your code use `npm run lint`. This will report attempt to fix any issues (such as improper indentation) and report any non-fixable errors. Use `npm run lint-w` to watch code for linting errors. Using watch option will re-lint on any save.
 
 ## Features
 ### Supported  
-Currently IVI only handles variable processing and is relatively basic.
+Currently IVI is basic but is quickly expanding
+We support the types:
+-Number
+-String
+-undefined
+-NaN
+
+We support:
+- Chained statements ex: `a=b=c=4;`, `console.log(console.log(console.log('test')));`
 - Variable declaration
-- Assigning strings
-- Assigning numbers
+- Variable Assignment
 - Assigning to other variable's values
-- Printing to console 
+- Printing to console
+- Comments in Code
+- Addition
+- Subtraction
+- Scoping through plain braces
+- Multiline statements
 
 ### Unsupported
-- Obscure Variable Declaration methods
-  - `var a,b = 2,3`
-  - multi line assignment
-    ```
-    var a
-    =
-    5
-    ```
-  - `x = y = 5`
+- Using `NaN` or `unsupported` as variable names.
+- Order of operations, the program will recurse to the end of the line then pass values up backwards
+- Some console log edge cases ex: `console.log(1 + 2 + 'hello');` will log 12hello because we promote everything to a string first since we are passing values up from the end
+- Adding with negative number, we allow subtraction but adding negative numbers not supported
 - Control flow
-- Math
 - Functions
 - Everything else not listed in 'Supported'
 
+### Syntax errors will output to console, unsupported features will also print to console with line numbers and text that caused them
 
+## Statements Must End in Semi-Colons or Unpredictable behavior will happen
