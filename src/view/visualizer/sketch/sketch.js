@@ -60,7 +60,7 @@ export default p => {
         }
       });
     }
-  }
+  };
 
   p.windowResized = () => {
     resizeCanvasToVisualizer();

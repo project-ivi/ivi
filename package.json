@@ -24,8 +24,6 @@
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack",
-    "test": "jest",
-    "test-w": "jest --watch",
     "lint": "esw src --fix --color",
     "lint-w": "npm run lint -- --watch"
   },

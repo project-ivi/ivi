@@ -25,11 +25,9 @@ IVI is now built.
 
 `npm start` will run the dev server and open your browser. 
 
-### Linting and Testing
+### Linting
 
 To lint your code use `npm run lint`. This will report attempt to fix any issues (such as improper indentation) and report any non-fixable errors. Use `npm run lint-w` to watch code for linting errors. Using watch option will re-lint on any save.
-
-To run tests use `npm run test`. If you'd like to keep the test runner open use  `npm run test-w`. the `-w` is for "watch". Using the watch option will cause tests to reevaluate given any changes to test code.
 
 ## Features
 ### Supported  

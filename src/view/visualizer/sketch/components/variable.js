@@ -10,7 +10,7 @@ export class Variable {
   constructor(canvas) {
     this.canvas = canvas;
     this.name = '';
-    this.value = null
+    this.value = null;
     this.color = '';
     this.width = VAR_WIDTH;
     this.height = VAR_HEIGHT;
@@ -23,7 +23,7 @@ export class Variable {
     p.push();
 
     // conditional formatting based on length and hover
-    let printValue = this.value
+    let printValue = this.value;
     if (!this.hovering) {
       if (this.value.length > 6) {
         let temp = '';
@@ -32,8 +32,8 @@ export class Variable {
           temp += this.value[i];
         }
 
-        temp += '...'
-        printValue = temp
+        temp += '...';
+        printValue = temp;
       }
 
     } else {
