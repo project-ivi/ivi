@@ -1,4 +1,5 @@
 import Scope from './components/scope';
+import Conditional from './components/conditional';
 import { Variable } from './components/variable';
 import { VAR_WIDTH, VAR_HEIGHT } from './components/variable';
 import { visualRep } from '../../../interpreter/executor/state';
@@ -30,6 +31,8 @@ export default p => {
     base.height = p.height - 40;
     base.x = 20;
     base.y = 20;
+
+    base.child = new Conditional(p);
 
     let s = base;
     VARIABLES = [];
