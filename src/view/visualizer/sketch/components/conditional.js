@@ -2,12 +2,51 @@
 contain scopes */
 
 import { STROKE_WEIGHT, EDGE_RADIUS } from './scope';
+import Bezier from 'bezier-js';
 
 // TODO: Conditional and Scope probably need to inherit from the same interface or something
 class Conditional {
     constructor(canvas) {
         this.canvas = canvas;
-        this.possibilties = [0, 0, 0]  // just dummy values for now
+        this.possibilties = ["a < 3", "!a<3"]  // just dummy values for now
+        this.chosen = 0  // index of the possibility that gets executed
+        
+        this.isAnimating = true  // currently executing the scope swiping animation
+        this.curFrame = 0
+
+        // create animation keyframes
+        this.numFrames = 50
+        const curve = new Bezier(3,0 , 0,0 , 3,1 , 0,1)
+        
+        console.log("Computing animation path...")
+
+        // this computes points that are equidistant on the curve based on arc length
+        const curveLength = curve.length()
+        const lengthStep = curveLength / this.numFrames
+        let oldTime = tstep
+        let minDistance = curveLength  // MAX_LENGTH, basically
+        const tstep = 1/1000
+        const steps = []
+        for (let t = tstep * 2; t <= 1; t += tstep) {
+            const subCurve = curve.split(oldTime, t)
+            const subLength = subCurve.length()
+
+            const delta = lengthStep - subLength
+            if (Math.abs(delta) < minDistance) {
+                minDistance = delta  // still approaching
+            } else {
+                oldTime = t
+                minDistance = curveLength 
+                steps.push(t - tstep) // found our point, on to the next one
+            }
+        }
+
+        console.log("Complete!")
+
+        this.points = []
+        steps.forEach(elem => {
+            this.points.push(curve.get(elem))
+        })
 
         this.setBounds = this.setBounds.bind(this);
     }
@@ -34,20 +73,37 @@ class Conditional {
             EDGE_RADIUS
         );
 
-        // draw dividing lines
         const numPoss = this.possibilties.length;
-        const interval = this.height / numPoss;
-        let curLongitude = interval + this.y;
-        for (let i = 0; i < numPoss - 1; i++) {
+        if (numPoss === 2) {
+            let longitude = this.height / 2 + this.y;
+
+            const step = this.points[this.curFrame].y * (longitude - this.y)
+            if (this.isAnimating) {
+                if (this.chosen === 0) {
+                    longitude -= step
+                } else {
+                    longitude += step
+                }
+            }
+
             p.line(
                 this.x + 7, 
-                curLongitude,
+                longitude,
                 this.x + this.width - 7,
-                curLongitude
+                longitude
             );
-
-            curLongitude += interval;
         }
+
+        // reset based on points.length, bc it might not have found every point in the computation
+        this.curFrame += 1;
+        if (this.curFrame > this.points.length - 1) {
+            this.curFrame = 0
+        }
+
+        // draw the animation curve, for reference
+        this.points.forEach(elem => {
+            p.point(elem.x * 100 + 200, elem.y * 100 + 200)
+        })
     }
 }
 
