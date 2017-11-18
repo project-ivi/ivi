@@ -14,6 +14,7 @@ export const typeEnum = {
   NUMBER: 'number',
   UNDEFINED: 'undefined',
   NAN: 'NaN',
+  BOOLEAN: 'boolean',
 };
 
 // This is our enum for operations
