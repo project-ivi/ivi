@@ -7,7 +7,7 @@ import { STROKE_WEIGHT, EDGE_RADIUS } from './scope';
 class Conditional {
     constructor(canvas) {
         this.canvas = canvas;
-        this.possibilties = [0, 0]  // just dummy values for now
+        this.possibilties = [0, 0, 0]  // just dummy values for now
 
         this.setBounds = this.setBounds.bind(this);
     }
@@ -45,6 +45,8 @@ class Conditional {
                 this.x + this.width - 7,
                 curLongitude
             );
+
+            curLongitude += interval;
         }
     }
 }
