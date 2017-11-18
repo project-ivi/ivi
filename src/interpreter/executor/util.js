@@ -10,6 +10,8 @@ export function deriveType(buffer) {
     return typeEnum.NAN;
   } else if (buffer === 'undefined') {
     return typeEnum.UNDEFINED;
+  } else if (buffer === 'true' || buffer === 'false') {
+    return typeEnum.BOOLEAN;
   } else if (!isVariableName(buffer)) {
     return typeEnum.NUMBER;
   } else if (isVariableName(buffer)) {
@@ -35,6 +37,13 @@ export function stripIfString(aString) {
     return aString.substring(1, aString.length - 1);
   }
   return aString;
+}
+
+export function convertToNum(buffer, type) {
+  if (type === typeEnum.BOOLEAN) {
+    return Number(Boolean(buffer === 'true'));
+  }
+  return Number(buffer);
 }
 
 // Band Aid for things not yet covered
