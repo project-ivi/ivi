@@ -4,6 +4,7 @@ let symbolTable = {0 : {}};
 export let currScope = symbolTable[0];
 export let scope = [0];
 export let scopeLevel = 0;
+export let changeFlag = [false];
 export let visualRep = [];
 export let onChange = false;
 
@@ -89,6 +90,8 @@ export function generateVisualRep(scopeArr) {
       }
     }
   }
+
+  changeFlag[0] = true;
   visualRep = newRep;
 }
 

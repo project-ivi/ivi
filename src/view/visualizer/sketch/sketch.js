@@ -2,8 +2,9 @@ import Scope from './components/scope';
 import Conditional from './components/conditional';
 import { Variable } from './components/variable';
 import { VAR_WIDTH, VAR_HEIGHT } from './components/variable';
-import { visualRep } from '../../../interpreter/executor/state';
+import { visualRep, changeFlag } from '../../../interpreter/executor/state';
 
+let oldRep = [];
 let VARIABLES = [];
 let base = null;
 
@@ -23,6 +24,17 @@ export default p => {
   }
 
   p.draw = () => {
+
+    // visualRep has just been updated
+    if (changeFlag[0]) {
+
+      // was the last element of oldRep a conditional
+      if (oldRep[oldRep.length - 1]) {
+
+        // animate the conditional and display the contents of oldRep until the animation completes
+
+      }
+    }
 
     p.background('white');
 
