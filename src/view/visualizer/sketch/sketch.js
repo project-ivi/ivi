@@ -8,12 +8,14 @@ let oldRep = [];
 let VARIABLES = [];
 let base = null;
 
+const c = new Conditional(null);
+
 export default p => {
 
   p.setup = () => {
     p.createCanvas(0, 0);
     p.background('white');
-    p.frameRate(20);
+    p.frameRate(60);
     p.noStroke();
     resizeCanvasToVisualizer();
   };
@@ -44,7 +46,8 @@ export default p => {
     base.x = 20;
     base.y = 20;
 
-    base.child = new Conditional(p);
+    c.canvas = p;
+    base.child = c;
 
     let s = base;
     VARIABLES = [];
