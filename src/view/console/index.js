@@ -10,6 +10,7 @@ const textAreaStyle = {
   color: 'white',
   fontFamily: 'Courier',
   overflow: 'scroll',
+  padding: '13px',
 };
 
 const Console = () => (
