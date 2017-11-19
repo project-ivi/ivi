@@ -1,11 +1,7 @@
 language: node_js
 node_js:
 - 8
-env:
-  global:
-  - REPO="project-ivi.github.io"
-  - FILES="dist/."
-  - GH_REPO="github.com/${USER}/${REPO}.git"
+
 before_install: npm i -g npm@latest
 cache:
   directories:
@@ -18,4 +14,11 @@ before_script:
   - npm run lint
 
 script: npm run build
-after_success: sh scripts/deploy.sh
+
+deploy: 
+  local_dir: dist/
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
