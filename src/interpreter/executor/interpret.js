@@ -2,7 +2,7 @@ import { Console, Expression, Syntax, Unsupported, Variable } from './classes';
 import { stateEnum, operationsEnum } from './enums';
 import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
 import { isNotCovered, isVariableName } from './util';
-import { addition, subtraction } from './operations';
+import { addition, subtraction, lessThan, greaterThan } from './operations';
 
 // Output of expressions for visualiser
 let output = [];
@@ -312,6 +312,16 @@ function arithmetic(buffer, inputLine, currentState) {
     right = inputLine.substring(inputLine.indexOf('-') + 1);
     right = getSubExpressionValue(getSubExpression(right));
     buffer = subtraction(left, right);
+    break;
+  case operationsEnum.LESS_THAN:
+    right = inputLine.substring(inputLine.indexOf('<') + 1);
+    right = getSubExpressionValue(getSubExpression(right));
+    buffer = lessThan(left, right);
+    break;
+  case operationsEnum.GREATER_THAN:
+    right = inputLine.substring(inputLine.indexOf('>') + 1);
+    right = getSubExpressionValue(getSubExpression(right));
+    buffer = greaterThan(left, right);
     break;
   default:
     newState = currentState;

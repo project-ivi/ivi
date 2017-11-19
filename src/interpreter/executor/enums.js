@@ -21,4 +21,6 @@ export const typeEnum = {
 export const operationsEnum = {
   ADDITION: '+',
   SUBTRACTION: '-',
+  LESS_THAN: '<',
+  GREATER_THAN: '>',
 };
