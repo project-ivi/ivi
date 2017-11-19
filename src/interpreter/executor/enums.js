@@ -20,6 +20,9 @@ export const typeEnum = {
 // This is our enum for operations
 export const operationsEnum = {
   ADDITION: '+',
+  DIVISION: '/',
+  REMAINDER: '%',
+  MULTIPLICATION: '*',
   SUBTRACTION: '-',
   LESS_THAN: '<',
   GREATER_THAN: '>',
