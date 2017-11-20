@@ -1,4 +1,4 @@
-import { log, resetState, insertAtScope } from './state';
+import { log, resetState, insertAtScope, insertConditionAtScope, changeFlag } from './state';
 import { evaluate } from './interpret';
 
 let expressions = [];
@@ -12,7 +12,7 @@ export function submitCode(code) {
     while (errors.length > 0) {
       log.push(errors.pop().value);
     }
-    
+
     return false;
 
   } else {
@@ -44,9 +44,13 @@ export function nextStep() {
   switch (expression.constructor.name) {
   case 'Console':
     log.push(expression.output);
+    changeFlag[0] = true;
     break;
   case 'Variable':
     insertAtScope(expression.scope, expression);
+    break;
+  case 'Conditional':
+    insertConditionAtScope(expression.scope, expression);
     break;
   default:
     break;

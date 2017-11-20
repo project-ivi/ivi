@@ -64,10 +64,6 @@ export function isNotCovered(buffer) {
     isNotCovered = true;
   } else if (buffer.includes('?')) {
     isNotCovered = true;
-  } else if (buffer.includes('if')) {
-    isNotCovered = true;
-  } else if (buffer.includes('else')) {
-    isNotCovered = true;
   } else if (buffer.includes('for')) {
     isNotCovered = true;
   } else if (buffer.includes('while')) {

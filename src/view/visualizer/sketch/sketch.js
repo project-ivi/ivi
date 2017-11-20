@@ -1,17 +1,29 @@
 import Scope from './components/scope';
+import ConditionalView from './components/conditionalView';
 import { Variable } from './components/variable';
 import { VAR_WIDTH, VAR_HEIGHT } from './components/variable';
-import { visualRep } from '../../../interpreter/executor/state';
+import { visualRep, changeFlag } from '../../../interpreter/executor/state';
+import { Conditional } from '../../../interpreter/executor/finish442Hacks';
+
+let oldRep = [];
+let cached = [];
 
 let VARIABLES = [];
 let base = null;
+
+let conditional = [null];
+
+let shouldCreateNewConditional = true;
+export const resetConditional = () => {
+  shouldCreateNewConditional = true;
+};
 
 export default p => {
 
   p.setup = () => {
     p.createCanvas(0, 0);
     p.background('white');
-    p.frameRate(20);
+    p.frameRate(60);
     p.noStroke();
     resizeCanvasToVisualizer();
   };
@@ -25,6 +37,25 @@ export default p => {
 
     p.background('white');
 
+    let repToDisplay;
+
+    if (changeFlag[0]) {
+      const last = oldRep.length > 0 ? oldRep[oldRep.length - 1] : null;
+      if (last && last.length > 0 && last[last.length - 1] instanceof Conditional) {
+        conditional[0].startAnimation();
+        cached = oldRep;
+      }
+
+      changeFlag[0] = false;
+    }
+
+    oldRep = visualRep;
+    if (conditional[0] && conditional[0].isAnimating) {
+      repToDisplay = cached;
+    } else {
+      repToDisplay = visualRep;
+    }
+
     base = new Scope(p);
     base.width = p.width - 40;
     base.height = p.height - 40;
@@ -33,17 +64,27 @@ export default p => {
 
     let s = base;
     VARIABLES = [];
-    for (let i = 0; i < visualRep.length; i++) {
+    for (let i = 0; i < repToDisplay.length; i++) {
       if (i !== 0) {
         s.child = new Scope(p);
         s = s.child;
       }
-      for (let j = 0; j < visualRep[i].length; j++) {
-        let variable = new Variable(p);
-        variable.name = visualRep[i][j][0];
-        variable.value = visualRep[i][j][1];
-        s.variables.push(variable);
-        VARIABLES.push(variable);
+
+      // Hack
+      for (let j = 0; j < repToDisplay[i].length; j++) {
+        if (!(repToDisplay[i][j] instanceof Conditional)) {
+          let variable = new Variable(p);
+          variable.name = repToDisplay[i][j][0];
+          variable.value = repToDisplay[i][j][1];
+          s.variables.push(variable);
+          VARIABLES.push(variable);
+        } else if (repToDisplay[i][j] instanceof Conditional) {
+          if (shouldCreateNewConditional) {
+            conditional[0] = new ConditionalView(p, repToDisplay[i][j]);
+            shouldCreateNewConditional = false;
+          }
+          s.child = conditional[0];
+        }
       }
     }
     base.draw();
