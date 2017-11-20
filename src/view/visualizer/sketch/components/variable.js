@@ -22,8 +22,6 @@ export class Variable {
     const p = this.canvas;
     p.push();
 
-    console.log(this.name)
-
     // conditional formatting based on length and hover
     let printValue = this.value;
     if (!this.hovering) {

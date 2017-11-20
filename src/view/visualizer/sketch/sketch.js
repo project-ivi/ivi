@@ -11,12 +11,12 @@ let cached = [];
 let VARIABLES = [];
 let base = null;
 
-let conditional = [null]
+let conditional = [null];
 
 let shouldCreateNewConditional = true;
 export const resetConditional = () => {
   shouldCreateNewConditional = true;
-}
+};
 
 export default p => {
 
@@ -62,9 +62,6 @@ export default p => {
     base.x = 20;
     base.y = 20;
 
-    console.log(repToDisplay);
-    // console.log(shouldCreateNewConditional);
-
     let s = base;
     VARIABLES = [];
     for (let i = 0; i < repToDisplay.length; i++) {
@@ -83,7 +80,6 @@ export default p => {
           VARIABLES.push(variable);
         } else if (repToDisplay[i][j] instanceof Conditional) {
           if (shouldCreateNewConditional) {
-            console.log('this happened');
             conditional[0] = new ConditionalView(p, repToDisplay[i][j]);
             shouldCreateNewConditional = false;
           }

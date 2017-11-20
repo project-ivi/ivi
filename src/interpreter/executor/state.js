@@ -77,7 +77,15 @@ export function insertAtScope(scopeArr, variable) {
 
 // Hack
 export function insertConditionAtScope(scopeArr, conditional) {
+  let currentScope = symbolTable[0];
+  for (let i = 1; i < scopeArr.length; i++) {
+    if (currentScope[scopeArr[i]] === undefined) {
+      currentScope[scopeArr[i]] = {};
+    }
+    currentScope = currentScope[scopeArr[i]];
+  }
   generateVisualRep(scopeArr);
+
   visualRep[visualRep.length - 1].push(conditional);
 }
 
@@ -94,8 +102,6 @@ export function generateVisualRep(scopeArr) {
     for (let key in currentScope) {
       if (!(currentScope[key] instanceof Object)) {
         newRep[i].push([key, currentScope[key]]);
-      } else  { //Hack
-        newRep[i].push(currentScope[key]);
       }
     }
   }
