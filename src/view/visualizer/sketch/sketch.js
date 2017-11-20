@@ -62,7 +62,8 @@ export default p => {
     base.x = 20;
     base.y = 20;
 
-    console.log(repToDisplay)
+    console.log(repToDisplay);
+    // console.log(shouldCreateNewConditional);
 
     let s = base;
     VARIABLES = [];
@@ -74,13 +75,13 @@ export default p => {
 
       // Hack
       for (let j = 0; j < repToDisplay[i].length; j++) {
-        if (repToDisplay[i][j] instanceof Array) {
+        if (!(repToDisplay[i][j] instanceof Conditional)) {
           let variable = new Variable(p);
           variable.name = repToDisplay[i][j][0];
           variable.value = repToDisplay[i][j][1];
           s.variables.push(variable);
           VARIABLES.push(variable);
-        } else {
+        } else if (repToDisplay[i][j] instanceof Conditional) {
           if (shouldCreateNewConditional) {
             console.log('this happened');
             conditional[0] = new ConditionalView(p, repToDisplay[i][j]);
