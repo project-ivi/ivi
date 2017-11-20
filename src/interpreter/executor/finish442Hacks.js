@@ -5,6 +5,8 @@
 */
 
 import { getClosestValue } from './state.js';
+import { deriveType } from './util.js';
+import { typeEnum } from './enums.js';
 
 export class Conditional {
   constructor() {
@@ -142,7 +144,9 @@ export function reInsertConditionals(splitCode) {
 
 export function handleWinner(con) {
   for (let i = 0; i < con.possibilities.length - 1; i++) {
-    if (con.possibilities[i] === 'true' || getClosestValue(con.possibilities[i]) === 'true') {
+    let val = getClosestValue(con.possibilities[i]);
+    if (con.possibilities[i] === 'true' || val === 'true'
+        || deriveType(val) === typeEnum.NUMBER && val != '0') {
       con.chosen = i;
       break;
     }
