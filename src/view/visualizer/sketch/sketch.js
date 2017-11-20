@@ -11,9 +11,11 @@ let cached = [];
 let VARIABLES = [];
 let base = null;
 
-let conditional = null;
-export const nullifyConditional = () => {
-  conditional = null;
+let conditional = [null]
+
+let shouldCreateNewConditional = true;
+export const resetConditional = () => {
+  shouldCreateNewConditional = true;
 }
 
 export default p => {
@@ -40,7 +42,7 @@ export default p => {
     if (changeFlag[0]) {
       const last = oldRep.length > 0 ? oldRep[oldRep.length - 1] : null;
       if (last && last.length > 0 && last[last.length - 1] instanceof Conditional) {
-        conditional.startAnimation();
+        conditional[0].startAnimation();
         cached = oldRep;
       }
 
@@ -48,7 +50,7 @@ export default p => {
     }
 
     oldRep = visualRep;
-    if (conditional && conditional.isAnimating) {
+    if (conditional[0] && conditional[0].isAnimating) {
       repToDisplay = cached;
     } else {
       repToDisplay = visualRep;
@@ -59,6 +61,8 @@ export default p => {
     base.height = p.height - 40;
     base.x = 20;
     base.y = 20;
+
+    console.log(repToDisplay)
 
     let s = base;
     VARIABLES = [];
@@ -77,11 +81,12 @@ export default p => {
           s.variables.push(variable);
           VARIABLES.push(variable);
         } else {
-          if (conditional === null) {
+          if (shouldCreateNewConditional) {
             console.log('this happened');
-            conditional = new ConditionalView(p, repToDisplay[i][j]);
+            conditional[0] = new ConditionalView(p, repToDisplay[i][j]);
+            shouldCreateNewConditional = false;
           }
-          s.child = conditional;
+          s.child = conditional[0];
         }
       }
     }
