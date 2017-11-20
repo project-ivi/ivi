@@ -1,6 +1,7 @@
 /* The conditional doesn't need to be a different kind of scope, it can simply
 contain scopes */
 
+import { nullifyConditional } from '../sketch'
 import { STROKE_WEIGHT, EDGE_RADIUS } from './scope';
 import Bezier from 'bezier-js';
 
@@ -176,6 +177,7 @@ class ConditionalView {
     this.curFrame += 1;
     if (this.curFrame > this.points.length - 1) {
       this.isAnimating = false;
+      nullifyConditional();
     }
 
     // // draw the animation curve, for reference
