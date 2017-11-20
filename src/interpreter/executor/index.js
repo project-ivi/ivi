@@ -1,4 +1,4 @@
-import { log, resetState, insertAtScope } from './state';
+import { log, resetState, insertAtScope, insertConditionAtScope } from './state';
 import { evaluate } from './interpret';
 
 let expressions = [];
@@ -47,6 +47,9 @@ export function nextStep() {
     break;
   case 'Variable':
     insertAtScope(expression.scope, expression);
+    break;
+  case 'Conditional':
+    insertConditionAtScope(expression.scope, expression);
     break;
   default:
     break;
