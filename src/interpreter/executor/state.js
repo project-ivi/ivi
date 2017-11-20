@@ -44,7 +44,12 @@ function traverseToScope() {
 
 // Insert a variable into the current scope
 export function insertVar(variable) {
-  currScope[variable.name] = variable.value;
+  // currScope[variable.name] = variable.value;
+}
+
+// Insert value 
+export function insertValueByVariableName(variableName, valueObject) {
+  currScope[variableName] = valueObject;
 }
 
 export function getClosestValue(varName) {

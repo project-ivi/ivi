@@ -7,7 +7,7 @@ import Editor from './editor';
 import Navbar from './navbar';
 import Visualizer from './visualizer';
 
-const AUTOSTEP_INTERVAL_IN_MS = 1000;
+const AUTOSTEP_INTERVAL_IN_MS = 1;
 
 export default class Interpreter extends React.Component {
   constructor() {

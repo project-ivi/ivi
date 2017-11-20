@@ -42,7 +42,7 @@ export function nextStep() {
   const expression = action.data;
   switch (expression.constructor.name) {
   case 'Console':
-    log.push(expression.output);
+    log.push(String(expression.output));
     break;
   case 'Variable':
     insertAtScope(expression.scope, expression);

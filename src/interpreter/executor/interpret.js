@@ -1,14 +1,13 @@
 import { Console, Expression, Syntax, Unsupported, Variable } from './classes';
 import { stateEnum, operationsEnum } from './enums';
-import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
+import { increaseScope, decreaseScope, getClosestValue, insertVar } from './state';
 import { isNotCovered, isVariableName } from './util';
-import { addition, division, remainder, multiplication, subtraction } from './operations';
-
-// Output of expressions for visualiser
-let output = [];
+import { operate } from './operations';
 
 // Setup for when we initially check syntax
 export function evaluate(inputCode) {
+  const output = [];
+
   let searchSyntax = false;
   //Check validity of inputCode first
   try {
@@ -53,7 +52,7 @@ export function evaluate(inputCode) {
   // Interpret our code
   for (let i = 0; i < inputCode.length; i++) {
     if (inputCode[i].trim() != '') {
-      interpretLine(inputCode[i].trim());
+      interpretLine(inputCode[i].trim(), output);
     }
   }
 
@@ -65,7 +64,7 @@ export function evaluate(inputCode) {
 
 // Master interpret function, will insert into output on consume,
 // Will return expression if no expression consumed
-function interpretLine(inputLine) {
+function interpretLine(inputLine, output) {
   // New expression to build into
   let currExpression = new Expression(inputLine);
 
@@ -74,7 +73,7 @@ function interpretLine(inputLine) {
   let inString = false;
   let stringStart = '';
   let currentState = stateEnum.DEFAULT;
-  let resTup = null;
+  
   // For each character in our inputLine
   for (let i = 0; i < inputLine.length; i++) {
     // String handling, do not skip spaces for strings
@@ -94,8 +93,8 @@ function interpretLine(inputLine) {
       }
     }
 
-    // Not in string and space, continue
-    if (!inString && (inputLine[i] === ' ' || inputLine[i] === '\t')) {
+    // Not in string and tab, continue
+    if (!inString && inputLine[i] === '\t') {
       continue;
     }
 
@@ -114,42 +113,9 @@ function interpretLine(inputLine) {
     }
 
     buffer += inputLine[i];
-
-    resTup = arithmetic(buffer, inputLine, currentState);
-    if (resTup[1] === stateEnum.CONSUMED) {
-      currExpression.derivedFrom = resTup[0];
-      break;
-    }
-
-    // If we haven't found buffer, try to find, else eval
-    if (currentState === stateEnum.DEFAULT) {
-      resTup = findBufferState(buffer, currExpression);
-    } else {
-      resTup = evalState(buffer, currentState, currExpression, inputLine);
-    }
-
-    // Update our buffer and state
-    buffer = resTup[0];
-    currentState = resTup[1];
-
-    // If we consumed, exit our expression
-    if (currentState === stateEnum.CONSUMED) {
-      output.push(currExpression);
-      return;
-    }
   }
 
-  // Handle case where we didn't see key words, try to find expression
-  currentState = looseEnds(buffer, currentState, currExpression);
-  if (currentState === stateEnum.CONSUMED) {
-    output.push(currExpression);
-    return;
-  }
-
-  if (isVariableName(buffer.trim()) && getClosestValue(buffer.trim()) === 'undefined') {
-    currExpression.derivedFrom = 'undefined';
-  }
-  return currExpression;
+  operate(buffer, output);
 }
 
 // Evaluate a sub expression, if we didn't get a return, grab last output expression
@@ -296,41 +262,4 @@ function acceptingVar(buffer, currExpression) {
     currentState = stateEnum.ASSIGNING_VAR;
   }
   return [buffer, currentState];
-}
-
-function arithmetic(buffer, inputLine, currentState) {
-  let newState = stateEnum.CONSUMED;
-  let left = buffer.substring(0, buffer.length - 1);
-  let right = null;
-  switch (buffer[buffer.length - 1]) {
-  case operationsEnum.ADDITION:
-    right = inputLine.substring(inputLine.indexOf('+') + 1);
-    right = getSubExpressionValue(getSubExpression(right));
-    buffer = addition(left, right);
-    break;
-  case operationsEnum.DIVISION:
-    right = inputLine.substring(inputLine.indexOf('/') + 1);
-    right = getSubExpressionValue(getSubExpression(right));
-    buffer = division(left, right);
-    break;
-  case operationsEnum.REMAINDER:
-    right = inputLine.substring(inputLine.indexOf('%') + 1);
-    right = getSubExpressionValue(getSubExpression(right));
-    buffer = remainder(left, right);
-    break;
-  case operationsEnum.MULTIPLICATION:
-    right = inputLine.substring(inputLine.indexOf('*') + 1);
-    right = getSubExpressionValue(getSubExpression(right));
-    buffer = multiplication(left, right);
-    break;
-  case operationsEnum.SUBTRACTION:
-    right = inputLine.substring(inputLine.indexOf('-') + 1);
-    right = getSubExpressionValue(getSubExpression(right));
-    buffer = subtraction(left, right);
-    break;
-  default:
-    newState = currentState;
-    break;
-  }
-  return [buffer, newState];
 }

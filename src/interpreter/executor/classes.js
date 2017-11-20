@@ -41,3 +41,11 @@ export class Variable {
     this.scope = scope.slice(0, scopeLevel + 1);
   }
 }
+
+// Class representing a value.
+export class Value {
+  constructor(type, value) {
+    this.type = type;
+    this.value = value;
+  }
+}

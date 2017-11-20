@@ -1,6 +1,6 @@
 import { getClosestValue } from './state';
-import { typeEnum } from './enums';
-
+import { symbolsEnum, typeEnum } from './enums';
+import { Value } from './classes';
 
 export function deriveType(buffer) {
   buffer = buffer.trim();
@@ -18,6 +18,42 @@ export function deriveType(buffer) {
     return deriveType(getClosestValue(buffer));
   } else {
     return typeEnum.UNDEFINED;
+  }
+}
+
+export function stringToValue(expression) {
+  let value = expression.trim();
+
+  // Handle Strings
+  if ((value.charAt(0) === symbolsEnum.STRING_DOUBLE_QUOTE &&
+      value.charAt(value.length - 1) === symbolsEnum.STRING_DOUBLE_QUOTE) || 
+      (value.charAt(0) === symbolsEnum.STRING_SINGLE_QUOTE &&
+      value.charAt(value.length - 1) === symbolsEnum.STRING_SINGLE_QUOTE)) {
+    return new Value(typeEnum.STRING, value.substring(1, value.length - 1));
+
+  }
+
+  if (value === symbolsEnum.NAN) return new Value(typeEnum.NAN, NaN);
+  if (value === symbolsEnum.UNDEFINED) return new Value(typeEnum.UNDEFINED, undefined);
+  if (value === symbolsEnum.FALSE || value === symbolsEnum.TRUE) {
+    return new Value(typeEnum.BOOLEAN, Boolean(value === symbolsEnum.TRUE));
+  }
+  
+  if (!isVariableName(value)) {
+    return new Value(typeEnum.NUMBER, Number(value));
+  } else {
+    return stringToValue(getClosestValue(value));
+  }
+}
+
+export function valueToJS(type, value) {
+  switch (type) {
+    case typeEnum.BOOLEAN: return Boolean(value === 'true');
+    case typeEnum.NAN: return NaN;
+    case typeEnum.NUMBER: return Number(value);
+    case typeEnum.STRING: return String(value);
+    case typeEnum.UNDEFINED: return undefined;
+    default: return undefined;
   }
 }
 
