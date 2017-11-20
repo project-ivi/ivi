@@ -77,19 +77,12 @@ export function insertAtScope(scopeArr, variable) {
 
 // Hack
 export function insertConditionAtScope(scopeArr, conditional) {
-  let currentScope = symbolTable[0];
-  for (let i = 1; i < scopeArr.length; i++) {
-    if (currentScope[scopeArr[i]] === undefined) {
-      currentScope[scopeArr[i]] = {};
-    }
-    currentScope = currentScope[scopeArr[i]];
-  }
-  currentScope['if'] = conditional;
   generateVisualRep(scopeArr);
-  onChange = true;
+  visualRep[visualRep.length - 1].push(conditional);
 }
 
 export function generateVisualRep(scopeArr) {
+
   let newRep = [];
   let currentScope = symbolTable;
   for (let i = 0; i < scopeArr.length; i++) {
@@ -108,21 +101,6 @@ export function generateVisualRep(scopeArr) {
   }
   changeFlag[0] = true;
   visualRep = newRep;
-
-  //Clear our conditional Hack
-  currentScope = symbolTable[0];
-  for (let i = 1; i < scopeArr.length; i++) {
-    if (currentScope['if'] !== undefined) {
-      currentScope['if'] = undefined;
-    }
-    if (currentScope[scopeArr[i]] === undefined) {
-      currentScope[scopeArr[i]] = {};
-    }
-    currentScope = currentScope[scopeArr[i]];
-  }
-  if (currentScope['if'] !== undefined) {
-    currentScope['if'] = undefined;
-  }
 }
 
 export function cancelChange() {

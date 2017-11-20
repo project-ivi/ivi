@@ -52,7 +52,7 @@ function preParse(inputCode) {
                 let firstBrace = inputCode.indexOf('{', firstParen);
                 let closingParen = inputCode.lastIndexOf(')', firstBrace);
                 let con = inputCode.substring(firstParen + 1, closingParen);
-                currCon.possibilities.push(con);
+                currCon.possibilities.push(con.trim());
               }
               continue;
             } else if (inputCode.indexOf('if', i) === -1) {
@@ -116,7 +116,7 @@ function preParse(inputCode) {
         let firstBrace = inputCode.indexOf('{', firstParen);
         let closingParen = inputCode.lastIndexOf(')', firstBrace);
         let con = inputCode.substring(firstParen + 1, closingParen);
-        currCon.possibilities.push(con);
+        currCon.possibilities.push(con.trim());
 
       } else if (currChar !== 'f' && buffer.length > 0) {
         buffer = '';
