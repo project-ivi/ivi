@@ -8,14 +8,14 @@ import Bezier from 'bezier-js';
 class Conditional {
     constructor(canvas) {
         this.canvas = canvas;
-        this.possibilties = ["a < 3", "!(a < 3)"]  // just dummy values for now
-        this.chosen = 1// index of the possibility that gets executed
+        this.possibilties = ["a < 3", "!(a < 3)" ]  // just dummy values for now
+        this.chosen = 1 // index of the possibility that gets executed
         
-        this.isAnimating = true  // currently executing the scope swiping animation
+        this.isAnimating = false  // currently executing the scope swiping animation
         this.curFrame = 0
 
         // create animation keyframes
-        this.numFrames = 50
+        this.numFrames = 100
         const curve = new Bezier(3,0 , 0,0 , 3,1 , 0,1)
         
         console.log("Computing animation path...")
@@ -89,40 +89,47 @@ class Conditional {
         }
 
         const numPoss = this.possibilties.length;
-        let longitude = this.height / 2 + this.y;
-        let y0 = this.y + PADDING
-        let y1 = longitude + PADDING
+        const interval = this.height / numPoss;
+        let longitude = interval + this.y;
 
-        text(this.possibilties[0], this.x + this.width / 2, y0)
-        text(this.possibilties[1], this.x + this.width / 2, y1)
+        let pos = [longitude - interval + PADDING]
+        for (let x = 0; x < this.possibilties.length; x++) {
+            text(this.possibilties[x], this.x + this.width / 2, pos[x]);
+            pos[x+1] = pos[x] + interval
+        }
 
+        let l = longitude - interval + PADDING
         const step = this.points[this.curFrame].y * (longitude - this.y)
         if (this.isAnimating) {
             if (this.chosen === 0) {
-                longitude += step
+                    longitude += step
 
-                p.fill('#ffffff')
-                p.noStroke()
-                p.rect(this.x + PADDING, y0, this.width - PADDING * 2, longitude - this.y - PADDING)
-                text(this.possibilties[0], this.x + this.width / 2, y0)
-            } else if (this.chosen === this.possibilties.length - 1) {
-                longitude -= step
-                y1 -= step
+                    p.fill('#ffffff')
+                    p.noStroke()
+                    p.rect(this.x + PADDING, pos[0], this.width - PADDING * 2, longitude - this.y - PADDING)
+                    text(this.possibilties[0], this.x + this.width / 2, pos[0])
+                } 
+                // not working with currentyly
+                else if (this.chosen === this.possibilties.length - 1) {
+                    longitude -= step
+                    pos[1] -= step
 
-                p.fill('#ffffff')
-                p.noStroke()
-                p.rect(this.x + PADDING, y1, this.width - PADDING * 2, this.height / 2 - PADDING * 2 + step)
-                text(this.possibilties[1], this.x + this.width / 2, y1)
-            }
+                    p.fill('#ffffff')
+                    p.noStroke()
+                    p.rect(this.x + PADDING, pos[1], this.y + PADDING, this.height / 2 - PADDING * 2 + step)
+                    text(this.possibilties[1], this.x + this.width / 2, pos[1])
+                }
         }
-
-        p.stroke('#000000')
-        p.line(
-            this.x + 7, 
-            longitude,
-            this.x + this.width - 7,
-            longitude
-        );
+        for (let x = 0; x < this.possibilties.length - 1 ; x++){
+            p.stroke('#000000')
+            p.line(
+                this.x + 7, 
+                longitude,
+                this.x + this.width - 7,
+                longitude
+            );
+            longitude += interval
+        }
 
         // reset based on points.length, bc it might not have found every point in the computation
         this.curFrame += 1;
