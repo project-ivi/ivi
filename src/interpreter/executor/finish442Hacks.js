@@ -182,53 +182,7 @@ function getBranchSplit(con) {
       }
     }
   }
-  return buffer.split(/;/);
+  buffer = filterOutConditionals(buffer);
+  buffer = buffer.split(/;/);
+  return reInsertConditionals(buffer);
 }
-
-
-let testCode = `
-                var a = 2;
-                if (a < b) {
-
-
-                    if (c < d) {
-
-
-                    } else {
-
-                        var n = 3;
-                    }
-                } else if (test) {
-
-
-                    var q = 2;
-                } else {
-
-
-                    var qqq = 'test';
-                }
-
-
-                if (a < b) {
-
-
-                    if (c < d) {
-
-
-                    } else {
-
-                        var n = 3;
-                    }
-                } else if (test) {
-
-
-                    var q = 22222;
-                } else {
-
-
-                    var qqq = 'test2';
-                }
-
-                var z = 'woo';
-                `;
-filterOutConditionals(testCode);

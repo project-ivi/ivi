@@ -60,6 +60,7 @@ export function evaluate(inputCode) {
 
   // Interpret our code
   for (let i = 0; i < inputCode.length; i++) {
+
     // Hack
     if (inputCode[i] instanceof Conditional) {
       let newCommands = handleWinner(inputCode[i]);
@@ -68,7 +69,11 @@ export function evaluate(inputCode) {
       for (let j = 0; j < newCommands.length; j++) {
         inputCode.splice(i, 0, newCommands[j]);
       }
+      // In case next is also a conditional we need to send back to loop
+      i -= 1;
+      continue;
     }
+
 
 
     if (inputCode[i].trim() != '') {
@@ -87,10 +92,6 @@ export function evaluate(inputCode) {
 function interpretLine(inputLine) {
   // New expression to build into
   let currExpression = new Expression(inputLine);
-
-  if (inputLine instanceof Conditional) {
-    console.log('here');
-  }
 
   // Initialize some variables
   let buffer = '';
