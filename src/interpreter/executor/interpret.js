@@ -75,8 +75,6 @@ export function evaluate(inputCode) {
       continue;
     }
 
-
-
     if (inputCode[i].trim() != '') {
       interpretLine(inputCode[i].trim());
     }
