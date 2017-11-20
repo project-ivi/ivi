@@ -14,7 +14,7 @@ let base = null;
 let conditional = null;
 export const nullifyConditional = () => {
   conditional = null;
-}
+};
 
 export default p => {
 

@@ -106,9 +106,23 @@ export function generateVisualRep(scopeArr) {
       }
     }
   }
-  console.log(newRep);
   changeFlag[0] = true;
   visualRep = newRep;
+
+  //Clear our conditional Hack
+  currentScope = symbolTable[0];
+  for (let i = 1; i < scopeArr.length; i++) {
+    if (currentScope['if'] !== undefined) {
+      currentScope['if'] = undefined;
+    }
+    if (currentScope[scopeArr[i]] === undefined) {
+      currentScope[scopeArr[i]] = {};
+    }
+    currentScope = currentScope[scopeArr[i]];
+  }
+  if (currentScope['if'] !== undefined) {
+    currentScope['if'] = undefined;
+  }
 }
 
 export function cancelChange() {
