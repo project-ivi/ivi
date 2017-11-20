@@ -10,7 +10,7 @@ class Conditional {
     this.canvas = canvas;
     this.possibilities = conditional.possibilities;
     this.chosen = conditional.chosen; // index of the possibility that gets executed
-    this.isAnimating = true;  // currently executing the scope swiping animation
+    this.isAnimating = false;  // currently executing the scope swiping animation
     this.curFrame = 0;
 
     // create animation keyframes

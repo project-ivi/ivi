@@ -28,6 +28,18 @@ export default p => {
 
     p.background('white');
 
+    if (changeFlag[0]) {
+      const last = oldRep.length > 0 ? oldRep[oldRep.length - 1] : null;
+      console.log('last: ' + last)
+      if (last && last.length > 0 && !(last[0] instanceof Array)) {
+        console.log("conditional!")
+      }
+
+      changeFlag[0] = false;
+    }
+
+    oldRep = visualRep;
+
     base = new Scope(p);
     base.width = p.width - 40;
     base.height = p.height - 40;
@@ -41,6 +53,7 @@ export default p => {
         s.child = new Scope(p);
         s = s.child;
       }
+
       // Hack
       for (let j = 0; j < visualRep[i].length; j++) {
         if (visualRep[i][j] instanceof Array) {
