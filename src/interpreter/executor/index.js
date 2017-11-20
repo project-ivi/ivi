@@ -12,7 +12,7 @@ export function submitCode(code) {
     while (errors.length > 0) {
       log.push(errors.pop().value);
     }
-    
+
     return false;
 
   } else {

@@ -3,6 +3,8 @@ import { stateEnum, operationsEnum } from './enums';
 import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
 import { isNotCovered, isVariableName } from './util';
 import { addition, division, remainder, multiplication, subtraction, lessThan, greaterThan } from './operations';
+// Hack
+import { Conditional, filterOutConditionals, reInsertConditionals, handleWinner } from './finish442Hacks';
 
 // Output of expressions for visualiser
 let output = [];
@@ -21,6 +23,10 @@ export function evaluate(inputCode) {
   }
   // Replace comments
   inputCode = inputCode.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, '');
+
+  //Hack
+  inputCode = filterOutConditionals(inputCode);
+
   // Split on semi colons for multiline support
   inputCode = inputCode.split(/;/);
 
@@ -50,8 +56,25 @@ export function evaluate(inputCode) {
     };
   }
 
+  // Hack
+  inputCode = reInsertConditionals(inputCode);
+
   // Interpret our code
   for (let i = 0; i < inputCode.length; i++) {
+
+    // Hack
+    if (inputCode[i] instanceof Conditional) {
+      let newCommands = handleWinner(inputCode[i]);
+      inputCode.splice(i, 1);
+      newCommands.reverse();
+      for (let j = 0; j < newCommands.length; j++) {
+        inputCode.splice(i, 0, newCommands[j]);
+      }
+      // In case next is also a conditional we need to send back to loop
+      i -= 1;
+      continue;
+    }
+
     if (inputCode[i].trim() != '') {
       interpretLine(inputCode[i].trim());
     }
