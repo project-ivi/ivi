@@ -3,6 +3,8 @@ import { stateEnum, operationsEnum } from './enums';
 import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
 import { isNotCovered, isVariableName } from './util';
 import { addition, subtraction, lessThan, greaterThan } from './operations';
+// Hack
+import { Conditional, filterOutConditionals, reInsertConditionals, handleWinner } from './finish442Hacks';
 
 // Output of expressions for visualiser
 let output = [];
@@ -21,6 +23,10 @@ export function evaluate(inputCode) {
   }
   // Replace comments
   inputCode = inputCode.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, '');
+
+  //Hack
+  inputCode = filterOutConditionals(inputCode);
+
   // Split on semi colons for multiline support
   inputCode = inputCode.split(/;/);
 
@@ -50,8 +56,21 @@ export function evaluate(inputCode) {
     };
   }
 
+  inputCode = reInsertConditionals(inputCode);
+
   // Interpret our code
   for (let i = 0; i < inputCode.length; i++) {
+    // Hack
+    if (inputCode[i] instanceof Conditional) {
+      let newCommands = handleWinner(inputCode[i]);
+      inputCode.splice(i, 1);
+      newCommands.reverse();
+      for (let j = 0; j < newCommands.length; j++) {
+        inputCode.splice(i, 0, newCommands[j]);
+      }
+    }
+
+
     if (inputCode[i].trim() != '') {
       interpretLine(inputCode[i].trim());
     }
@@ -68,6 +87,10 @@ export function evaluate(inputCode) {
 function interpretLine(inputLine) {
   // New expression to build into
   let currExpression = new Expression(inputLine);
+
+  if (inputLine instanceof Conditional) {
+    console.log('here');
+  }
 
   // Initialize some variables
   let buffer = '';
