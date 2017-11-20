@@ -56,6 +56,7 @@ export function evaluate(inputCode) {
     };
   }
 
+  // Hack
   inputCode = reInsertConditionals(inputCode);
 
   // Interpret our code
