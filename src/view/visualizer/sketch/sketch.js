@@ -7,8 +7,7 @@ import { visualRep, changeFlag } from '../../../interpreter/executor/state';
 let oldRep = [];
 let VARIABLES = [];
 let base = null;
-
-const c = new Conditional(null);
+let conditional = null;
 
 export default p => {
 
@@ -27,17 +26,6 @@ export default p => {
 
   p.draw = () => {
 
-    // visualRep has just been updated
-    if (changeFlag[0]) {
-
-      // was the last element of oldRep a conditional
-      if (oldRep[oldRep.length - 1]) {
-
-        // animate the conditional and display the contents of oldRep until the animation completes
-
-      }
-    }
-
     p.background('white');
 
     base = new Scope(p);
@@ -46,9 +34,6 @@ export default p => {
     base.x = 20;
     base.y = 20;
 
-    c.canvas = p;
-    base.child = c;
-
     let s = base;
     VARIABLES = [];
     for (let i = 0; i < visualRep.length; i++) {
@@ -56,12 +41,20 @@ export default p => {
         s.child = new Scope(p);
         s = s.child;
       }
+      // Hack
       for (let j = 0; j < visualRep[i].length; j++) {
-        let variable = new Variable(p);
-        variable.name = visualRep[i][j][0];
-        variable.value = visualRep[i][j][1];
-        s.variables.push(variable);
-        VARIABLES.push(variable);
+        if (visualRep[i][j] instanceof Array) {
+          let variable = new Variable(p);
+          variable.name = visualRep[i][j][0];
+          variable.value = visualRep[i][j][1];
+          s.variables.push(variable);
+          VARIABLES.push(variable);
+        } else {
+          if (conditional === null) {
+            conditional = new Conditional(p, visualRep[i][j]);
+          }
+          s.child = conditional;
+        }
       }
     }
     base.draw();

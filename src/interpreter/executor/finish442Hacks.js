@@ -13,6 +13,7 @@ export class Conditional {
     this.possibilities =  [];
     this.chosen = -1;
     this.text = '';
+    this.scope = null;
   }
 }
 
@@ -61,7 +62,7 @@ function preParse(inputCode) {
           currCon.text = buffer;
           let elseStatement = '!(';
           for (let i = 0; i < currCon.possibilities.length; i++) {
-            elseStatement += currCon.possibilities[i] + ' && ';
+            elseStatement += currCon.possibilities[i] + ' || ';
           }
           elseStatement = elseStatement.substring(0, elseStatement.length - 4);
           elseStatement += ')';

@@ -1,6 +1,6 @@
 import { Console, Expression, Syntax, Unsupported, Variable } from './classes';
 import { stateEnum, operationsEnum } from './enums';
-import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
+import { increaseScope, decreaseScope, getClosestValue, insertVar, scope, scopeLevel } from './state';
 import { isNotCovered, isVariableName } from './util';
 import { addition, division, remainder, multiplication, subtraction, lessThan, greaterThan } from './operations';
 // Hack
@@ -65,7 +65,14 @@ export function evaluate(inputCode) {
     // Hack
     if (inputCode[i] instanceof Conditional) {
       let newCommands = handleWinner(inputCode[i]);
-      inputCode.splice(i, 1);
+
+      //Add conditional to output
+      let conditional = inputCode.splice(i, 1)[0];
+      conditional.scope = scope.slice(0, scopeLevel + 1);
+      let newExpression = new Expression(conditional.text);
+      newExpression.data = conditional;
+      output.push(newExpression);
+
       newCommands.reverse();
       for (let j = 0; j < newCommands.length; j++) {
         inputCode.splice(i, 0, newCommands[j]);
