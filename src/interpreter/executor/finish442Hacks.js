@@ -45,10 +45,12 @@ function preParse(inputCode) {
             if (inputCode.indexOf('if', i) !== -1
                             && inputCode.indexOf('if', i) > inputCode.indexOf('else', i)) {
               let firstParen = inputCode.indexOf('(', i);
-              let firstBrace = inputCode.indexOf('{', firstParen);
-              let closingParen = inputCode.lastIndexOf(')', firstBrace);
-              let con = inputCode.substring(firstParen + 1, closingParen);
-              currCon.possibilities.push(con);
+              if (inputCode.indexOf('{', i) > firstParen) {
+                let firstBrace = inputCode.indexOf('{', firstParen);
+                let closingParen = inputCode.lastIndexOf(')', firstBrace);
+                let con = inputCode.substring(firstParen + 1, closingParen);
+                currCon.possibilities.push(con);
+              }
               continue;
             } else if (inputCode.indexOf('if', i) === -1) {
               continue;
