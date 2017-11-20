@@ -1,4 +1,4 @@
-import { log, resetState, insertAtScope, insertConditionAtScope } from './state';
+import { log, resetState, insertAtScope, insertConditionAtScope, changeFlag } from './state';
 import { evaluate } from './interpret';
 
 let expressions = [];
@@ -44,6 +44,7 @@ export function nextStep() {
   switch (expression.constructor.name) {
   case 'Console':
     log.push(expression.output);
+    changeFlag[0] = true;
     break;
   case 'Variable':
     insertAtScope(expression.scope, expression);
