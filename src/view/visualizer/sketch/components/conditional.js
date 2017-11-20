@@ -8,8 +8,8 @@ import Bezier from 'bezier-js';
 class Conditional {
     constructor(canvas) {
         this.canvas = canvas;
-        this.possibilties = ["a < 3", "!(a < 3)", "otherwise" ]  // just dummy values for now
-        this.chosen = 2 // index of the possibility that gets executed
+        this.possibilties = ["a < 3", "!(a < 3)", "otherwise", "yeet"]  // just dummy values for now
+        this.chosen = 1 // index of the possibility that gets executed
         
         this.isAnimating = true  // currently executing the scope swiping animation
         this.curFrame = 0
@@ -111,7 +111,7 @@ class Conditional {
             fixedLongitude += interval
         }
 
-        const step = this.points[this.curFrame].y * (this.height - (longitude - this.y))
+        let step = this.points[this.curFrame].y * (this.height - (longitude - this.y))
         if (this.isAnimating) {
             if (this.chosen === 0) {
                     longitude += step
@@ -130,7 +130,7 @@ class Conditional {
 
                     text(this.possibilties[0], this.x + this.width / 2, pos[0])
                 } else if (this.chosen === this.possibilties.length - 1) {
-                    longitude -= step
+                    // longitude -= step
                     const yPos = pos[this.possibilties.length - 1] - step - PADDING
 
                     p.fill('#ffffff')
@@ -146,6 +146,23 @@ class Conditional {
                     );
 
                     text(this.possibilties[this.possibilties.length - 1], this.x + this.width / 2, yPos + PADDING)
+                } else {
+                    const upStep = this.points[this.curFrame].y * (this.height - (interval * (numPoss - this.chosen)))
+                    const upPos = pos[this.chosen] - upStep - PADDING
+
+                    const downStep = this.points[this.curFrame].y * (interval * (numPoss - this.chosen - 1))
+                    const downPos = pos[this.chosen] + interval + downStep - PADDING
+
+                    p.fill('#ffffff')
+                    p.noStroke()
+                    p.rect(this.x + PADDING, upPos, this.width - PADDING * 2, interval + upStep + downStep)
+
+                    p.stroke('#000000')
+                    p.line(this.x + 7, upPos, this.x + this.width - 7, upPos); // upward line
+                    p.line(this.x + 7, downPos, this.x + this.width - 7, downPos); // upward line
+
+
+                    text(this.possibilties[this.chosen], this.x + this.width / 2, upPos + PADDING)
                 }
         }
 
