@@ -62,6 +62,7 @@ class Conditional {
         const p = this.canvas;
         const TEXT_SIZE = 15
         const PADDING = 8;
+        const LINE_OFFSET = 10;
 
         p.stroke('#000000');
         p.strokeWeight(STROKE_WEIGHT);
@@ -103,9 +104,9 @@ class Conditional {
         for (let x = 0; x < this.possibilties.length - 1 ; x++){
             p.stroke('#000000')
             p.line(
-                this.x + 7, 
+                this.x + LINE_OFFSET, 
                 fixedLongitude,
-                this.x + this.width - 7,
+                this.x + this.width - LINE_OFFSET,
                 fixedLongitude
             );
             fixedLongitude += interval
@@ -122,9 +123,9 @@ class Conditional {
 
                     p.stroke('#000000')
                     p.line(
-                        this.x + 7, 
+                        this.x + LINE_OFFSET, 
                         longitude,
-                        this.x + this.width - 7,
+                        this.x + this.width - LINE_OFFSET,
                         longitude
                     );
 
@@ -139,9 +140,9 @@ class Conditional {
 
                     p.stroke('#000000')
                     p.line(
-                        this.x + 7, 
+                        this.x + LINE_OFFSET, 
                         yPos,
-                        this.x + this.width - 7,
+                        this.x + this.width - LINE_OFFSET,
                         yPos
                     );
 
@@ -155,11 +156,11 @@ class Conditional {
 
                     p.fill('#ffffff')
                     p.noStroke()
-                    p.rect(this.x + PADDING, upPos, this.width - PADDING * 2, interval + upStep + downStep)
+                    p.rect(this.x + LINE_OFFSET - 1, upPos, this.width - (LINE_OFFSET) * 2 + 3, interval + upStep + downStep)
 
                     p.stroke('#000000')
-                    p.line(this.x + 7, upPos, this.x + this.width - 7, upPos); // upward line
-                    p.line(this.x + 7, downPos, this.x + this.width - 7, downPos); // upward line
+                    p.line(this.x + 7, upPos, this.x + this.width - LINE_OFFSET, upPos); // upward line
+                    p.line(this.x + 7, downPos, this.x + this.width - LINE_OFFSET, downPos); // upward line
 
 
                     text(this.possibilties[this.chosen], this.x + this.width / 2, upPos + PADDING)
