@@ -10,6 +10,8 @@ export function deriveType(buffer) {
     return typeEnum.NAN;
   } else if (buffer === 'undefined') {
     return typeEnum.UNDEFINED;
+  } else if (buffer === 'true' || buffer === 'false') {
+    return typeEnum.BOOLEAN;
   } else if (!isVariableName(buffer)) {
     return typeEnum.NUMBER;
   } else if (isVariableName(buffer)) {
@@ -37,6 +39,13 @@ export function stripIfString(aString) {
   return aString;
 }
 
+export function convertToNum(buffer, type) {
+  if (type === typeEnum.BOOLEAN) {
+    return Number(Boolean(buffer === 'true'));
+  }
+  return Number(buffer);
+}
+
 // Band Aid for things not yet covered
 export function isNotCovered(buffer) {
 
@@ -55,19 +64,9 @@ export function isNotCovered(buffer) {
     isNotCovered = true;
   } else if (buffer.includes('?')) {
     isNotCovered = true;
-  } else if (buffer.includes('if')) {
-    isNotCovered = true;
-  } else if (buffer.includes('else')) {
-    isNotCovered = true;
   } else if (buffer.includes('for')) {
     isNotCovered = true;
   } else if (buffer.includes('while')) {
-    isNotCovered = true;
-  } else if (buffer.includes('/')) {
-    isNotCovered = true;
-  } else if (buffer.includes('*')) {
-    isNotCovered = true;
-  } else if (buffer.includes('%')) {
     isNotCovered = true;
   } else if (buffer.includes('[')) {
     isNotCovered = true;
@@ -80,10 +79,6 @@ export function isNotCovered(buffer) {
   } else if (buffer.includes('&')) {
     isNotCovered = true;
   } else if (buffer.includes('|')) {
-    isNotCovered = true;
-  } else if (buffer.includes('<')) {
-    isNotCovered = true;
-  } else if (buffer.includes('>')) {
     isNotCovered = true;
   } else if (buffer.includes('\\')) {
     isNotCovered = true;

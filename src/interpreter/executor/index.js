@@ -1,29 +1,30 @@
-import { log, resetState, insertAtScope } from './state';
+import { log, resetState, insertAtScope, insertConditionAtScope, changeFlag } from './state';
 import { evaluate } from './interpret';
 
-let output = null;
+let expressions = [];
 
 export function submitCode(code) {
-  // Reset the state of the interpreter before the code gets evaluated.
   const result = evaluate(code);
   resetState();
 
   if (result.error) {
-    for (const elem of result.output) {
-      log.push(elem.value);
+    const errors = result.output;
+    while (errors.length > 0) {
+      log.push(errors.pop().value);
     }
+
     return false;
 
   } else {
-    output = result.output;
+    expressions = result.output;
 
     // Ideally this is constructed as a queue but because of JavaScript
     // limitations the default implementation is an O(n) operation on access,
     // so in order to increase performance we will reverse the list and use
     // pop() for O(1) operations.
-    output.reverse();
-    return true;
+    expressions.reverse();
 
+    return true;
   }
 }
 
@@ -32,20 +33,24 @@ export function submitCode(code) {
  * Returns false if there are no more valid moves.
  */
 export function nextStep() {
-  if (!output || output.length == 0) {
+  if (!expressions || expressions.length == 0) {
     return false;
   }
 
   // Retrieve next value in the executor list.
-  const action = output.pop();
+  const action = expressions.pop();
 
   const expression = action.data;
   switch (expression.constructor.name) {
   case 'Console':
     log.push(expression.output);
+    changeFlag[0] = true;
     break;
   case 'Variable':
     insertAtScope(expression.scope, expression);
+    break;
+  case 'Conditional':
+    insertConditionAtScope(expression.scope, expression);
     break;
   default:
     break;
@@ -55,7 +60,6 @@ export function nextStep() {
 }
 
 export function resetInterpreter() {
-  output = null;
   resetState();
 }
 

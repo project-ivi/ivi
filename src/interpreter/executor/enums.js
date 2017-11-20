@@ -14,10 +14,16 @@ export const typeEnum = {
   NUMBER: 'number',
   UNDEFINED: 'undefined',
   NAN: 'NaN',
+  BOOLEAN: 'boolean',
 };
 
 // This is our enum for operations
 export const operationsEnum = {
   ADDITION: '+',
+  DIVISION: '/',
+  REMAINDER: '%',
+  MULTIPLICATION: '*',
   SUBTRACTION: '-',
+  LESS_THAN: '<',
+  GREATER_THAN: '>',
 };

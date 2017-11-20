@@ -1,3 +1,5 @@
+import { log } from '../../interpreter/executor/state';
+
 import React from 'react';
 import { Card } from 'semantic-ui-react';
 
@@ -8,12 +10,13 @@ const textAreaStyle = {
   color: 'white',
   fontFamily: 'Courier',
   overflow: 'scroll',
+  padding: '13px',
 };
 
-const Console = ({ consoleOutput }) => (
+const Console = () => (
   <Card raised={ true } style={{ height: '100%', width: '100%' }}>
     <div style={ textAreaStyle }>
-      { consoleOutput.map(elem => (
+      { log.map(elem => (
         <div>{ elem }</div>
       )) }
     </div>

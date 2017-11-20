@@ -1,7 +1,7 @@
 import { VAR_WIDTH, VAR_HEIGHT, FONT_SIZE } from './variable';
 
-const STROKE_WEIGHT = 2;
-const EDGE_RADIUS = 10;
+export const STROKE_WEIGHT = 2;
+export const EDGE_RADIUS = 10;
 const PADDING = 12;
 const BACKGROUND_COLORS = [
   '#89C4F4',

@@ -4,6 +4,7 @@ let symbolTable = {0 : {}};
 export let currScope = symbolTable[0];
 export let scope = [0];
 export let scopeLevel = 0;
+export let changeFlag = [false];
 export let visualRep = [];
 export let onChange = false;
 
@@ -74,7 +75,22 @@ export function insertAtScope(scopeArr, variable) {
   onChange = true;
 }
 
+// Hack
+export function insertConditionAtScope(scopeArr, conditional) {
+  let currentScope = symbolTable[0];
+  for (let i = 1; i < scopeArr.length; i++) {
+    if (currentScope[scopeArr[i]] === undefined) {
+      currentScope[scopeArr[i]] = {};
+    }
+    currentScope = currentScope[scopeArr[i]];
+  }
+  generateVisualRep(scopeArr);
+
+  visualRep[visualRep.length - 1].push(conditional);
+}
+
 export function generateVisualRep(scopeArr) {
+
   let newRep = [];
   let currentScope = symbolTable;
   for (let i = 0; i < scopeArr.length; i++) {
@@ -89,6 +105,7 @@ export function generateVisualRep(scopeArr) {
       }
     }
   }
+  changeFlag[0] = true;
   visualRep = newRep;
 }
 

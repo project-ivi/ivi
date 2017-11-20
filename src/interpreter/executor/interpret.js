@@ -1,8 +1,10 @@
 import { Console, Expression, Syntax, Unsupported, Variable } from './classes';
 import { stateEnum, operationsEnum } from './enums';
-import { increaseScope, decreaseScope, getClosestValue, insertVar} from './state';
+import { increaseScope, decreaseScope, getClosestValue, insertVar, scope, scopeLevel } from './state';
 import { isNotCovered, isVariableName } from './util';
-import { addition, subtraction } from './operations';
+import { addition, division, remainder, multiplication, subtraction, lessThan, greaterThan } from './operations';
+// Hack
+import { Conditional, filterOutConditionals, reInsertConditionals, handleWinner } from './finish442Hacks';
 
 // Output of expressions for visualiser
 let output = [];
@@ -21,6 +23,10 @@ export function evaluate(inputCode) {
   }
   // Replace comments
   inputCode = inputCode.replace(/(\/\*([\s\S]*?)\*\/)|(\/\/(.*)$)/gm, '');
+
+  //Hack
+  inputCode = filterOutConditionals(inputCode);
+
   // Split on semi colons for multiline support
   inputCode = inputCode.split(/;/);
 
@@ -50,8 +56,32 @@ export function evaluate(inputCode) {
     };
   }
 
+  // Hack
+  inputCode = reInsertConditionals(inputCode);
+
   // Interpret our code
   for (let i = 0; i < inputCode.length; i++) {
+
+    // Hack
+    if (inputCode[i] instanceof Conditional) {
+      let newCommands = handleWinner(inputCode[i]);
+
+      //Add conditional to output
+      let conditional = inputCode.splice(i, 1)[0];
+      conditional.scope = scope.slice(0, scopeLevel + 1);
+      let newExpression = new Expression(conditional.text);
+      newExpression.data = conditional;
+      output.push(newExpression);
+
+      newCommands.reverse();
+      for (let j = 0; j < newCommands.length; j++) {
+        inputCode.splice(i, 0, newCommands[j]);
+      }
+      // In case next is also a conditional we need to send back to loop
+      i -= 1;
+      continue;
+    }
+
     if (inputCode[i].trim() != '') {
       interpretLine(inputCode[i].trim());
     }
@@ -308,10 +338,35 @@ function arithmetic(buffer, inputLine, currentState) {
     right = getSubExpressionValue(getSubExpression(right));
     buffer = addition(left, right);
     break;
+  case operationsEnum.DIVISION:
+    right = inputLine.substring(inputLine.indexOf('/') + 1);
+    right = getSubExpressionValue(getSubExpression(right));
+    buffer = division(left, right);
+    break;
+  case operationsEnum.REMAINDER:
+    right = inputLine.substring(inputLine.indexOf('%') + 1);
+    right = getSubExpressionValue(getSubExpression(right));
+    buffer = remainder(left, right);
+    break;
+  case operationsEnum.MULTIPLICATION:
+    right = inputLine.substring(inputLine.indexOf('*') + 1);
+    right = getSubExpressionValue(getSubExpression(right));
+    buffer = multiplication(left, right);
+    break;
   case operationsEnum.SUBTRACTION:
     right = inputLine.substring(inputLine.indexOf('-') + 1);
     right = getSubExpressionValue(getSubExpression(right));
     buffer = subtraction(left, right);
+    break;
+  case operationsEnum.LESS_THAN:
+    right = inputLine.substring(inputLine.indexOf('<') + 1);
+    right = getSubExpressionValue(getSubExpression(right));
+    buffer = lessThan(left, right);
+    break;
+  case operationsEnum.GREATER_THAN:
+    right = inputLine.substring(inputLine.indexOf('>') + 1);
+    right = getSubExpressionValue(getSubExpression(right));
+    buffer = greaterThan(left, right);
     break;
   default:
     newState = currentState;
@@ -319,26 +374,3 @@ function arithmetic(buffer, inputLine, currentState) {
   }
   return [buffer, newState];
 }
-
-/*
-let answer = evaluate(` tt = 3;
-                        var a = 44;
-                        var b = 33;
-                        var c = 'hello';
-                        var d = b;
-                        var q;
-                        var n
-                        =
-                        c;
-                        x;
-                        console.log(x);
-                        yy;
-                        var test = console.log('hte');
-                        console.log(console.log(console.log('test')));`);
-for (let i = 0; i < answer.length; i++) {
-    if (answer[i].data instanceof Console) {
-        console.log(answer[i].data.output);
-    } else if (answer[i].data instanceof Variable) {
-        console.log(answer[i].data.name + "\t" + answer[i].data.value);       
-    }
-}*/
