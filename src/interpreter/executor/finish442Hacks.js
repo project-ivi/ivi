@@ -14,9 +14,7 @@ export class Conditional {
   }
 }
 
-
 let conditionals = {};
-
 
 function preParse(inputCode) {
 
@@ -139,7 +137,6 @@ export function reInsertConditionals(splitCode) {
   }
   return splitCode;
 }
-
 
 export function handleWinner(con) {
   for (let i = 0; i < con.possibilities.length - 1; i++) {
