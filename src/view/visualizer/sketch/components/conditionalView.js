@@ -18,8 +18,6 @@ class ConditionalView {
     this.numFrames = 100;
     const curve = new Bezier(3, 0, 0, 0, 3, 1, 0, 1);
 
-    console.log('Computing animation path...');
-
     // this computes points that are equidistant on the curve based on arc length
     const curveLength = curve.length();
     const lengthStep = curveLength / this.numFrames;
@@ -40,8 +38,6 @@ class ConditionalView {
         steps.push(t - tstep); // found our point, on to the next one
       }
     }
-
-    console.log('Complete!');
 
     this.points = [];
     steps.forEach(elem => {
