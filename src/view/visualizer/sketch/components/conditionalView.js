@@ -5,7 +5,7 @@ import { STROKE_WEIGHT, EDGE_RADIUS } from './scope';
 import Bezier from 'bezier-js';
 
 // TODO: Conditional and Scope probably need to inherit from the same interface or something
-class Conditional {
+class ConditionalView {
   constructor(canvas, conditional) {
     this.canvas = canvas;
     this.possibilities = conditional.possibilities;
@@ -48,6 +48,12 @@ class Conditional {
     });
 
     this.setBounds = this.setBounds.bind(this);
+    this.startAnimation = this.startAnimation.bind(this);
+  }
+
+  startAnimation() {
+    this.curFrame = 0;
+    this.isAnimating = true;
   }
 
   setBounds(bounds) {
@@ -169,7 +175,6 @@ class Conditional {
     // reset based on points.length, bc it might not have found every point in the computation
     this.curFrame += 1;
     if (this.curFrame > this.points.length - 1) {
-      this.curFrame = 0;
       this.isAnimating = false;
     }
 
@@ -180,4 +185,4 @@ class Conditional {
   }
 }
 
-export default Conditional;
+export default ConditionalView;

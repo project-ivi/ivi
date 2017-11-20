@@ -1,10 +1,13 @@
 import Scope from './components/scope';
-import Conditional from './components/conditional';
+import ConditionalView from './components/conditionalView';
 import { Variable } from './components/variable';
 import { VAR_WIDTH, VAR_HEIGHT } from './components/variable';
 import { visualRep, changeFlag } from '../../../interpreter/executor/state';
+import { Conditional } from '../../../interpreter/executor/finish442Hacks';
 
 let oldRep = [];
+let cached = [];
+
 let VARIABLES = [];
 let base = null;
 let conditional = null;
@@ -28,17 +31,24 @@ export default p => {
 
     p.background('white');
 
+    let repToDisplay;
+
     if (changeFlag[0]) {
       const last = oldRep.length > 0 ? oldRep[oldRep.length - 1] : null;
-      console.log('last: ' + last)
-      if (last && last.length > 0 && !(last[0] instanceof Array)) {
-        console.log("conditional!")
+      if (last && last.length > 0 && last[last.length - 1] instanceof Conditional) {
+        conditional.startAnimation();
+        cached = oldRep;
       }
 
       changeFlag[0] = false;
     }
 
     oldRep = visualRep;
+    if (conditional && conditional.isAnimating) {
+      repToDisplay = cached;
+    } else {
+      repToDisplay = visualRep;
+    }
 
     base = new Scope(p);
     base.width = p.width - 40;
@@ -48,23 +58,24 @@ export default p => {
 
     let s = base;
     VARIABLES = [];
-    for (let i = 0; i < visualRep.length; i++) {
+    for (let i = 0; i < repToDisplay.length; i++) {
       if (i !== 0) {
         s.child = new Scope(p);
         s = s.child;
       }
 
       // Hack
-      for (let j = 0; j < visualRep[i].length; j++) {
-        if (visualRep[i][j] instanceof Array) {
+      for (let j = 0; j < repToDisplay[i].length; j++) {
+        if (repToDisplay[i][j] instanceof Array) {
           let variable = new Variable(p);
-          variable.name = visualRep[i][j][0];
-          variable.value = visualRep[i][j][1];
+          variable.name = repToDisplay[i][j][0];
+          variable.value = repToDisplay[i][j][1];
           s.variables.push(variable);
           VARIABLES.push(variable);
         } else {
           if (conditional === null) {
-            conditional = new Conditional(p, visualRep[i][j]);
+            console.log('this happened');
+            conditional = new ConditionalView(p, repToDisplay[i][j]);
           }
           s.child = conditional;
         }
