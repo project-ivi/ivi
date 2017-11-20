@@ -68,7 +68,7 @@ function preParse(inputCode) {
           elseStatement += ')';
           currCon.possibilities.push(elseStatement);
 
-          indexToConditional[semiColonCount] = currCon;
+          indexToConditional[semiColonCount === 0 ? 1 : semiColonCount] = currCon;
 
           semiColonCount += 1;
           inConditional = false;
@@ -188,5 +188,8 @@ function getBranchSplit(con) {
   }
   buffer = filterOutConditionals(buffer);
   buffer = buffer.split(/;/);
+  if (buffer.length === 1) {
+    buffer = ['{', '}'];
+  }
   return reInsertConditionals(buffer);
 }
